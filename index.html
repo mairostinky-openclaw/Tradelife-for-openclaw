@@ -782,7 +782,6 @@
                 <div class="nav-item" onclick="switchTab('education')">Education</div>
                 <div class="nav-item" onclick="switchTab('achievements')">Achievements</div>
                 <div class="nav-item" onclick="switchTab('aibot')" style="color:#a855f7">AI Invest Bot</div>
-                <div class="nav-item" onclick="openRebirthModal()" style="color:#f59e0b">🔄 Rebirth</div>
                 <div class="nav-item" id="club-nav-item" onclick="switchTab('club')" style="color:#f59e0b">The Club 🔒</div>
                 <div class="nav-item" onclick="switchTab('leaderboard')" style="color:var(--warning)">Leaderboard</div>
                 <div class="nav-item" onclick="switchTab('search')" style="color:#38bdf8">Search Players</div>
@@ -795,7 +794,6 @@
                 <div class="stat-row"><span class="stat-label">Net Worth</span><span class="stat-value" id="stat-networth">$0</span></div>
                 <div class="stat-row"><span class="stat-label">Day</span><span class="stat-value" id="stat-day">1</span></div>
                 <div class="stat-row"><span class="stat-label">Day Timer</span><span class="stat-value" id="stat-timer">5:00</span></div>
-                <div class="stat-row" id="rebirth-stats"><span class="stat-label">🪙 Rebirth Coins</span><span class="stat-value" id="stat-rebirth-coins" style="color:#f59e0b">0</span></div>
             </div>
         </div>
 
@@ -3035,10 +3033,7 @@ What is your experience?"></textarea></div>
                 clubPaid: false,
                 countriesOwned: [],
                 planetOwned: false,
-                planets: [],
-                rebirthCount: 0,
-                rebirthCoins: 0,
-                lastRebirthDay: 0
+                planets: []
             },
             stockPrices: {},
             cryptoPrices: {},
@@ -3501,10 +3496,6 @@ What is your experience?"></textarea></div>
                 if (!state.player.countriesOwned) state.player.countriesOwned = [];
                 if (state.player.planetOwned === undefined) state.player.planetOwned = false;
                 if (!state.player.planets) state.player.planets = [];
-                // Rebirth fields - initialize if not exist
-                if (state.player.rebirthCount === undefined) state.player.rebirthCount = 0;
-                if (state.player.rebirthCoins === undefined) state.player.rebirthCoins = 0;
-                if (state.player.lastRebirthDay === undefined) state.player.lastRebirthDay = 0;
                 // Fill missing prices
                 STOCKS.forEach(s => {
                     if (!state.stockPrices[s.ticker]) state.stockPrices[s.ticker] = s.basePrice;
@@ -4832,13 +4823,6 @@ What is your experience?"></textarea></div>
                 const fee = Math.round(cash * 0.10);
                 skipCostEl.textContent = '$' + formatNum(fee);
             }
-            // Update rebirth stats - always show
-            const rebirthStats = document.getElementById('rebirth-stats');
-            const rebirthCoins = document.getElementById('stat-rebirth-coins');
-            if (rebirthStats && rebirthCoins) {
-                rebirthStats.style.display = 'flex';
-                rebirthCoins.textContent = (state.player.rebirthCoins || 0) + ' 🪙';
-            }
         }
 
         function calcNetWorth() {
@@ -4881,14 +4865,22 @@ What is your experience?"></textarea></div>
 
         function formatNum(n) {
             if (n === undefined || n === null) return '0';
-            if (!Number.isFinite(n)) return '0';
+            // Handle Infinity explicitly — overflow used to silently show as $0
+            if (n === Infinity || n > 1e300) return '\u221e Inf';
+            if (n === -Infinity || n < -1e300) return '-\u221e Inf';
+            if (!Number.isFinite(n) || isNaN(n)) return '0';
             const abs = Math.abs(n);
-            if (abs >= 1e18) return (n/1e18).toFixed(2) + 'SQ';
-            if (abs >= 1e15) return (n/1e15).toFixed(2) + 'Q';
-            if (abs >= 1e12) return (n/1e12).toFixed(2) + 'T';
-            if (abs >= 1e9) return (n/1e9).toFixed(2) + 'B';
-            if (abs >= 1e6) return (n/1e6).toFixed(2) + 'M';
-            if (abs >= 1e3) return (n/1e3).toFixed(1) + 'K';
+            if (abs >= 1e33) return (n/1e33).toFixed(2) + 'Dc';   // Decillion
+            if (abs >= 1e30) return (n/1e30).toFixed(2) + 'Nn';   // Nonillion
+            if (abs >= 1e27) return (n/1e27).toFixed(2) + 'Oc';   // Octillion
+            if (abs >= 1e24) return (n/1e24).toFixed(2) + 'Sp';   // Septillion
+            if (abs >= 1e21) return (n/1e21).toFixed(2) + 'Sx';   // Sextillion
+            if (abs >= 1e18) return (n/1e18).toFixed(2) + 'Qt';   // Quintillion
+            if (abs >= 1e15) return (n/1e15).toFixed(2) + 'Q';    // Quadrillion
+            if (abs >= 1e12) return (n/1e12).toFixed(2) + 'T';    // Trillion
+            if (abs >= 1e9)  return (n/1e9).toFixed(2)  + 'B';    // Billion
+            if (abs >= 1e6)  return (n/1e6).toFixed(2)  + 'M';    // Million
+            if (abs >= 1e3)  return (n/1e3).toFixed(1)  + 'K';    // Thousand
             return n.toFixed ? n.toFixed(2) : n.toString();
         }
 
@@ -4896,20 +4888,26 @@ What is your experience?"></textarea></div>
             if (!str) return 0;
             str = str.toString().trim().toUpperCase();
             // Handle scientific notation like 3E+37 or 3.5E37
-            if (str.includes('E')) {
+            if (/^-?[\d.]+E[+\-]?\d+$/.test(str)) {
                 const num = parseFloat(str);
                 return isNaN(num) ? 0 : num;
             }
-            // Support M, B, T, Q, SQ suffixes
+            // Support K, M, B, T, Q, QT/SQ, SX, SP, OC, NN, DC suffixes
             const match = str.match(/^([\d.]+)\s*([A-Z]*)$/);
             if (!match) return 0;
             const num = parseFloat(match[1]);
             const suffix = match[2];
-            if (suffix === 'SQ') return num * 1e18;
-            if (suffix === 'Q') return num * 1e15;
-            if (suffix === 'T') return num * 1e12;
-            if (suffix === 'B') return num * 1e9;
-            if (suffix === 'M') return num * 1e6;
+            if (suffix === 'DC') return num * 1e33;  // Decillion
+            if (suffix === 'NN') return num * 1e30;  // Nonillion
+            if (suffix === 'OC') return num * 1e27;  // Octillion
+            if (suffix === 'SP') return num * 1e24;  // Septillion
+            if (suffix === 'SX') return num * 1e21;  // Sextillion
+            if (suffix === 'QT' || suffix === 'SQ') return num * 1e18; // Quintillion (SQ kept for backward compat)
+            if (suffix === 'Q') return num * 1e15;   // Quadrillion
+            if (suffix === 'T') return num * 1e12;   // Trillion
+            if (suffix === 'B') return num * 1e9;    // Billion
+            if (suffix === 'M') return num * 1e6;    // Million
+            if (suffix === 'K') return num * 1e3;    // Thousand
             return num;
         }
 
@@ -9982,124 +9980,6 @@ What is your experience?"></textarea></div>
                 if (sidebarCash) sidebarCash.textContent = '$' + formatNum(state.player.cash);
                 if (sidebarNW) sidebarNW.textContent = '$' + formatNum(calcNetWorth());
             });
-        }
-
-        // ===================== REBIRTH SYSTEM =====================
-        function getRebirthRequirement() {
-            return Math.floor(100000000000000 * Math.pow(1.5, state.player.rebirthCount || 0));
-        }
-
-        function openRebirthModal() {
-            // Check if game is started
-            if (!state.player) {
-                showToast('Error', 'Start or load a game first!', 'danger');
-                return;
-            }
-            if (!state.player.day) {
-                // Try to initialize day
-                state.player.day = state.player.day || 1;
-            }
-            if (!state.player.cash) {
-                state.player.cash = 5000;
-            }
-            
-            const req = getRebirthRequirement();
-            const playerCash = state.player.cash || 0;
-            const canAfford = playerCash >= req;
-            const nw = calcNetWorth();
-            const potentialCoins = Math.floor(nw / 100000000000);
-            
-            const modal = document.createElement('div');
-            modal.className = 'modal-overlay';
-            modal.innerHTML = `
-                <div class="modal-content" style="max-width:450px;text-align:center">
-                    <div style="font-size:4rem;margin-bottom:1rem">🔄</div>
-                    <h2 style="color:var(--brand);margin-bottom:0.5rem">REBIRTH</h2>
-                    <p style="color:var(--text-muted);margin-bottom:1.5rem">Start fresh with $5,000 but keep your achievements & level!</p>
-                    
-                    <div style="background:var(--bg-panel);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:1rem">
-                        <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem">
-                            <span style="color:var(--text-muted)">Current Net Worth</span>
-                            <span style="font-weight:700;color:var(--brand)">$${formatNum(nw)}</span>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem">
-                            <span style="color:var(--text-muted)">Rebirth Cost</span>
-                            <span style="font-weight:700;color:var(--danger)">$${formatNum(req)}</span>
-                        </div>
-                        <div style="display:flex;justify-content:space-between">
-                            <span style="color:var(--text-muted)">Potential Coins</span>
-                            <span style="font-weight:700;color:var(--success)">+1 🪙</span>
-                        </div>
-                    </div>
-                    
-                    <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:8px;padding:0.75rem;margin-bottom:1.5rem;font-size:0.8rem;color:var(--text-muted)">
-                        <strong style="color:var(--warning)">You'll keep:</strong> Level, XP, Achievements, Rebirth Coins<br>
-                        <strong style="color:var(--danger)">You'll lose:</strong> Cash, Stocks, Crypto, Properties, Companies
-                    </div>
-                    
-                    <div style="display:flex;gap:0.75rem">
-                        <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()" style="flex:1">Cancel</button>
-                        <button class="btn btn-primary" onclick="doRebirth();this.closest('.modal-overlay').remove()" style="flex:1">Rebirth Now!</button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-        }
-
-        function doRebirth() {
-            const req = getRebirthRequirement();
-            if (state.player.cash < req) {
-                showToast('Insufficient Funds', `Need $${formatNum(req)} to rebirth`, 'danger');
-                return;
-            }
-            
-            // Check rebirth cooldown (1 per day)
-            const lastRebirth = state.player.lastRebirthDay || 0;
-            if (state.player.day - lastRebirth < 1) {
-                showToast('Rebirth Cooldown', 'You can only rebirth once per day!', 'warning');
-                return;
-            }
-            
-            const nw = calcNetWorth();
-            const coins = 1; // Fixed 1 coin per rebirth
-            const newRebirthCount = (state.player.rebirthCount || 0) + 1;
-            const newRebirthCoins = (state.player.rebirthCoins || 0) + coins;
-            
-            // Keep these
-            const keepLevel = state.player.level;
-            const keepExp = state.player.exp;
-            const keepAchievements = state.player.achievements || [];
-            
-            // Reset everything
-            state.player.cash = 5000;
-            state.player.portfolio = {};
-            state.player.cryptoPortfolio = {};
-            state.player.companies = [];
-            state.player.properties = [];
-            state.player.lifestyle = [];
-            state.player.countriesOwned = [];
-            state.player.planets = [];
-            state.player.debt = 0;
-            state.player.career = null;
-            state.player.salary = 0;
-            state.player.day = 1;
-            state.player.loans = [];
-            state.player.clubBalance = 0;
-            state.player.clubPaid = false;
-            state.player.aiBots = [];
-            
-            // Restore persistent
-            state.player.level = keepLevel;
-            state.player.exp = keepExp;
-            state.player.achievements = keepAchievements;
-            state.player.rebirthCount = newRebirthCount;
-            state.player.rebirthCoins = newRebirthCoins;
-            state.player.lastRebirthDay = state.player.day;
-            
-            showToast('🎉 REBIRTH COMPLETE!', `+${coins} Rebirth Coins! Total: ${newRebirthCoins} 🪙`, 'success');
-            addActivity('Rebirth', `Started fresh with ${coins} coins!`, 'success');
-            saveGame();
-            updateUI();
         }
 
     </script>
