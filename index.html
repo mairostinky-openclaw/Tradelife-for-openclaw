@@ -3501,6 +3501,10 @@ What is your experience?"></textarea></div>
                 if (!state.player.countriesOwned) state.player.countriesOwned = [];
                 if (state.player.planetOwned === undefined) state.player.planetOwned = false;
                 if (!state.player.planets) state.player.planets = [];
+                // Rebirth fields - initialize if not exist
+                if (state.player.rebirthCount === undefined) state.player.rebirthCount = 0;
+                if (state.player.rebirthCoins === undefined) state.player.rebirthCoins = 0;
+                if (state.player.lastRebirthDay === undefined) state.player.lastRebirthDay = 0;
                 // Fill missing prices
                 STOCKS.forEach(s => {
                     if (!state.stockPrices[s.ticker]) state.stockPrices[s.ticker] = s.basePrice;
