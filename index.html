@@ -3037,7 +3037,8 @@ What is your experience?"></textarea></div>
                 planetOwned: false,
                 planets: [],
                 rebirthCount: 0,
-                rebirthCoins: 0
+                rebirthCoins: 0,
+                lastRebirthDay: 0
             },
             stockPrices: {},
             cryptoPrices: {},
@@ -10035,6 +10036,13 @@ What is your experience?"></textarea></div>
                 return;
             }
             
+            // Check rebirth cooldown (1 per day)
+            const lastRebirth = state.player.lastRebirthDay || 0;
+            if (state.player.day - lastRebirth < 1) {
+                showToast('Rebirth Cooldown', 'You can only rebirth once per day!', 'warning');
+                return;
+            }
+            
             const nw = calcNetWorth();
             const coins = Math.floor(nw / 100000000000);
             const newRebirthCount = (state.player.rebirthCount || 0) + 1;
@@ -10066,6 +10074,7 @@ What is your experience?"></textarea></div>
             state.player.achievements = keepAchievements;
             state.player.rebirthCount = newRebirthCount;
             state.player.rebirthCoins = newRebirthCoins;
+            state.player.lastRebirthDay = state.player.day;
             
             showToast('🎉 REBIRTH COMPLETE!', `+${coins} Rebirth Coins! Total: ${newRebirthCoins} 🪙`, 'success');
             addActivity('Rebirth', `Started fresh with ${coins} coins!`, 'success');
