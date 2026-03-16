@@ -9988,6 +9988,12 @@ What is your experience?"></textarea></div>
         }
 
         function openRebirthModal() {
+            // Check if game is started
+            if (!state.player || !state.player.day) {
+                showToast('Error', 'Start a game first!', 'danger');
+                return;
+            }
+            
             const req = getRebirthRequirement();
             const nw = calcNetWorth();
             const potentialCoins = Math.floor(nw / 100000000000);
