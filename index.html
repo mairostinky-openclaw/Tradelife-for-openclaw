@@ -782,6 +782,7 @@
                 <div class="nav-item" onclick="switchTab('education')">Education</div>
                 <div class="nav-item" onclick="switchTab('achievements')">Achievements</div>
                 <div class="nav-item" onclick="switchTab('aibot')" style="color:#a855f7">AI Invest Bot</div>
+                <div class="nav-item" onclick="openRebirthModal()" style="color:#f59e0b">🔄 Rebirth</div>
                 <div class="nav-item" id="club-nav-item" onclick="switchTab('club')" style="color:#f59e0b">The Club 🔒</div>
                 <div class="nav-item" onclick="switchTab('leaderboard')" style="color:var(--warning)">Leaderboard</div>
                 <div class="nav-item" onclick="switchTab('search')" style="color:#38bdf8">Search Players</div>
@@ -794,6 +795,7 @@
                 <div class="stat-row"><span class="stat-label">Net Worth</span><span class="stat-value" id="stat-networth">$0</span></div>
                 <div class="stat-row"><span class="stat-label">Day</span><span class="stat-value" id="stat-day">1</span></div>
                 <div class="stat-row"><span class="stat-label">Day Timer</span><span class="stat-value" id="stat-timer">5:00</span></div>
+                <div class="stat-row" id="rebirth-stats" style="display:none"><span class="stat-label">🪙 Rebirth</span><span class="stat-value" id="stat-rebirth-coins" style="color:#f59e0b">0</span></div>
             </div>
         </div>
 
@@ -3033,7 +3035,9 @@ What is your experience?"></textarea></div>
                 clubPaid: false,
                 countriesOwned: [],
                 planetOwned: false,
-                planets: []
+                planets: [],
+                rebirthCount: 0,
+                rebirthCoins: 0
             },
             stockPrices: {},
             cryptoPrices: {},
@@ -4822,6 +4826,15 @@ What is your experience?"></textarea></div>
             if (skipCostEl) {
                 const fee = Math.round(cash * 0.10);
                 skipCostEl.textContent = '$' + formatNum(fee);
+            }
+            // Update rebirth stats
+            const rebirthStats = document.getElementById('rebirth-stats');
+            const rebirthCoins = document.getElementById('stat-rebirth-coins');
+            if (state.player.rebirthCount > 0) {
+                rebirthStats.style.display = 'flex';
+                rebirthCoins.textContent = (state.player.rebirthCoins || 0) + ' 🪙';
+            } else {
+                rebirthStats.style.display = 'none';
             }
         }
 
@@ -9966,6 +9979,98 @@ What is your experience?"></textarea></div>
                 if (sidebarCash) sidebarCash.textContent = '$' + formatNum(state.player.cash);
                 if (sidebarNW) sidebarNW.textContent = '$' + formatNum(calcNetWorth());
             });
+        }
+
+        // ===================== REBIRTH SYSTEM =====================
+        function getRebirthRequirement() {
+            return Math.floor(500000 * Math.pow(1.5, state.player.rebirthCount || 0));
+        }
+
+        function openRebirthModal() {
+            const req = getRebirthRequirement();
+            const nw = calcNetWorth();
+            const potentialCoins = Math.floor(nw / 1000000);
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width:450px;text-align:center">
+                    <div style="font-size:4rem;margin-bottom:1rem">🔄</div>
+                    <h2 style="color:var(--brand);margin-bottom:0.5rem">REBIRTH</h2>
+                    <p style="color:var(--text-muted);margin-bottom:1.5rem">Start fresh with $5,000 but keep your achievements & level!</p>
+                    
+                    <div style="background:var(--bg-panel);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:1rem">
+                        <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem">
+                            <span style="color:var(--text-muted)">Current Net Worth</span>
+                            <span style="font-weight:700;color:var(--brand)">$${formatNum(nw)}</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem">
+                            <span style="color:var(--text-muted)">Rebirth Cost</span>
+                            <span style="font-weight:700;color:var(--danger)">$${formatNum(req)}</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between">
+                            <span style="color:var(--text-muted)">Potential Coins</span>
+                            <span style="font-weight:700;color:var(--success)">+${potentialCoins} 🪙</span>
+                        </div>
+                    </div>
+                    
+                    <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:8px;padding:0.75rem;margin-bottom:1.5rem;font-size:0.8rem;color:var(--text-muted)">
+                        <strong style="color:var(--warning)">You'll keep:</strong> Level, XP, Achievements, Rebirth Coins<br>
+                        <strong style="color:var(--danger)">You'll lose:</strong> Cash, Stocks, Crypto, Properties, Companies
+                    </div>
+                    
+                    <div style="display:flex;gap:0.75rem">
+                        <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()" style="flex:1">Cancel</button>
+                        <button class="btn btn-primary" onclick="doRebirth();this.closest('.modal-overlay').remove()" style="flex:1" ${state.player.cash < req ? 'disabled' : ''}>Rebirth!</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function doRebirth() {
+            const req = getRebirthRequirement();
+            if (state.player.cash < req) {
+                showToast('Insufficient Funds', `Need $${formatNum(req)} to rebirth`, 'danger');
+                return;
+            }
+            
+            const nw = calcNetWorth();
+            const coins = Math.floor(nw / 1000000);
+            const newRebirthCount = (state.player.rebirthCount || 0) + 1;
+            const newRebirthCoins = (state.player.rebirthCoins || 0) + coins;
+            
+            // Keep these
+            const keepLevel = state.player.level;
+            const keepExp = state.player.exp;
+            const keepAchievements = state.player.achievements || [];
+            
+            // Reset everything
+            state.player.cash = 5000;
+            state.player.portfolio = {};
+            state.player.cryptoPortfolio = {};
+            state.player.companies = [];
+            state.player.properties = [];
+            state.player.lifestyle = [];
+            state.player.countriesOwned = [];
+            state.player.planets = [];
+            state.player.debt = 0;
+            state.player.career = null;
+            state.player.salary = 0;
+            state.player.day = 1;
+            state.player.loans = [];
+            
+            // Restore persistent
+            state.player.level = keepLevel;
+            state.player.exp = keepExp;
+            state.player.achievements = keepAchievements;
+            state.player.rebirthCount = newRebirthCount;
+            state.player.rebirthCoins = newRebirthCoins;
+            
+            showToast('🎉 REBIRTH COMPLETE!', `+${coins} Rebirth Coins! Total: ${newRebirthCoins} 🪙`, 'success');
+            addActivity('Rebirth', `Started fresh with ${coins} coins!`, 'success');
+            saveGame();
+            updateUI();
         }
 
     </script>
