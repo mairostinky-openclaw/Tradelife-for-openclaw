@@ -795,7 +795,7 @@
                 <div class="stat-row"><span class="stat-label">Net Worth</span><span class="stat-value" id="stat-networth">$0</span></div>
                 <div class="stat-row"><span class="stat-label">Day</span><span class="stat-value" id="stat-day">1</span></div>
                 <div class="stat-row"><span class="stat-label">Day Timer</span><span class="stat-value" id="stat-timer">5:00</span></div>
-                <div class="stat-row" id="rebirth-stats" style="display:none"><span class="stat-label">🪙 Rebirth</span><span class="stat-value" id="stat-rebirth-coins" style="color:#f59e0b">0</span></div>
+                <div class="stat-row" id="rebirth-stats"><span class="stat-label">🪙 Rebirth Coins</span><span class="stat-value" id="stat-rebirth-coins" style="color:#f59e0b">0</span></div>
             </div>
         </div>
 
@@ -4832,14 +4832,12 @@ What is your experience?"></textarea></div>
                 const fee = Math.round(cash * 0.10);
                 skipCostEl.textContent = '$' + formatNum(fee);
             }
-            // Update rebirth stats
+            // Update rebirth stats - always show
             const rebirthStats = document.getElementById('rebirth-stats');
             const rebirthCoins = document.getElementById('stat-rebirth-coins');
-            if (state.player.rebirthCount > 0) {
+            if (rebirthStats && rebirthCoins) {
                 rebirthStats.style.display = 'flex';
                 rebirthCoins.textContent = (state.player.rebirthCoins || 0) + ' 🪙';
-            } else {
-                rebirthStats.style.display = 'none';
             }
         }
 
