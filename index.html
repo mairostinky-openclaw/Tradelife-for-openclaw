@@ -9983,13 +9983,13 @@ What is your experience?"></textarea></div>
 
         // ===================== REBIRTH SYSTEM =====================
         function getRebirthRequirement() {
-            return Math.floor(500000 * Math.pow(1.5, state.player.rebirthCount || 0));
+            return Math.floor(100000000000000 * Math.pow(1.5, state.player.rebirthCount || 0));
         }
 
         function openRebirthModal() {
             const req = getRebirthRequirement();
             const nw = calcNetWorth();
-            const potentialCoins = Math.floor(nw / 1000000);
+            const potentialCoins = Math.floor(nw / 100000000000);
             
             const modal = document.createElement('div');
             modal.className = 'modal-overlay';
@@ -10036,7 +10036,7 @@ What is your experience?"></textarea></div>
             }
             
             const nw = calcNetWorth();
-            const coins = Math.floor(nw / 1000000);
+            const coins = Math.floor(nw / 100000000000);
             const newRebirthCount = (state.player.rebirthCount || 0) + 1;
             const newRebirthCoins = (state.player.rebirthCoins || 0) + coins;
             
