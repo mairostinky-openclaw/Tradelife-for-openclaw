@@ -9992,9 +9992,6 @@ What is your experience?"></textarea></div>
         }
 
         function openRebirthModal() {
-            console.log('Rebirth clicked!', state.player);
-            alert('Rebirth clicked! Player: ' + JSON.stringify(state.player));
-            
             // Check if game is started
             if (!state.player) {
                 showToast('Error', 'Start or load a game first!', 'danger');
@@ -10009,6 +10006,8 @@ What is your experience?"></textarea></div>
             }
             
             const req = getRebirthRequirement();
+            const playerCash = state.player.cash || 0;
+            const canAfford = playerCash >= req;
             const nw = calcNetWorth();
             const potentialCoins = Math.floor(nw / 100000000000);
             
@@ -10042,7 +10041,7 @@ What is your experience?"></textarea></div>
                     
                     <div style="display:flex;gap:0.75rem">
                         <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()" style="flex:1">Cancel</button>
-                        <button class="btn btn-primary" onclick="doRebirth();this.closest('.modal-overlay').remove()" style="flex:1" ${state.player.cash < req ? 'disabled' : ''}>Rebirth!</button>
+                        <button class="btn btn-primary" onclick="doRebirth();this.closest('.modal-overlay').remove()" style="flex:1">Rebirth Now!</button>
                     </div>
                 </div>
             `;
