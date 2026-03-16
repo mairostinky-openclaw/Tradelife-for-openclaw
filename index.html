@@ -9992,6 +9992,9 @@ What is your experience?"></textarea></div>
         }
 
         function openRebirthModal() {
+            console.log('Rebirth clicked!', state.player);
+            alert('Rebirth clicked! Player: ' + JSON.stringify(state.player));
+            
             // Check if game is started
             if (!state.player) {
                 showToast('Error', 'Start or load a game first!', 'danger');
