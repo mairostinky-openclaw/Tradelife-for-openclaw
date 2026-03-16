@@ -9993,9 +9993,16 @@ What is your experience?"></textarea></div>
 
         function openRebirthModal() {
             // Check if game is started
-            if (!state.player || !state.player.day) {
-                showToast('Error', 'Start a game first!', 'danger');
+            if (!state.player) {
+                showToast('Error', 'Start or load a game first!', 'danger');
                 return;
+            }
+            if (!state.player.day) {
+                // Try to initialize day
+                state.player.day = state.player.day || 1;
+            }
+            if (!state.player.cash) {
+                state.player.cash = 5000;
             }
             
             const req = getRebirthRequirement();
