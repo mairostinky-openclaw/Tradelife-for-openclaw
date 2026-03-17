@@ -11202,6 +11202,112 @@ What is your experience?"></textarea></div>
             });
         }
 
+        // ===================== REBIRTH SYSTEM =====================
+        function getRebirthCost() {
+            // Base cost: 1M, doubles each rebirth
+            return 1000000 * Math.pow(2, state.player.rebirthCount || 0);
+        }
+
+        function showRebirthModal() {
+            const cost = getRebirthCost();
+            const modal = document.getElementById('rebirth-modal') || createRebirthModal();
+            document.getElementById('rebirth-cost').textContent = '$' + formatNum(cost);
+            document.getElementById('rebirth-coins').textContent = state.player.rebirthCoins || 0;
+            document.getElementById('rebirth-count').textContent = state.player.rebirthCount || 0;
+            modal.classList.remove('hidden');
+        }
+
+        function createRebirthModal() {
+            const modal = document.createElement('div');
+            modal.id = 'rebirth-modal';
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">🔄 Rebirth</div>
+                    <div style="text-align:center;margin:1.5rem 0">
+                        <div style="font-size:3rem;margin-bottom:1rem">🪙</div>
+                        <div style="font-size:1.5rem;font-weight:700;margin-bottom:0.5rem">Ready for a Fresh Start?</div>
+                        <div style="color:var(--text-muted);margin-bottom:1.5rem">Give up all your money to earn a Rebirth Coin!</div>
+                        <div style="background:var(--bg-panel);padding:1rem;border-radius:8px;margin-bottom:1rem">
+                            <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem">
+                                <span>Current Rebirth Coins:</span>
+                                <span style="font-weight:700;color:var(--warning)" id="rebirth-coins">0</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem">
+                                <span>Rebirth Count:</span>
+                                <span style="font-weight:700;color:var(--brand)" id="rebirth-count">0</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between">
+                                <span>Cost to Rebirth:</span>
+                                <span style="font-weight:700;color:var(--danger)" id="rebirth-cost">$0</span>
+                            </div>
+                        </div>
+                        <div style="color:var(--text-muted);font-size:0.85rem">
+                            ⚠️ After rebirth: Money becomes $5,000<br>
+                            ✅ Achievements & Level kept<br>
+                            🪙 Earn 1 Rebirth Coin per rebirth
+                        </div>
+                    </div>
+                    <div class="modal-buttons">
+                        <button class="btn btn-secondary" onclick="document.getElementById('rebirth-modal').classList.add('hidden')">Cancel</button>
+                        <button class="btn btn-warning" onclick="doRebirth()" style="background:var(--warning)">🔄 Rebirth</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            return modal;
+        }
+
+        function doRebirth() {
+            const cost = getRebirthCost();
+            if (state.player.cash < cost) {
+                showToast('Cannot Rebirth', `Need $${formatNum(cash)} to rebirth`, 'danger');
+                return;
+            }
+            // Reset but keep achievements and level
+            const oldAchievements = state.player.achievements || [];
+            const oldLevel = state.player.level || 1;
+            const oldExp = state.player.exp || 0;
+            const oldRebirthCoins = state.player.rebirthCoins || 0;
+            const oldRebirthCount = state.player.rebirthCount || 0;
+            
+            // Reset player
+            state.player.cash = 5000;
+            state.player.debt = 0;
+            state.player.credit = 650;
+            state.player.career = null;
+            state.player.salary = 0;
+            state.player.companies = [];
+            state.player.properties = [];
+            state.player.lifestyle = [];
+            state.player.loans = [];
+            state.player.portfolio = {};
+            state.player.cryptoPortfolio = {};
+            state.player.aiBots = [];
+            state.player.clubBalance = 0;
+            state.player.clubPaid = false;
+            state.player.countriesOwned = [];
+            state.player.planetOwned = false;
+            state.player.planets = [];
+            state.player.reputation = 100;
+            state.player.incubator = [];
+            state.player.takeovers = [];
+            
+            // Restore achievements and level
+            state.player.achievements = oldAchievements;
+            state.player.level = oldLevel;
+            state.player.exp = oldExp;
+            
+            // Add rebirth coin and increment count
+            state.player.rebirthCoins = oldRebirthCoins + 1;
+            state.player.rebirthCount = oldRebirthCount + 1;
+            
+            document.getElementById('rebirth-modal').classList.add('hidden');
+            showToast('Rebirth Complete!', `🪙 You now have ${state.player.rebirthCoins} Rebirth Coin(s)!`, 'success');
+            saveGame();
+            updateUI();
+        }
+
     </script>
     <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.0.1</div>
 </body>
