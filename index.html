@@ -11334,13 +11334,14 @@ What is your experience?"></textarea></div>
             state.player.exp = oldExp;
             
             // Add rebirth coin and increment count
-            state.player.rebirthCoins = oldRebirthCoins + 1;
-            state.player.rebirthCount = oldRebirthCount + 1;
+            state.player.rebirthCoins = (oldRebirthCoins || 0) + 1;
+            state.player.rebirthCount = (oldRebirthCount || 0) + 1;
             
             document.getElementById('rebirth-modal').classList.add('hidden');
             showToast('Rebirth Complete!', `🪙 You now have ${state.player.rebirthCoins} Rebirth Coin(s)!`, 'success');
             saveGame();
             updateUI();
+            renderRebirthUI();
         }
 
     </script>
