@@ -1664,6 +1664,17 @@ What is your experience?"></textarea></div>
                     <!-- Left: Avatar & Display Name -->
                     <div class="widget">
                         <h3 style="margin-bottom:1.5rem">Your Profile</h3>
+                        <!-- Rebirth Button -->
+                        <div style="background:linear-gradient(135deg,#8b5cf6,#6366f1);border-radius:12px;padding:1rem;margin-bottom:1.5rem;text-align:center">
+                            <div style="font-size:1.5rem;margin-bottom:0.5rem">🔄</div>
+                            <div style="font-weight:700;font-size:1.1rem;margin-bottom:0.25rem;color:white">Rebirth System</div>
+                            <div style="font-size:0.8rem;color:rgba(255,255,255,0.8);margin-bottom:0.75rem">Start fresh, keep achievements!</div>
+                            <div style="display:flex;justify-content:space-around;font-size:0.8rem;color:white;margin-bottom:0.75rem">
+                                <div><div style="font-weight:700;font-size:1rem" id="profile-rebirth-coins">0</div><div>🪙 Coins</div></div>
+                                <div><div style="font-weight:700;font-size:1rem" id="profile-rebirth-count">0</div><div>🔄 Times</div></div>
+                            </div>
+                            <button class="btn" onclick="showRebirthModal()" style="width:100%;background:white;color:#8b5cf6;font-weight:700">🔄 Rebirth Now</button>
+                        </div>
                         <!-- Avatar -->
                         <div style="text-align:center;margin-bottom:1.5rem">
                             <div id="profile-avatar-display" style="font-size:4rem;margin-bottom:0.75rem;cursor:pointer;width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;overflow:hidden;background:var(--bg-panel);border:2px solid var(--border)" onclick="toggleAvatarPicker()">🧑</div>
@@ -7616,6 +7627,11 @@ What is your experience?"></textarea></div>
             el('profile-stat-level', state.player.level);
             el('profile-stat-clout', state.player.clout);
             el('profile-stat-xp', formatNum(state.player.exp));
+            // Update rebirth stats in profile
+            const rebirthCoinsEl = document.getElementById('profile-rebirth-coins');
+            const rebirthCountEl = document.getElementById('profile-rebirth-count');
+            if (rebirthCoinsEl) rebirthCoinsEl.textContent = state.player.rebirthCoins || 0;
+            if (rebirthCountEl) rebirthCountEl.textContent = state.player.rebirthCount || 0;
             // Render badges
             if (typeof renderProfileBadges === 'function') renderProfileBadges();
         }
