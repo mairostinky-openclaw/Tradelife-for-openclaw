@@ -3818,6 +3818,9 @@ What is your experience?"></textarea></div>
                 state.cryptoHistory = data.cryptoHistory || {};
                 state.bannedFromIPO = data.bannedFromIPO || [];
                 
+                // Fix rebirth stats
+                fixRebirthStats();
+                
                 // Ensure all required fields exist (migration safety)
                 if (!state.player.portfolio) state.player.portfolio = {};
                 if (!state.player.cryptoPortfolio) state.player.cryptoPortfolio = {};
@@ -3921,6 +3924,8 @@ What is your experience?"></textarea></div>
                 state.stockHistory = data.stockHistory || {};
                 state.cryptoHistory = data.cryptoHistory || {};
                 state.bannedFromIPO = data.bannedFromIPO || [];
+                // Fix rebirth stats
+                fixRebirthStats();
                 // Migration safety
                 if (!state.player.portfolio) state.player.portfolio = {};
                 if (!state.player.cryptoPortfolio) state.player.cryptoPortfolio = {};
