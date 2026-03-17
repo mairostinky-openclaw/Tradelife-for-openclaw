@@ -8433,6 +8433,14 @@ What is your experience?"></textarea></div>
             });
         }
 
+        // Helper function for Max buttons in club games
+        function setMaxBet(inputId) {
+            const input = document.getElementById(inputId);
+            if (input && state.player && state.player.clubBalance !== undefined) {
+                input.value = state.player.clubBalance || 0;
+            }
+        }
+
         // ===================== THE CLUB =====================
         // const CLUB_UNLOCK_AMOUNT = 500000000; // No longer needed - removed net worth requirement
         const CLUB_ENTRY_FEE = 1000000000000; // 1 Trillion one-time membership fee
@@ -8571,7 +8579,7 @@ What is your experience?"></textarea></div>
                         <input type="number" id="bj-bet-input" placeholder="Bet amount" min="100">
                         <span>$</span>
                     </div>
-                    <button class="btn btn-secondary" onclick="document.getElementById('bj-bet-input').value = state.player.clubBalance || 0" style="font-size:0.8rem;padding:0.5rem 0.75rem">Max</button>
+                    <button class="btn btn-secondary" onclick="setMaxBet('bj-bet-input')" style="font-size:0.8rem;padding:0.5rem 0.75rem">Max</button>
                     <button class="btn btn-success" id="bj-deal-btn" onclick="bjDeal()">Deal</button>
                     <button class="btn btn-primary" id="bj-hit-btn" onclick="bjHit()" style="display:none">Hit</button>
                     <button class="btn btn-secondary" id="bj-stand-btn" onclick="bjStand()" style="display:none">Stand</button>
@@ -8678,7 +8686,7 @@ What is your experience?"></textarea></div>
                         <input type="number" id="slot-bet-input" placeholder="Bet" min="100">
                         <span>$</span>
                     </div>
-                    <button class="btn btn-secondary" onclick="document.getElementById('slot-bet-input').value = state.player.clubBalance || 0" style="font-size:0.8rem;padding:0.5rem 0.75rem">Max</button>
+                    <button class="btn btn-secondary" onclick="setMaxBet('slot-bet-input')" style="font-size:0.8rem;padding:0.5rem 0.75rem">Max</button>
                     <button class="btn btn-warning" onclick="spinSlots()" style="background:var(--warning);color:#000;font-size:1rem;padding:0.75rem 2rem">🎰 SPIN!</button>
                 </div>
                 <div style="margin-top:1rem;font-size:0.75rem;color:var(--text-muted)">
@@ -8748,7 +8756,7 @@ What is your experience?"></textarea></div>
                         <input type="number" id="roulette-bet-input" placeholder="Bet amount" min="100">
                         <span>$</span>
                     </div>
-                    <button class="btn btn-secondary" onclick="document.getElementById('roulette-bet-input').value = state.player.clubBalance || 0" style="font-size:0.8rem;padding:0.5rem 0.75rem">Max</button>
+                    <button class="btn btn-secondary" onclick="setMaxBet('roulette-bet-input')" style="font-size:0.8rem;padding:0.5rem 0.75rem">Max</button>
                 </div>
                 <div id="roulette-status" style="margin-top:0.75rem;font-weight:700;min-height:1.5rem"></div>
             </div>`;
@@ -8813,7 +8821,7 @@ What is your experience?"></textarea></div>
                         <input type="number" id="dice-bet-input" placeholder="Bet amount" min="100">
                         <span>$</span>
                     </div>
-                    <button class="btn btn-secondary" onclick="document.getElementById('dice-bet-input').value = state.player.clubBalance || 0" style="font-size:0.8rem;padding:0.5rem 0.75rem">Max</button>
+                    <button class="btn btn-secondary" onclick="setMaxBet('dice-bet-input')" style="font-size:0.8rem;padding:0.5rem 0.75rem">Max</button>
                 </div>
             </div>`;
         }
@@ -8869,7 +8877,7 @@ What is your experience?"></textarea></div>
                         <input type="number" id="hilo-bet-input" placeholder="Bet amount" min="100">
                         <span>$</span>
                     </div>
-                    <button class="btn btn-secondary" onclick="document.getElementById('hilo-bet-input').value = state.player.clubBalance || 0" style="font-size:0.8rem;padding:0.5rem 0.75rem">Max</button>
+                    <button class="btn btn-secondary" onclick="setMaxBet('hilo-bet-input')" style="font-size:0.8rem;padding:0.5rem 0.75rem">Max</button>
                 </div>
             </div>`;
         }
@@ -8924,7 +8932,7 @@ What is your experience?"></textarea></div>
                         <input type="number" id="crash-bet-input" placeholder="Bet" min="100">
                         <span>$</span>
                     </div>
-                    <button class="btn btn-secondary" onclick="document.getElementById('crash-bet-input').value = state.player.clubBalance || 0" style="font-size:0.8rem;padding:0.5rem 0.75rem">Max</button>
+                    <button class="btn btn-secondary" onclick="setMaxBet('crash-bet-input')" style="font-size:0.8rem;padding:0.5rem 0.75rem">Max</button>
                     <button class="btn btn-success" id="crash-start-btn" onclick="crashStart()">🚀 Start</button>
                     <button class="btn btn-warning" id="crash-cashout-btn" onclick="crashCashOut()" style="display:none;background:var(--warning);color:#000">💰 Cash Out</button>
                 </div>
