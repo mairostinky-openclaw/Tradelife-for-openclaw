@@ -8489,6 +8489,11 @@ What is your experience?"></textarea></div>
             document.getElementById('amount-modal-title').textContent = 'Deposit to Club';
             document.getElementById('amount-modal-desc').textContent = `Cash: $${formatNum(state.player.cash)}. Deposit to play at The Club.`;
             document.getElementById('amount-modal-input').value = '';
+            const maxBtn = document.getElementById('amount-modal-max-btn');
+            maxBtn.textContent = 'Max Put';
+            maxBtn.onclick = () => {
+                document.getElementById('amount-modal-input').value = state.player.cash || 0;
+            };
             const btn = document.getElementById('amount-modal-confirm');
             btn.onclick = () => {
                 const amt = parseMoneyInput(document.getElementById('amount-modal-input').value);
@@ -8507,6 +8512,11 @@ What is your experience?"></textarea></div>
             document.getElementById('amount-modal-title').textContent = 'Withdraw from Club';
             document.getElementById('amount-modal-desc').textContent = `Club Balance: $${formatNum(state.player.clubBalance)}`;
             document.getElementById('amount-modal-input').value = '';
+            const maxBtn = document.getElementById('amount-modal-max-btn');
+            maxBtn.textContent = 'Max Put';
+            maxBtn.onclick = () => {
+                document.getElementById('amount-modal-input').value = state.player.clubBalance || 0;
+            };
             const btn = document.getElementById('amount-modal-confirm');
             btn.onclick = () => {
                 const amt = parseMoneyInput(document.getElementById('amount-modal-input').value);
