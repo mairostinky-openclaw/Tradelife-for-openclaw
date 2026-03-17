@@ -8678,7 +8678,7 @@ What is your experience?"></textarea></div>
                         <input type="number" id="slot-bet-input" placeholder="Bet" min="100">
                         <span>$</span>
                     </div>
-                    <button class="btn btn-secondary" onclick="document.getElementById('slot-bet-input').value=state.player.clubBalance" style="font-size:0.8rem;padding:0.5rem 0.75rem">Max</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('slot-bet-input').value = state.player.clubBalance || 0" style="font-size:0.8rem;padding:0.5rem 0.75rem">Max</button>
                     <button class="btn btn-warning" onclick="spinSlots()" style="background:var(--warning);color:#000;font-size:1rem;padding:0.75rem 2rem">🎰 SPIN!</button>
                 </div>
                 <div style="margin-top:1rem;font-size:0.75rem;color:var(--text-muted)">
@@ -8748,7 +8748,7 @@ What is your experience?"></textarea></div>
                         <input type="number" id="roulette-bet-input" placeholder="Bet amount" min="100">
                         <span>$</span>
                     </div>
-                    <button class="btn btn-secondary" onclick="document.getElementById('roulette-bet-input').value = state.player.clubBalance" style="font-size:0.8rem;padding:0.5rem 0.75rem">Max</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('roulette-bet-input').value = state.player.clubBalance || 0" style="font-size:0.8rem;padding:0.5rem 0.75rem">Max</button>
                 </div>
                 <div id="roulette-status" style="margin-top:0.75rem;font-weight:700;min-height:1.5rem"></div>
             </div>`;
@@ -8813,7 +8813,7 @@ What is your experience?"></textarea></div>
                         <input type="number" id="dice-bet-input" placeholder="Bet amount" min="100">
                         <span>$</span>
                     </div>
-                    <button class="btn btn-secondary" onclick="document.getElementById('dice-bet-input').value=state.player.clubBalance" style="font-size:0.8rem;padding:0.5rem 0.75rem">Max</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('dice-bet-input').value = state.player.clubBalance || 0" style="font-size:0.8rem;padding:0.5rem 0.75rem">Max</button>
                 </div>
             </div>`;
         }
@@ -8869,7 +8869,7 @@ What is your experience?"></textarea></div>
                         <input type="number" id="hilo-bet-input" placeholder="Bet amount" min="100">
                         <span>$</span>
                     </div>
-                    <button class="btn btn-secondary" onclick="document.getElementById('hilo-bet-input').value=state.player.clubBalance" style="font-size:0.8rem;padding:0.5rem 0.75rem">Max</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('hilo-bet-input').value = state.player.clubBalance || 0" style="font-size:0.8rem;padding:0.5rem 0.75rem">Max</button>
                 </div>
             </div>`;
         }
@@ -8924,7 +8924,7 @@ What is your experience?"></textarea></div>
                         <input type="number" id="crash-bet-input" placeholder="Bet" min="100">
                         <span>$</span>
                     </div>
-                    <button class="btn btn-secondary" onclick="document.getElementById('crash-bet-input').value=state.player.clubBalance" style="font-size:0.8rem;padding:0.5rem 0.75rem">Max</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('crash-bet-input').value = state.player.clubBalance || 0" style="font-size:0.8rem;padding:0.5rem 0.75rem">Max</button>
                     <button class="btn btn-success" id="crash-start-btn" onclick="crashStart()">🚀 Start</button>
                     <button class="btn btn-warning" id="crash-cashout-btn" onclick="crashCashOut()" style="display:none;background:var(--warning);color:#000">💰 Cash Out</button>
                 </div>
