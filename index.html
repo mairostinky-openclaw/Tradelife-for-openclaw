@@ -8485,6 +8485,14 @@ What is your experience?"></textarea></div>
             if (el) el.textContent = '$' + formatNum(state.player.clubBalance || 0);
         }
 
+        // Ensure rebirth stats are always numbers
+        function fixRebirthStats() {
+            if (state.player) {
+                if (typeof state.player.rebirthCoins !== 'number') state.player.rebirthCoins = 0;
+                if (typeof state.player.rebirthCount !== 'number') state.player.rebirthCount = 0;
+            }
+        }
+
         function clubDeposit() {
             document.getElementById('amount-modal-title').textContent = 'Deposit to Club';
             document.getElementById('amount-modal-desc').textContent = `Cash: $${formatNum(state.player.cash)}. Deposit to play at The Club.`;
@@ -11346,6 +11354,9 @@ What is your experience?"></textarea></div>
             // Add rebirth coin and increment count
             state.player.rebirthCoins = (oldRebirthCoins || 0) + 1;
             state.player.rebirthCount = (oldRebirthCount || 0) + 1;
+            
+            // Ensure rebirth stats are numbers
+            fixRebirthStats();
             
             document.getElementById('rebirth-modal').classList.add('hidden');
             showToast('Rebirth Complete!', `🪙 You now have ${state.player.rebirthCoins} Rebirth Coin(s)!`, 'success');
