@@ -3422,6 +3422,7 @@ What is your experience?"></textarea></div>
                 day: 1,
                 rebirthCoins: 0,
                 rebirthCount: 0,
+                achievements: [],
                 career: null,
                 salary: 0,
                 certifications: [],
@@ -7639,6 +7640,9 @@ What is your experience?"></textarea></div>
             const rebirthCountEl = document.getElementById('profile-rebirth-count');
             if (rebirthCoinsEl) rebirthCoinsEl.textContent = state.player.rebirthCoins || 0;
             if (rebirthCountEl) rebirthCountEl.textContent = state.player.rebirthCount || 0;
+            // Update rebirth stats in sidebar
+            const sidebarRebirthEl = document.getElementById('stat-rebirth');
+            if (sidebarRebirthEl) sidebarRebirthEl.textContent = (state.player.rebirthCoins || 0) + ' coins';
             // Render badges
             if (typeof renderProfileBadges === 'function') renderProfileBadges();
         }
@@ -8470,7 +8474,7 @@ What is your experience?"></textarea></div>
 
         function updateClubBalanceDisplay() {
             const el = document.getElementById('club-balance-display');
-            if (el) el.textContent = '$' + formatNum(state.player.clubBalance);
+            if (el) el.textContent = '$' + formatNum(state.player.clubBalance || 0);
         }
 
         function clubDeposit() {
@@ -8567,7 +8571,7 @@ What is your experience?"></textarea></div>
                         <input type="number" id="bj-bet-input" placeholder="Bet amount" min="100">
                         <span>$</span>
                     </div>
-                    <button class="btn btn-secondary" onclick="document.getElementById('bj-bet-input').value=state.player.clubBalance" style="font-size:0.8rem;padding:0.5rem 0.75rem">Max</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('bj-bet-input').value = state.player.clubBalance || 0" style="font-size:0.8rem;padding:0.5rem 0.75rem">Max</button>
                     <button class="btn btn-success" id="bj-deal-btn" onclick="bjDeal()">Deal</button>
                     <button class="btn btn-primary" id="bj-hit-btn" onclick="bjHit()" style="display:none">Hit</button>
                     <button class="btn btn-secondary" id="bj-stand-btn" onclick="bjStand()" style="display:none">Stand</button>
@@ -8744,7 +8748,7 @@ What is your experience?"></textarea></div>
                         <input type="number" id="roulette-bet-input" placeholder="Bet amount" min="100">
                         <span>$</span>
                     </div>
-                    <button class="btn btn-secondary" onclick="document.getElementById('roulette-bet-input').value=state.player.clubBalance" style="font-size:0.8rem;padding:0.5rem 0.75rem">Max</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('roulette-bet-input').value = state.player.clubBalance" style="font-size:0.8rem;padding:0.5rem 0.75rem">Max</button>
                 </div>
                 <div id="roulette-status" style="margin-top:0.75rem;font-weight:700;min-height:1.5rem"></div>
             </div>`;
