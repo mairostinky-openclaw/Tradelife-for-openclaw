@@ -8032,7 +8032,8 @@ What is your experience?"></textarea></div>
                         </div>
                         <div style="background:var(--bg-panel);padding:0.5rem;border-radius:6px;text-align:center">
                             <div style="color:var(--text-muted)">Daily Return</div>
-                            <div style="font-weight:700;color:${bot.dailyReturn >= 0 ? 'var(--success)' : 'var(--danger)'}">${bot.dailyReturn >= 0 ? '+' : ''}${(bot.dailyReturn*100).toFixed(1)}%</div>
+                            <div style="font-weight:700;color:var(--success)">+${(bot.dailyReturn*100).toFixed(1)}%</div>
+                            <div style="font-weight:700;color:var(--danger)">-${(bot.maxLoss*100).toFixed(0)}%</div>
                         </div>
                     </div>
                     <button class="btn ${canAfford && !owned ? 'btn-primary' : 'btn-secondary'}" onclick="buyAIBot('${bot.id}')" style="width:100%;font-size:0.85rem" ${(!canAfford || owned) ? 'disabled' : ''}>
