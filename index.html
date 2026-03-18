@@ -4901,9 +4901,9 @@ What is your experience?"></textarea></div>
         function startPriceTicker() {
             if (state.priceTickerInterval) clearInterval(state.priceTickerInterval);
             state.priceTickerInterval = setInterval(() => {
-                // Only the Admin player ticks prices locally. 
-                // All other players get their prices synced from RTDB via startAdminMarketSync().
-                if (isAdmin()) {
+                // All players get price updates locally (prices change in real-time for everyone)
+                // Only Admin pushes to RTDB for global sync, but prices still update locally for all
+                if (true) {
                     // Update stock prices
                     STOCKS.forEach(s => {
                         // 30% chance of EXTREME per-second swings (2-10% per second)
