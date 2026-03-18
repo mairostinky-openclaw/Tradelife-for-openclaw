@@ -4229,6 +4229,8 @@ What is your experience?"></textarea></div>
             document.getElementById('setup-screen').classList.add('hidden');
             document.getElementById('app-layout').classList.remove('hidden');
             state.initialized = true;
+            // Reset prices to original base prices
+            initPrices();
             // Clear any existing timers before starting new ones
             if (state.dayTimerInterval) { clearInterval(state.dayTimerInterval); state.dayTimerInterval = null; }
             if (state.eventInterval) { clearInterval(state.eventInterval); state.eventInterval = null; }
@@ -11230,6 +11232,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.1.0</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.1.1</div>
 </body>
 </html>
