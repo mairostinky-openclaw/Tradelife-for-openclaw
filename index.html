@@ -4910,8 +4910,8 @@ What is your experience?"></textarea></div>
                 if (true) {
                     // Update stock prices
                     STOCKS.forEach(s => {
-                        // 5% chance of EXTREME per-3-second swings (2-10% per tick), 95% NORMAL
-                        const isExtreme = Math.random() < 0.05;
+                        // 30% chance of EXTREME per-3-second swings (2-10% per tick)
+                        const isExtreme = Math.random() < 0.30;
                         let volatility;
                         
                         if (isExtreme) {
@@ -4923,8 +4923,8 @@ What is your experience?"></textarea></div>
                             volatility = baseVol * (0.5 + Math.random());
                         }
                         
-                        // 60% UP, 40% DOWN
-                        const direction = Math.random() < 0.60 ? 1 : -1;
+                        // 50% UP, 50% DOWN
+                        const direction = Math.random() > 0.5 ? 1 : -1;
                         const change = state.stockPrices[s.ticker] * volatility * direction;
                         state.stockPrices[s.ticker] = Math.max(0.01, state.stockPrices[s.ticker] + change);
                         
@@ -4935,8 +4935,8 @@ What is your experience?"></textarea></div>
                     });
                     // Update crypto prices
                     CRYPTO_COINS.forEach(c => {
-                        // 5% chance of EXTREME per-3-second swings (2-10% per tick), 95% NORMAL
-                        const isExtreme = Math.random() < 0.05;
+                        // 30% chance of EXTREME per-3-second swings (2-10% per tick)
+                        const isExtreme = Math.random() < 0.30;
                         let vol;
 
                         if (isExtreme) {
@@ -4948,8 +4948,8 @@ What is your experience?"></textarea></div>
                             vol = (c.volatility || 0.05) * scaleFactor;
                         }
                         
-                        // 60% UP, 40% DOWN
-                        const direction = Math.random() < 0.60 ? 1 : -1;
+                        // 50% UP, 50% DOWN
+                        const direction = Math.random() > 0.5 ? 1 : -1;
                         const change = state.cryptoPrices[c.ticker] * vol * direction;
                         state.cryptoPrices[c.ticker] = Math.max(0.000000001, state.cryptoPrices[c.ticker] + change);
 
@@ -11435,6 +11435,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.0.2</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.0.3</div>
 </body>
 </html>
