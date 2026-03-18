@@ -4967,140 +4967,28 @@ What is your experience?"></textarea></div>
         }
 
         function stopPriceTicker() {
-                        const isExtreme = Math.random() < 0.30;
-                        let volatility;
+            if (state.priceTickerInterval) clearInterval(state.priceTickerInterval);
+        }
 
-                        if (isExtreme) {
-                            // Extreme per-second volatility: 2-10% change
-                            volatility = 0.02 + Math.random() * 0.08;
-                        } else {
-                            // Normal per-second volatility
-                            const baseVol = s.volatility ? s.volatility * 0.08 : (0.001 + Math.random() * 0.003);
-                            volatility = baseVol * (0.5 + Math.random());
-                        }
+        function processAIBots() {
+            // AI bots processed elsewhere
+        }
 
-                        const direction = Math.random() > 0.5 ? 1 : -1;
-                        const change = state.stockPrices[s.ticker] * volatility * direction;
-                        state.stockPrices[s.ticker] = Math.max(0.01, state.stockPrices[s.ticker] + change);
+        // ===================== RANDOM EVENTS =====================
+        function startEventTimer() {
+            if (state.eventInterval) clearInterval(state.eventInterval);
+            // Random events removed per user request
+        }
 
-                        // Update history for charts
-                        if (!state.stockHistory[s.ticker]) state.stockHistory[s.ticker] = [];
-                        state.stockHistory[s.ticker].push(state.stockPrices[s.ticker]);
-                        if (state.stockHistory[s.ticker].length > 30) state.stockHistory[s.ticker].shift();
-                    });
-                    // Update crypto prices
-                    CRYPTO_COINS.forEach(c => {
-                        // 30% chance of EXTREME per-second swings (2-10% per second)
-                        const isExtreme = Math.random() < 0.30;
-                        let vol;
+        async function triggerRandomEvent() {
+            // Only the Admin player triggers events
+            if (!isAdmin()) return;
 
-                        if (isExtreme) {
-                            // Extreme per-second volatility: 2-10% change
-                            vol = 0.02 + Math.random() * 0.08;
-                        } else {
-                            // Normal per-second volatility
-                            const scaleFactor = (c.volatility || 0.05) >= 0.20 ? 0.05 : 0.02;
-                            vol = (c.volatility || 0.05) * scaleFactor;
-                        }
+            const eventIndex = Math.floor(Math.random() * RANDOM_EVENTS.length);
+            const event = RANDOM_EVENTS[eventIndex];
 
-                        const direction = Math.random() > 0.5 ? 1 : -1;
-                        const change = state.cryptoPrices[c.ticker] * vol * direction;
-                        state.cryptoPrices[c.ticker] = Math.max(0.000000001, state.cryptoPrices[c.ticker] + change);
-
-                        // Update history for charts
-                        if (!state.cryptoHistory[c.ticker]) state.cryptoHistory[c.ticker] = [];
-                        state.cryptoHistory[c.ticker].push(state.cryptoPrices[c.ticker]);
-                        if (state.cryptoHistory[c.ticker].length > 30) state.cryptoHistory[c.ticker].shift();
-                    });
-
-                    // SYNC TO RTDB EVERY SECOND FOR REAL-TIME SYNC
-                    const marketData = {
-                        stocks: {},
-                        crypto: {},
-                        lastTick: Date.now()
-                    };
-                    STOCKS.forEach(s => { marketData.stocks[s.ticker] = { price: state.stockPrices[s.ticker] }; });
-                    CRYPTO_COINS.forEach(c => { marketData.crypto[c.ticker] = { price: state.cryptoPrices[c.ticker] }; });
-
-                    const marketRef = window.fbMethods.rtdbRef(window.fbRtdb, 'globalMarket');
-                    window.fbMethods.rtdbSet(marketRef, marketData);
-                }
-
-                // Update UI based on active tab
-                const activeTab = state.currentTab;
-
-                // ALWAYS update market prices in background (even when not on market/crypto tab)
-                // This ensures prices are ready when user switches tabs
-
-                // Update stock prices display if on market tab
-                if (activeTab === 'market') {
-                    // Update only the prices in the list to avoid scroll reset
-                    const filtered = state.marketFilter === 'All' ? STOCKS : STOCKS.filter(s => s.sector === state.marketFilter);
-
-                    // If market needs full re-render (e.g. new IPO stock added), do it once
-                    const rows = document.querySelectorAll('#market-scroll .stock-row');
-                    if (rows.length !== filtered.length) {
-                        renderMarket();
-                        return;
-                    }
-                    filtered.forEach((s, i) => {
-                        if (rows[i]) {
-                            const price = state.stockPrices[s.ticker] || s.basePrice;
-                            const prev = (state.stockHistory[s.ticker] || [s.basePrice])[Math.max(0, (state.stockHistory[s.ticker]||[]).length - 2)] || s.basePrice;
-                            const change = ((price - prev) / prev) * 100;
-
-                            const priceEl = rows[i].querySelector('div:nth-child(2)');
-                            const changeEl = rows[i].querySelector('div:nth-child(3)');
-
-                            if (priceEl) priceEl.textContent = formatPrice(price);
-                            if (changeEl) {
-                                changeEl.textContent = (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
-                                changeEl.style.color = change >= 0 ? 'var(--success)' : 'var(--danger)';
-                            }
-                        }
-                    });
-
-                    if (state.selectedStock) {
-                        updateTradePanel();
-                        renderTradeChart();
-                    }
-                }
-
-                // Update crypto prices display if on crypto tab
-                if (activeTab === 'crypto') {
-                    // Update only the prices in the list to avoid scroll reset
-                    const rows = document.querySelectorAll('#crypto-market-scroll .stock-row');
-                    CRYPTO_COINS.forEach((c, i) => {
-                        if (rows[i]) {
-                            const price = state.cryptoPrices[c.ticker] || c.basePrice;
-                            const prev = (state.cryptoHistory[c.ticker] || [c.basePrice])[Math.max(0, (state.cryptoHistory[c.ticker]||[]).length - 2)] || c.basePrice;
-                            const change = ((price - prev) / prev) * 100;
-
-                            const priceEl = rows[i].querySelector('div:nth-child(2)');
-                            const changeEl = rows[i].querySelector('div:nth-child(3)');
-
-                            if (priceEl) priceEl.textContent = formatPrice(price);
-                            if (changeEl) {
-                                changeEl.textContent = (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
-                                changeEl.style.color = change >= 0 ? 'var(--success)' : 'var(--danger)';
-                            }
-                        }
-                    });
-
-                    if (state.selectedCrypto) {
-                        updateCryptoPanel();
-                        renderCryptoChart();
-                    }
-                }
-
-                // Update Sidebar Stats (Left Panel)
-                const sidebarCash = document.getElementById('stat-cash');
-                const sidebarNW = document.getElementById('stat-networth');
-                if (sidebarCash) sidebarCash.textContent = '$' + formatNum(state.player.cash);
-                if (sidebarNW) sidebarNW.textContent = '$' + formatNum(calcNetWorth());
-
-                // ALWAYS update market/crypto lists even when not on those tabs (for live price updates)
-                // This ensures prices update in real-time when you switch tabs
+            try {
+                if (window.fbDb && window.fbMethods) {
                 const marketRows = document.querySelectorAll('#market-scroll .stock-row');
                 if (marketRows.length > 0) {
                     const filtered = state.marketFilter === 'All' ? STOCKS : STOCKS.filter(s => s.sector === state.marketFilter);
@@ -5149,7 +5037,7 @@ What is your experience?"></textarea></div>
                 if (btcPriceEl && state.cryptoPrices && state.cryptoPrices['BTC']) {
                     btcPriceEl.textContent = formatPrice(state.cryptoPrices['BTC']);
                 }
-            }, 3000); // Update every 3 seconds
+            }, 3000);
         }
 
         function stopPriceTicker() {
@@ -11435,6 +11323,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.0.3</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.0.4</div>
 </body>
 </html>
