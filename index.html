@@ -1167,6 +1167,7 @@
                         <div class="widget"><div class="widget-title">Debt</div><div class="widget-value" id="dash-debt">$0</div></div>
                         <div class="widget"><div class="widget-title">Portfolio</div><div class="widget-value" id="dash-portfolio">$0</div></div>
                         <div class="widget"><div class="widget-title">Crypto</div><div class="widget-value" id="dash-crypto">$0</div></div>
+                        <div class="widget" style="border-left:3px solid #8b5cf6"><div class="widget-title" style="color:#8b5cf6">🪙 Rebirth Coins</div><div class="widget-value" id="dash-rebirth-coins" style="color:#8b5cf6">0</div></div>
                     </div>
 
                     <!-- Moderation History Section -->
@@ -5453,6 +5454,7 @@ What is your experience?"></textarea></div>
             document.getElementById('dash-debt').textContent = '$' + formatNum(state.player.debt);
             document.getElementById('dash-portfolio').textContent = '$' + formatNum(portfolioVal);
             document.getElementById('dash-crypto').textContent = '$' + formatNum(cryptoVal);
+            document.getElementById('dash-rebirth-coins').textContent = state.player.rebirthCoins || 0;
             // Moderation History
             renderModerationHistory();
             const tbody = document.getElementById('activity-log');
