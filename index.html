@@ -1106,7 +1106,7 @@
                 <div class="nav-item" onclick="switchTab('portfolio')">Portfolio</div>
                 <div class="nav-item" onclick="switchTab('career')">Career</div>
                 <div class="nav-item" onclick="switchTab('company')">Company</div>
-                <div class="nav-item" onclick="switchTab('customcompanies')" style="color:#f59e0b">🏢 My Companies</div>
+                <div class="nav-item" onclick="switchTab('customcompanies')" style="color:#f59e0b">🏢 Public Companies</div>
                 <div class="nav-item" onclick="switchTab('incubator')" style="color:#10b981">🚀 Incubator</div>
                 <div class="nav-item" onclick="switchTab('takeover')" style="color:#ef4444">⚔️ Takeover</div>
                 <div class="nav-item" onclick="switchTab('properties')">Properties</div>
@@ -5318,7 +5318,7 @@ What is your experience?"></textarea></div>
             });
             document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
             document.getElementById(tab).classList.add('active');
-            const titles = { dashboard:'Dashboard', market:'Stock Market', portfolio:'Portfolio', career:'Career', company:'Company Management', incubator:'Startup Incubator', takeover:'Hostile Takeover', properties:'Real Estate', lifestyle:'Lifestyle', banking:'Banking', blackmarket:'Black Market', crypto:'Cryptocurrency', education:'Education', achievements:'Achievements', aibot:'AI Invest Bot', club:'The Club', search:'Search Players', leaderboard:'Leaderboard', profile:'Profile & Settings', admin:'⚙️ Admin Panel', support:'📩 Contact Support' };
+            const titles = { dashboard:'Dashboard', market:'Stock Market', portfolio:'Portfolio', career:'Career', company:'Company Management', customcompanies:'🏢 Public Companies', incubator:'Startup Incubator', takeover:'Hostile Takeover', properties:'Real Estate', lifestyle:'Lifestyle', banking:'Banking', blackmarket:'Black Market', crypto:'Cryptocurrency', education:'Education', achievements:'Achievements', aibot:'AI Invest Bot', club:'The Club', search:'Search Players', leaderboard:'Leaderboard', profile:'Profile & Settings', admin:'⚙️ Admin Panel', support:'📩 Contact Support' };
             document.getElementById('tab-title').textContent = titles[tab] || tab;
             renderAll();
         }
@@ -11405,6 +11405,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.1.7</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.1.8</div>
 </body>
 </html>
