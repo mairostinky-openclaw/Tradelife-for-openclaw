@@ -5392,10 +5392,17 @@ What is your experience?"></textarea></div>
             const filterDiv = document.getElementById('market-filters');
             filterDiv.innerHTML = SECTORS.map(s => `
                 <button class="btn ${state.marketFilter === s ? 'btn-primary' : 'btn-secondary'}" onclick="setMarketFilter('${s}')" style="font-size:0.75rem;padding:0.4rem 0.8rem;white-space:nowrap">${s}</button>
-            `).join('');
+            `).join('') + `
+                <button class="btn ${state.marketFilter === 'Custom' ? 'btn-primary' : 'btn-secondary'}" onclick="setMarketFilter('Custom')" style="font-size:0.75rem;padding:0.4rem 0.8rem;white-space:nowrap;background:${state.marketFilter === 'Custom' ? 'linear-gradient(135deg,#f59e0b,#d97706)' : ''}">🏢 Custom</button>
+            `;
             // Rows
             const scroll = document.getElementById('market-scroll');
-            const filtered = state.marketFilter === 'All' ? STOCKS : STOCKS.filter(s => s.sector === state.marketFilter);
+            let filtered = state.marketFilter === 'All' ? STOCKS : STOCKS.filter(s => s.sector === state.marketFilter);
+            // If Custom filter, show player IPO'd companies
+            if (state.marketFilter === 'Custom') {
+                renderCustomCompaniesInMarket(scroll);
+                return;
+            }
             scroll.innerHTML = filtered.map(s => {
                 const price = state.stockPrices[s.ticker] || s.basePrice;
                 const prev = (state.stockHistory[s.ticker] || [s.basePrice])[Math.max(0, (state.stockHistory[s.ticker]||[]).length - 2)] || s.basePrice;
@@ -5418,6 +5425,92 @@ What is your experience?"></textarea></div>
         function setMarketFilter(f) {
             state.marketFilter = f;
             renderMarket();
+        }
+
+        // Render custom (IPO'd) companies in market view
+        function renderCustomCompaniesInMarket(scroll) {
+            if (!scroll) scroll = document.getElementById('market-scroll');
+            
+            // Get player's public companies
+            let allCos = [];
+            const myCos = (state.player.companies || []).filter(c => c.isPublic);
+            myCos.forEach(co => {
+                const price = state.stockPrices[co.ticker] || co.basePrice || 100;
+                const prev = (state.stockHistory[co.ticker] || [price])[0] || price;
+                const change = ((price - prev) / prev) * 100;
+                allCos.push({
+                    ...co,
+                    price,
+                    change,
+                    isOwner: true,
+                    ownerName: state._currentUsername || 'You'
+                });
+            });
+            
+            // Show message that it's loading other companies
+            scroll.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted)">Loading IPO companies...</div>';
+            
+            // Fetch other players' public companies
+            fetchOtherPublicCompaniesForMarket(scroll, allCos);
+        }
+
+        async function fetchOtherPublicCompaniesForMarket(scroll, existingCos) {
+            try {
+                if (!window.fbDb || !window.fbMethods) {
+                    renderCustomCompaniesListInMarket(scroll, existingCos);
+                    return;
+                }
+                
+                const usersCol = window.fbMethods.collection(window.fbDb, "users");
+                const snapshot = await window.fbMethods.getDocs(usersCol);
+                
+                const otherCos = [];
+                snapshot.forEach(doc => {
+                    const userData = doc.data();
+                    if (userData.gameState && userData.gameState.player && userData.gameState.player.companies) {
+                        userData.gameState.player.companies.forEach(co => {
+                            if (co.isPublic && (!state.player.companies || !state.player.companies.find(c => c.ticker === co.ticker))) {
+                                const price = state.stockPrices[co.ticker] || co.basePrice || 100;
+                                const prev = (state.stockHistory[co.ticker] || [price])[0] || price;
+                                const change = ((price - prev) / prev) * 100;
+                                otherCos.push({
+                                    ...co,
+                                    price,
+                                    change,
+                                    isOwner: false,
+                                    ownerName: userData.displayName || userData.username || 'Unknown'
+                                });
+                            }
+                        });
+                    }
+                });
+                
+                const allCos = [...existingCos, ...otherCos];
+                renderCustomCompaniesListInMarket(scroll, allCos);
+            } catch (e) {
+                console.warn('Failed to fetch other companies:', e);
+                renderCustomCompaniesListInMarket(scroll, existingCos);
+            }
+        }
+
+        function renderCustomCompaniesListInMarket(scroll, companies) {
+            if (companies.length === 0) {
+                scroll.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted)">No IPO companies yet!<br>Go to Company tab and IPO your company to list it here.</div>';
+                return;
+            }
+            
+            scroll.innerHTML = companies.map(co => {
+                const owned = state.player.portfolio[co.ticker] ? state.player.portfolio[co.ticker].shares : 0;
+                return `<div class="stock-row" onclick="selectStock('${co.ticker}')" style="border-left:4px solid ${co.isOwner ? 'var(--brand)' : '#f59e0b'};background:${co.isOwner ? 'rgba(255,0,128,0.05)' : 'rgba(245,158,11,0.05)'}">
+                    <div>
+                        <div style="font-weight:700;font-size:0.9rem">${co.ticker} ${co.isOwner ? '👤' : '🏢'}</div>
+                        <div style="color:var(--text-muted);font-size:0.75rem">${co.name} (${co.isOwner ? 'You' : co.ownerName})</div>
+                    </div>
+                    <div style="text-align:right;font-weight:700;font-size:0.9rem">${formatPrice(co.price)}</div>
+                    <div style="text-align:right;font-weight:700;font-size:0.85rem;color:${co.change >= 0 ? 'var(--success)' : 'var(--danger)'}">${co.change >= 0 ? '+' : ''}${co.change.toFixed(2)}%</div>
+                    <div style="text-align:right;color:var(--text-muted);font-size:0.85rem">${owned > 0 ? owned : '-'}</div>
+                </div>`;
+            }).join('');
         }
 
         function selectStock(ticker) {
@@ -11405,6 +11498,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.1.8</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.1.9</div>
 </body>
 </html>
