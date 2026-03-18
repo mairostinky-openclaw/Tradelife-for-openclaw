@@ -1148,6 +1148,7 @@
                     <button class="btn btn-success" onclick="openSaveModal()" style="font-size: 0.8rem;">☁️ Save Game</button>
 
                     <div class="info-item"><span class="info-label">BTC</span><span class="info-value" id="info-btc-price">-</span></div>
+                    <div class="info-item"><span class="info-label">🔄 Rebirth</span><span class="info-value" id="info-rebirth-coins" style="color:#8b5cf6">0</span></div>
                     <div class="info-item"><span class="info-label">Role</span><span class="info-value" id="info-role">-</span></div>
                     <div class="info-item"><span class="info-label">Level</span><span class="info-value" id="info-level">1</span></div>
                     <div class="info-item"><span class="info-label">Clout</span><span class="info-value" id="info-clout">0</span></div>
@@ -5209,6 +5210,11 @@ What is your experience?"></textarea></div>
             const btcPriceEl = document.getElementById('info-btc-price');
             if (btcPriceEl && state.cryptoPrices && state.cryptoPrices['BTC']) {
                 btcPriceEl.textContent = formatPrice(state.cryptoPrices['BTC']);
+            }
+            // Update rebirth coins in top bar
+            const rebirthEl = document.getElementById('info-rebirth-coins');
+            if (rebirthEl) {
+                rebirthEl.textContent = formatNum(state.player.rebirthCoins || 0);
             }
             // Update skip day cost span
             const skipCostEl = document.getElementById('skip-day-cost');
@@ -11517,6 +11523,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.2.4</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.2.5</div>
 </body>
 </html>
