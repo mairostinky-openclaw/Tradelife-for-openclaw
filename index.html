@@ -4977,98 +4977,18 @@ What is your experience?"></textarea></div>
         // ===================== RANDOM EVENTS =====================
         function startEventTimer() {
             if (state.eventInterval) clearInterval(state.eventInterval);
-            // Random events removed per user request
         }
 
         async function triggerRandomEvent() {
-            // Only the Admin player triggers events
             if (!isAdmin()) return;
-
             const eventIndex = Math.floor(Math.random() * RANDOM_EVENTS.length);
             const event = RANDOM_EVENTS[eventIndex];
-
-            try {
-                if (window.fbDb && window.fbMethods) {
-                const marketRows = document.querySelectorAll('#market-scroll .stock-row');
-                if (marketRows.length > 0) {
-                    const filtered = state.marketFilter === 'All' ? STOCKS : STOCKS.filter(s => s.sector === state.marketFilter);
-                    if (marketRows.length === filtered.length) {
-                        filtered.forEach((s, i) => {
-                            if (marketRows[i]) {
-                                const price = state.stockPrices[s.ticker] || s.basePrice;
-                                const prev = (state.stockHistory[s.ticker] || [s.basePrice])[Math.max(0, (state.stockHistory[s.ticker]||[]).length - 2)] || s.basePrice;
-                                const change = ((price - prev) / prev) * 100;
-
-                                const priceEl = marketRows[i].querySelector('div:nth-child(2)');
-                                const changeEl = marketRows[i].querySelector('div:nth-child(3)');
-
-                                if (priceEl) priceEl.textContent = formatPrice(price);
-                                if (changeEl) {
-                                    changeEl.textContent = (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
-                                    changeEl.style.color = change >= 0 ? 'var(--success)' : 'var(--danger)';
-                                }
-                            }
-                        });
-                    }
-                }
-
-                const cryptoRows = document.querySelectorAll('#crypto-market-scroll .stock-row');
-                if (cryptoRows.length > 0) {
-                    CRYPTO_COINS.forEach((c, i) => {
-                        if (cryptoRows[i]) {
-                            const price = state.cryptoPrices[c.ticker] || c.basePrice;
-                            const prev = (state.cryptoHistory[c.ticker] || [c.basePrice])[Math.max(0, (state.cryptoHistory[c.ticker]||[]).length - 2)] || c.basePrice;
-                            const change = ((price - prev) / prev) * 100;
-
-                            const priceEl = cryptoRows[i].querySelector('div:nth-child(2)');
-                            const changeEl = cryptoRows[i].querySelector('div:nth-child(3)');
-
-                            if (priceEl) priceEl.textContent = formatPrice(price);
-                            if (changeEl) {
-                                changeEl.textContent = (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
-                                changeEl.style.color = change >= 0 ? 'var(--success)' : 'var(--danger)';
-                            }
-                        }
-                    });
-                }
-
-                // Always update BTC price in top bar info panel
-                const btcPriceEl = document.getElementById('info-btc-price');
-                if (btcPriceEl && state.cryptoPrices && state.cryptoPrices['BTC']) {
-                    btcPriceEl.textContent = formatPrice(state.cryptoPrices['BTC']);
-                }
-            }, 3000);
-        }
-
-        function stopPriceTicker() {
-            if (state.priceTickerInterval) clearInterval(state.priceTickerInterval);
-        }
-
-        // ===================== RANDOM EVENTS =====================
-        function startEventTimer() {
-            if (state.eventInterval) clearInterval(state.eventInterval);
-            // Random events removed per user request. Only Admin can trigger events now.
-        }
-
-        async function triggerRandomEvent() {
-            // Only the Admin player triggers and pushes the event to Firestore
-            if (!isAdmin()) return;
-
-            const eventIndex = Math.floor(Math.random() * RANDOM_EVENTS.length);
-            const event = RANDOM_EVENTS[eventIndex];
-
             try {
                 if (window.fbDb && window.fbMethods) {
                     const eventRef = window.fbMethods.collection(window.fbDb, 'global_events');
-                    await window.fbMethods.addDoc(eventRef, {
-                        eventIndex: eventIndex,
-                        timestamp: Date.now(),
-                        active: true
-                    });
+                    await window.fbMethods.addDoc(eventRef, { eventIndex, timestamp: Date.now(), active: true });
                 }
             } catch(e) { console.warn('Failed to push global event:', e); }
-
-            // Admin also applies it locally immediately
             applyGlobalEventLocally(event);
         }
 
@@ -11323,6 +11243,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.0.4</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.0.5</div>
 </body>
 </html>
