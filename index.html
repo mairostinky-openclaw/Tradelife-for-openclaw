@@ -4083,8 +4083,8 @@ What is your experience?"></textarea></div>
             document.getElementById('auth-form').classList.add('hidden');
             document.getElementById('auth-loading').classList.remove('hidden');
             try {
-                // Use redirect for mobile compatibility
-                await window.fbMethods.signInWithRedirect(window.fbAuth, window.fbGoogleProvider);
+                await window.fbMethods.signInWithPopup(window.fbAuth, window.fbGoogleProvider);
+                showToast('Success', 'Signed in with Google!', 'success');
             } catch (e) {
                 document.getElementById('auth-form').classList.remove('hidden');
                 document.getElementById('auth-loading').classList.add('hidden');
@@ -4225,16 +4225,7 @@ What is your experience?"></textarea></div>
             if (window.firestoreQuotaManager) {
                 window.firestoreQuotaManager.init();
             }
-
-            // Handle Google Sign-In redirect result
-            window.fbMethods.getRedirectResult(window.fbAuth).then((result) => {
-                if (result && result.user) {
-                    showToast('Success', 'Signed in with Google!', 'success');
-                }
-            }).catch((e) => {
-                console.warn('Redirect sign-in result:', e);
-            });
-
+            
             document.getElementById('setup-screen').classList.add('hidden');
             document.getElementById('app-layout').classList.remove('hidden');
             state.initialized = true;
@@ -4919,7 +4910,7 @@ What is your experience?"></textarea></div>
                 if (true) {
                     // Update stock prices
                     STOCKS.forEach(s => {
-                        // 30% chance of EXTREME per-second swings (2-10% per tick)
+                        // 30% chance of EXTREME per-3-second swings (2-10% per tick)
                         const isExtreme = Math.random() < 0.30;
                         let volatility;
 
@@ -5158,7 +5149,7 @@ What is your experience?"></textarea></div>
                 if (btcPriceEl && state.cryptoPrices && state.cryptoPrices['BTC']) {
                     btcPriceEl.textContent = formatPrice(state.cryptoPrices['BTC']);
                 }
-            }, 1000); // Update every second
+            }, 3000); // Update every 3 seconds
         }
 
         function stopPriceTicker() {
@@ -11444,6 +11435,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.0.5</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.0.1</div>
 </body>
 </html>
