@@ -5005,8 +5005,14 @@ What is your experience?"></textarea></div>
                 updateUI();
                 
                 // Update selected stock/crypto trading panel
-                if (state.selectedStock) updateTradePanel();
-                if (state.selectedCrypto) updateCryptoPanel();
+                if (state.selectedStock) {
+                    updateTradePanel();
+                    renderTradeChart();
+                }
+                if (state.selectedCrypto) {
+                    updateCryptoPanel();
+                    renderCryptoChart();
+                }
                 
                 // Also sync to RTDB (Admin) or listen for changes (Everyone)
                 syncGlobalMarket();
@@ -11512,6 +11518,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.2.2</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.2.3</div>
 </body>
 </html>
