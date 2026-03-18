@@ -3821,6 +3821,9 @@ What is your experience?"></textarea></div>
                 // Fix rebirth stats
                 fixRebirthStats();
                 
+                // Reset ALL prices to original base prices (so they change from original)
+                initPrices();
+                
                 // Ensure all required fields exist (migration safety)
                 if (!state.player.portfolio) state.player.portfolio = {};
                 if (!state.player.cryptoPortfolio) state.player.cryptoPortfolio = {};
@@ -4185,6 +4188,7 @@ What is your experience?"></textarea></div>
         }
 
         function initPrices() {
+            // Reset ALL stock prices to original base prices
             STOCKS.forEach(s => {
                 state.stockPrices[s.ticker] = s.basePrice;
                 // Generate 20 data points of realistic history so chart shows from Day 1
@@ -4199,6 +4203,7 @@ What is your experience?"></textarea></div>
                 hist.push(s.basePrice);
                 state.stockHistory[s.ticker] = hist;
             });
+            // Reset ALL crypto prices to original base prices
             CRYPTO_COINS.forEach(c => {
                 state.cryptoPrices[c.ticker] = c.basePrice;
                 // Generate 20 data points of realistic history so chart shows from Day 1
