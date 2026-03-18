@@ -3929,6 +3929,8 @@ What is your experience?"></textarea></div>
                 state.bannedFromIPO = data.bannedFromIPO || [];
                 // Fix rebirth stats
                 fixRebirthStats();
+                // Reset prices to original base prices (always)
+                initPrices();
                 // Migration safety
                 if (!state.player.portfolio) state.player.portfolio = {};
                 if (!state.player.cryptoPortfolio) state.player.cryptoPortfolio = {};
@@ -11232,6 +11234,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.1.1</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.1.2</div>
 </body>
 </html>
