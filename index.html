@@ -4968,6 +4968,11 @@ What is your experience?"></textarea></div>
                 
                 // Update UI based on active tab
                 const activeTab = state.currentTab;
+                
+                // ALWAYS update market prices in background (even when not on market/crypto tab)
+                // This ensures prices are ready when user switches tabs
+                
+                // Update stock prices display if on market tab
                 if (activeTab === 'market') {
                     // Update only the prices in the list to avoid scroll reset
                     const filtered = state.marketFilter === 'All' ? STOCKS : STOCKS.filter(s => s.sector === state.marketFilter);
@@ -4999,7 +5004,10 @@ What is your experience?"></textarea></div>
                         updateTradePanel();
                         renderTradeChart();
                     }
-                } else if (activeTab === 'crypto') {
+                }
+                
+                // Update crypto prices display if on crypto tab
+                if (activeTab === 'crypto') {
                     // Update only the prices in the list to avoid scroll reset
                     const rows = document.querySelectorAll('#crypto-market-scroll .stock-row');
                     CRYPTO_COINS.forEach((c, i) => {
@@ -5018,15 +5026,11 @@ What is your experience?"></textarea></div>
                             }
                         }
                     });
-
+                    
                     if (state.selectedCrypto) {
                         updateCryptoPanel();
                         renderCryptoChart();
                     }
-                } else if (activeTab === 'portfolio') {
-                    renderPortfolio();
-                } else if (activeTab === 'dashboard') {
-                    updateUI(); // Updates net worth and cash display
                 }
 
                 // Update Sidebar Stats (Left Panel)
