@@ -4965,8 +4965,8 @@ What is your experience?"></textarea></div>
                 }
             }, 3000);
         }
-                    STOCKS.forEach(s => {
-                        // 30% chance of EXTREME per-second swings (2-10% per second)
+
+        function stopPriceTicker() {
                         const isExtreme = Math.random() < 0.30;
                         let volatility;
 
