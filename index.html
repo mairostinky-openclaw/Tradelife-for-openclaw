@@ -4902,14 +4902,67 @@ What is your experience?"></textarea></div>
             }
         }
 
-        // ===================== PER-SECOND PRICE TICKER =====================
+        // ===================== PRICE TICKER (3 SECONDS) =====================
         function startPriceTicker() {
             if (state.priceTickerInterval) clearInterval(state.priceTickerInterval);
             state.priceTickerInterval = setInterval(() => {
-                // All players get price updates locally (prices change in real-time for everyone)
-                // Only Admin pushes to RTDB for global sync, but prices still update locally for all
+                // Prices update every 3 seconds for all players
                 if (true) {
                     // Update stock prices
+                    STOCKS.forEach(s => {
+                        // 30% chance of EXTREME per-3-second swings (2-10% per tick)
+                        const isExtreme = Math.random() < 0.30;
+                        let volatility;
+                        
+                        if (isExtreme) {
+                            // Extreme per-tick volatility: 2-10% change
+                            volatility = 0.02 + Math.random() * 0.08;
+                        } else {
+                            // Normal per-tick volatility
+                            const baseVol = s.volatility ? s.volatility * 0.08 : (0.001 + Math.random() * 0.003);
+                            volatility = baseVol * (0.5 + Math.random());
+                        }
+                        
+                        const direction = Math.random() > 0.5 ? 1 : -1;
+                        const change = state.stockPrices[s.ticker] * volatility * direction;
+                        state.stockPrices[s.ticker] = Math.max(0.01, state.stockPrices[s.ticker] + change);
+                        
+                        // Update history for charts
+                        if (!state.stockHistory[s.ticker]) state.stockHistory[s.ticker] = [];
+                        state.stockHistory[s.ticker].push(state.stockPrices[s.ticker]);
+                        if (state.stockHistory[s.ticker].length > 30) state.stockHistory[s.ticker].shift();
+                    });
+                    // Update crypto prices
+                    CRYPTO_COINS.forEach(c => {
+                        // 30% chance of EXTREME per-3-second swings (2-10% per tick)
+                        const isExtreme = Math.random() < 0.30;
+                        let vol;
+                        
+                        if (isExtreme) {
+                            // Extreme per-tick volatility: 2-10% change
+                            vol = 0.02 + Math.random() * 0.08;
+                        } else {
+                            // Normal per-tick volatility
+                            const scaleFactor = (c.volatility || 0.05) >= 0.20 ? 0.05 : 0.02;
+                            vol = (c.volatility || 0.05) * scaleFactor;
+                        }
+                        
+                        const direction = Math.random() > 0.5 ? 1 : -1;
+                        const change = state.cryptoPrices[c.ticker] * vol * direction;
+                        state.cryptoPrices[c.ticker] = Math.max(0.000000001, state.cryptoPrices[c.ticker] + change);
+                        
+                        // Update history for charts
+                        if (!state.cryptoHistory[c.ticker]) state.cryptoHistory[c.ticker] = [];
+                        state.cryptoHistory[c.ticker].push(state.cryptoPrices[c.ticker]);
+                        if (state.cryptoHistory[c.ticker].length > 30) state.cryptoHistory[c.ticker].shift();
+                    });
+
+                    // Also sync to RTDB (Admin) or listen for changes (Everyone)
+                    syncGlobalMarket();
+                    updateLivePrices();
+                }
+            }, 3000);
+        }
                     STOCKS.forEach(s => {
                         // 30% chance of EXTREME per-second swings (2-10% per second)
                         const isExtreme = Math.random() < 0.30;
@@ -5094,7 +5147,7 @@ What is your experience?"></textarea></div>
                 if (btcPriceEl && state.cryptoPrices && state.cryptoPrices['BTC']) {
                     btcPriceEl.textContent = formatPrice(state.cryptoPrices['BTC']);
                 }
-            }, 1000); // Update every second
+            }, 3000); // Update every 3 seconds
         }
 
         function stopPriceTicker() {
