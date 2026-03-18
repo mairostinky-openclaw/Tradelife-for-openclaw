@@ -34,7 +34,7 @@
         window.fbDb = db;
         window.fbRtdb = rtdb;
         window.fbGoogleProvider = googleProvider;
-        window.fbMethods = { 
+        window.fbMethods = {
             createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut,
             signInWithPopup, updateProfile,
             doc, setDoc, getDoc, collection, query, orderBy, limit, getDocs, onSnapshot, updateDoc, arrayUnion, where, addDoc, deleteDoc,
@@ -45,23 +45,23 @@
         // FIRESTORE QUOTA MANAGEMENT SYSTEM
         // ============================================================
         // Handles quota exceeded errors, queues failed writes, and auto-retries
-        
+
         const QUOTA_QUEUE_KEY = 'firestore_write_queue';
         const QUOTA_STATUS_KEY = 'firestore_quota_status';
-        
+
         window.firestoreQuotaManager = {
             isQuotaExceeded: false,
             writeQueue: [],
             retryInterval: null,
             maxRetries: 10,
-            
+
             // Initialize the quota manager
             init() {
                 this.loadQueue();
                 this.startQuotaMonitoring();
                 this.processQueue();
             },
-            
+
             // Load queue from localStorage
             loadQueue() {
                 try {
@@ -72,7 +72,7 @@
                     this.writeQueue = [];
                 }
             },
-            
+
             // Save queue to localStorage
             saveQueue() {
                 try {
@@ -81,17 +81,17 @@
                     console.error('Failed to save quota queue:', e);
                 }
             },
-            
+
             // Check if error is quota-related
             isQuotaError(error) {
                 if (!error) return false;
                 const msg = error.message || error.toString();
-                return msg.includes('quota') || 
-                       msg.includes('RESOURCE_EXHAUSTED') || 
+                return msg.includes('quota') ||
+                       msg.includes('RESOURCE_EXHAUSTED') ||
                        msg.includes('too many writes') ||
                        error.code === 'resource-exhausted';
             },
-            
+
             // Add operation to queue
             queueOperation(operation) {
                 const queueItem = {
@@ -105,14 +105,14 @@
                 this.saveQueue();
                 return queueItem.id;
             },
-            
+
             // Process queued operations
             async processQueue() {
                 if (this.writeQueue.length === 0) return;
-                
+
                 const itemsToProcess = [...this.writeQueue];
                 let successCount = 0;
-                
+
                 for (let i = 0; i < itemsToProcess.length; i++) {
                     const item = itemsToProcess[i];
                     if (item.retries >= this.maxRetries) {
@@ -120,7 +120,7 @@
                         this.removeFromQueue(item.id);
                         continue;
                     }
-                    
+
                     try {
                         await this.executeQueuedOperation(item.data);
                         this.removeFromQueue(item.id);
@@ -137,16 +137,16 @@
                         }
                     }
                 }
-                
+
                 if (successCount > 0) {
                     this.updateUI();
                 }
             },
-            
+
             // Execute a queued operation
             async executeQueuedOperation(operation) {
                 const { type, payload } = operation;
-                
+
                 switch(type) {
                     case 'setDoc':
                         return await window.fbMethods.setDoc(
@@ -172,26 +172,26 @@
                         throw new Error(`Unknown operation type: ${type}`);
                 }
             },
-            
+
             // Remove item from queue
             removeFromQueue(id) {
                 this.writeQueue = this.writeQueue.filter(item => item.id !== id);
                 this.saveQueue();
             },
-            
+
             // Set quota exceeded status
             setQuotaExceeded(exceeded) {
                 this.isQuotaExceeded = exceeded;
                 localStorage.setItem(QUOTA_STATUS_KEY, exceeded ? 'true' : 'false');
                 this.updateUI();
-                
+
                 if (exceeded) {
                     this.showQuotaAlert();
                 } else if (this.writeQueue.length > 0) {
                     this.showQuotaRestored();
                 }
             },
-            
+
             // Start monitoring quota status
             startQuotaMonitoring() {
                 // Check quota status every 30 seconds
@@ -201,7 +201,7 @@
                     }
                 }, 30000);
             },
-            
+
             // Stop monitoring
             stopMonitoring() {
                 if (this.retryInterval) {
@@ -209,7 +209,7 @@
                     this.retryInterval = null;
                 }
             },
-            
+
             // Show quota alert
             showQuotaAlert() {
                 const alertEl = document.getElementById('quota-alert');
@@ -227,14 +227,14 @@
                     `;
                 }
             },
-            
+
             // Show quota restored message
             showQuotaRestored() {
                 if (typeof showToast === 'function') {
                     showToast('Quota Restored', `✓ Firestore quota restored. Retrying ${this.writeQueue.length} queued operation(s)...`, 'success');
                 }
             },
-            
+
             // Update UI to show queue status
             updateUI() {
                 const queueCountEl = document.getElementById('quota-queue-count');
@@ -247,7 +247,7 @@
                     }
                 }
             },
-            
+
             // Get queue status
             getStatus() {
                 return {
@@ -262,7 +262,7 @@
                 };
             }
         };
-        
+
         // Wrapped Firestore write methods with quota handling
         window.safeFirestoreWrite = {
             async setDoc(docRef, data, options = {}) {
@@ -282,7 +282,7 @@
                     throw error;
                 }
             },
-            
+
             async updateDoc(docRef, data) {
                 try {
                     return await window.fbMethods.updateDoc(docRef, data);
@@ -299,7 +299,7 @@
                     throw error;
                 }
             },
-            
+
             async addDoc(collectionRef, data) {
                 try {
                     return await window.fbMethods.addDoc(collectionRef, data);
@@ -316,7 +316,7 @@
                     throw error;
                 }
             },
-            
+
             async deleteDoc(docRef) {
                 try {
                     return await window.fbMethods.deleteDoc(docRef);
@@ -506,7 +506,7 @@
             font-size: 0.85rem;
             font-weight: 600;
         }
-        
+
         /* ADMIN PANEL STYLES */
         .admin-badge-pill {
             display: inline-flex; align-items: center; gap: 0.3rem;
@@ -766,7 +766,7 @@
         </div>
     </div>
 
-    
+
     <!-- Player Job Application Modal -->
     <div id="apply-job-modal" class="modal-overlay hidden">
         <div class="modal-content" style="max-width:500px">
@@ -1034,7 +1034,7 @@
             <div style="margin-bottom:1rem">
                 <label style="display:block;font-size:0.8rem;color:var(--text-muted);margin-bottom:0.4rem">Reason</label>
                 <input type="text" id="admin-ban-reason" placeholder="Enter reason for ban..." style="width:100%;padding:0.75rem;background:var(--bg-base);border:1px solid var(--border);border-radius:8px;color:var(--text-main);font-size:0.9rem;margin-bottom:1rem">
-                
+
                 <label style="display:block;font-size:0.8rem;color:var(--text-muted);margin-bottom:0.4rem">Duration</label>
                 <select id="admin-ban-duration" style="width:100%;padding:0.75rem;background:var(--bg-base);border:1px solid var(--border);border-radius:8px;color:var(--text-main);font-size:0.9rem">
                     <option value="3600">1 Hour</option>
@@ -1144,11 +1144,11 @@
             <div class="top-bar">
                 <h2 class="top-bar-title" id="tab-title">Dashboard</h2>
                 <div class="top-bar-right">
-                    <button class="btn btn-secondary" onclick="endDay(true)" id="skip-day-btn" style="font-size:0.7rem;padding:0.3rem 0.6rem;background:var(--warning);color:#000;border:none;">⏭ Skip Day — 💵 <span id="skip-day-cost">$0</span></button>
+                    <button class="btn btn-secondary" onclick="endDay(true)" id="skip-day-btn" style="font-size:0.7rem;padding:0.3rem 0.6rem;background:var(--warning);color:#000;border:none;">⏭ Skip Day - 💵 <span id="skip-day-cost">$0</span></button>
                     <button class="btn btn-success" onclick="openSaveModal()" style="font-size: 0.8rem;">☁️ Save Game</button>
 
-                    <div class="info-item"><span class="info-label">BTC</span><span class="info-value" id="info-btc-price">—</span></div>
-                    <div class="info-item"><span class="info-label">Role</span><span class="info-value" id="info-role">—</span></div>
+                    <div class="info-item"><span class="info-label">BTC</span><span class="info-value" id="info-btc-price">-</span></div>
+                    <div class="info-item"><span class="info-label">Role</span><span class="info-value" id="info-role">-</span></div>
                     <div class="info-item"><span class="info-label">Level</span><span class="info-value" id="info-level">1</span></div>
                     <div class="info-item"><span class="info-label">Clout</span><span class="info-value" id="info-clout">0</span></div>
                     <div class="info-item"><span class="info-label">Reputation</span><span class="info-value" id="info-reputation">100</span></div>
@@ -1243,7 +1243,7 @@
                         <div style="width:360px;flex-shrink:0;overflow-y:auto">
                             <div id="trading-section" style="display:none">
                                 <div class="widget">
-                                    <h3 style="margin-bottom:0.75rem"><span id="trade-ticker" style="color:var(--brand)">—</span> - <span id="trade-name">—</span></h3>
+                                    <h3 style="margin-bottom:0.75rem"><span id="trade-ticker" style="color:var(--brand)">-</span> - <span id="trade-name">-</span></h3>
                                     <div style="height:160px;background:#000;border-radius:8px;margin-bottom:1rem;padding:0.5rem"><canvas id="trading-chart"></canvas></div>
                                     <div style="background:var(--bg-panel);padding:1rem;border-radius:8px;margin-bottom:1rem;border:1px solid var(--border)">
                                         <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;font-size:0.9rem"><span style="color:var(--text-muted)">Current Price</span><span style="font-weight:700;color:var(--brand)" id="trade-price">$0.00</span></div>
@@ -1290,7 +1290,7 @@
                         <button class="btn btn-secondary" id="cat-real" onclick="switchCareerCat(\'real\')" style="font-size:0.8rem;padding:0.4rem 1rem">Real Careers</button>
                     </div>
                     <div class="widget-grid">
-                        <div class="widget"><div class="widget-title">Current Position</div><div class="widget-value" id="career-job">—</div></div>
+                        <div class="widget"><div class="widget-title">Current Position</div><div class="widget-value" id="career-job">-</div></div>
                         <div class="widget"><div class="widget-title">Salary</div><div class="widget-value" id="career-salary">$0</div></div>
                         <div class="widget"><div class="widget-title">Experience</div><div class="widget-value" id="career-exp">0</div></div>
                     </div>
@@ -1366,7 +1366,7 @@ What is your experience?"></textarea></div>
                             <div style="display:flex;gap:1.5rem;flex-wrap:wrap">
                                 <div style="text-align:center;background:var(--bg-panel);padding:0.75rem 1.25rem;border-radius:8px;border:1px solid var(--border)">
                                     <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;font-weight:700">Days Until Lock</div>
-                                    <div style="font-size:2rem;font-weight:900;color:var(--danger)" id="loan-days-remaining">—</div>
+                                    <div style="font-size:2rem;font-weight:900;color:var(--danger)" id="loan-days-remaining">-</div>
                                 </div>
                                 <div style="text-align:center;background:var(--bg-panel);padding:0.75rem 1.25rem;border-radius:8px;border:1px solid var(--border)">
                                     <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;font-weight:700">Overdue Loans</div>
@@ -1429,15 +1429,15 @@ What is your experience?"></textarea></div>
                         </div>
                         <div id="crypto-trading-section" style="display:none">
                             <div class="widget" style="position:sticky;top:0">
-                                <h3><span id="crypto-trade-ticker" style="color:var(--brand)">—</span> - <span id="crypto-trade-name">—</span></h3>
+                                <h3><span id="crypto-trade-ticker" style="color:var(--brand)">-</span> - <span id="crypto-trade-name">-</span></h3>
                                 <div style="height:180px;background:#000;border-radius:8px;margin:1rem 0;padding:0.5rem"><canvas id="crypto-trading-chart"></canvas></div>
                                 <div style="background:var(--bg-panel);padding:1rem;border-radius:8px;margin-bottom:1rem;border:1px solid var(--border)">
                                     <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;font-size:0.9rem"><span style="color:var(--text-muted)">Price</span><span style="font-weight:700;color:var(--brand)" id="crypto-trade-price">$0</span></div>
                                     <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;font-size:0.9rem"><span style="color:var(--text-muted)">24h Change</span><span style="font-weight:700" id="crypto-trade-change">0%</span></div>
-                                    <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;font-size:0.9rem"><span style="color:var(--text-muted)">Market Cap</span><span style="font-weight:700;color:var(--text-muted)" id="crypto-trade-marketcap">—</span></div>
-                                    <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;font-size:0.9rem"><span style="color:var(--text-muted)">24h Volume</span><span style="font-weight:700;color:var(--text-muted)" id="crypto-trade-volume">—</span></div>
-                                    <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;font-size:0.9rem"><span style="color:var(--text-muted)">Circulating Supply</span><span style="font-weight:700;color:var(--text-muted)" id="crypto-trade-supply">—</span></div>
-                                    <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;font-size:0.9rem"><span style="color:var(--text-muted)">Sector</span><span style="font-weight:700;color:var(--text-muted)" id="crypto-trade-sector">—</span></div>
+                                    <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;font-size:0.9rem"><span style="color:var(--text-muted)">Market Cap</span><span style="font-weight:700;color:var(--text-muted)" id="crypto-trade-marketcap">-</span></div>
+                                    <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;font-size:0.9rem"><span style="color:var(--text-muted)">24h Volume</span><span style="font-weight:700;color:var(--text-muted)" id="crypto-trade-volume">-</span></div>
+                                    <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;font-size:0.9rem"><span style="color:var(--text-muted)">Circulating Supply</span><span style="font-weight:700;color:var(--text-muted)" id="crypto-trade-supply">-</span></div>
+                                    <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;font-size:0.9rem"><span style="color:var(--text-muted)">Sector</span><span style="font-weight:700;color:var(--text-muted)" id="crypto-trade-sector">-</span></div>
                                     <div style="border-top:1px solid var(--border);padding-top:0.75rem;margin-top:0.5rem">
                                         <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;font-size:0.9rem"><span style="color:var(--text-muted)">Holdings</span><span style="font-weight:700;color:var(--brand)" id="crypto-trade-holdings">0</span></div>
                                         <div style="display:flex;justify-content:space-between;font-size:0.9rem"><span style="color:var(--text-muted)">Unrealized P/L</span><span style="font-weight:700" id="crypto-trade-pl">$0.00</span></div>
@@ -1465,7 +1465,7 @@ What is your experience?"></textarea></div>
                 <div id="map" class="tab-panel">
                     <h2 style="margin-bottom:0.5rem">🌍 World Map</h2>
                     <p style="color:var(--text-muted);margin-bottom:1.5rem">Conquer the galaxy! Purchase a planet first to start buying countries and earning income.</p>
-                    
+
                     <!-- Planet Selection Bar -->
                     <div id="map-planet-selector" style="display:flex;gap:0.75rem;margin-bottom:1.5rem;overflow-x:auto;padding-bottom:0.5rem">
                         <!-- Planets will be rendered here -->
@@ -1498,7 +1498,7 @@ What is your experience?"></textarea></div>
                                             <h3 id="selected-planet-name" style="margin-bottom:0.25rem">Earth</h3>
                                             <div id="selected-planet-type" style="font-size:0.8rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em">Earth-like</div>
                                         </div>
-                                        
+
                                         <h3>Planet Stats</h3>
                                         <div style="background:var(--bg-panel);padding:1rem;border-radius:8px;margin-bottom:1rem;border:1px solid var(--border);font-size:0.9rem">
                                             <div style="display:flex;justify-content:space-between;margin-bottom:0.75rem"><span style="color:var(--text-muted)">Countries Owned</span><span style="font-weight:700;color:var(--brand)" id="map-owned-count">0</span></div>
@@ -1565,7 +1565,7 @@ What is your experience?"></textarea></div>
                 <!-- AI Bot Tab -->
                 <div id="aibot" class="tab-panel">
                     <h2 style="margin-bottom:0.5rem">AI Auto-Invest Bots</h2>
-                    <p style="color:var(--text-muted);margin-bottom:1.5rem">Let AI manage your investments — choose your tier wisely. Cheaper bots lose money; premium bots find the best stocks.</p>
+                    <p style="color:var(--text-muted);margin-bottom:1.5rem">Let AI manage your investments - choose your tier wisely. Cheaper bots lose money; premium bots find the best stocks.</p>
                     <div id="aibot-active-panel" style="margin-bottom:2rem"></div>
                     <h3 style="margin-bottom:1rem">Available Bots</h3>
                     <div id="aibot-shop" class="widget-grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))"></div>
@@ -1575,7 +1575,7 @@ What is your experience?"></textarea></div>
                 <div id="club" class="tab-panel">
                     <div id="club-locked-screen" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center">
                         <div style="font-size:4rem;margin-bottom:1rem">🔒</div>
-                        <h2 style="margin-bottom:0.5rem;color:var(--warning)">The Club — Members Only</h2>
+                        <h2 style="margin-bottom:0.5rem;color:var(--warning)">The Club - Members Only</h2>
                         <p style="color:var(--text-muted);margin-bottom:1.5rem;max-width:400px">Exclusive VIP gambling lounge. Requires a one-time membership fee of <strong style="color:var(--danger)">$1,000,000,000,000 (1T)</strong>. Play Blackjack, Slots, Roulette, Dice, and more!</p>
                         <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;width:100%;max-width:360px;margin-bottom:1rem;text-align:center">
                             <div style="font-size:0.9rem;color:var(--text-muted);margin-bottom:0.5rem">Membership Fee Required</div>
@@ -1589,7 +1589,7 @@ What is your experience?"></textarea></div>
                     <div id="club-unlocked-screen" style="display:none">
                         <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem">
                             <div style="font-size:2.5rem">🎰</div>
-                            <div><h2 style="color:var(--warning)">Welcome to The Club</h2><p style="color:var(--text-muted)">VIP Gambling Lounge — Play responsibly!</p></div>
+                            <div><h2 style="color:var(--warning)">Welcome to The Club</h2><p style="color:var(--text-muted)">VIP Gambling Lounge - Play responsibly!</p></div>
                             <div style="margin-left:auto;background:var(--bg-surface);border:1px solid var(--warning);border-radius:8px;padding:0.75rem 1.25rem;text-align:right">
                                 <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase">Club Balance</div>
                                 <div style="font-weight:700;color:var(--warning);font-size:1.2rem" id="club-balance-display">$0</div>
@@ -1730,11 +1730,11 @@ What is your experience?"></textarea></div>
                         <div style="background:var(--bg-panel);padding:1rem;border-radius:8px;border:1px solid var(--border);font-size:0.9rem">
                             <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem">
                                 <span style="color:var(--text-muted)">Username:</span>
-                                <span style="font-weight:700" id="profile-user-email">—</span>
+                                <span style="font-weight:700" id="profile-user-email">-</span>
                             </div>
                             <div style="display:flex;justify-content:space-between">
                                 <span style="color:var(--text-muted)">Account Type:</span>
-                                <span style="font-weight:700" id="profile-account-type">—</span>
+                                <span style="font-weight:700" id="profile-account-type">-</span>
                             </div>
                         </div>
                     </div>
@@ -1778,7 +1778,7 @@ What is your experience?"></textarea></div>
                     <div style="font-size:2.5rem">⚙️</div>
                     <div>
                         <h2 style="color:#ff0080;margin-bottom:0.25rem">Admin Control Panel</h2>
-                        <p style="color:var(--text-muted);font-size:0.9rem">Restricted access — PROEDITDUDE only</p>
+                        <p style="color:var(--text-muted);font-size:0.9rem">Restricted access - PROEDITDUDE only</p>
                     </div>
                 </div>
 
@@ -1816,14 +1816,14 @@ What is your experience?"></textarea></div>
                             </select>
                         </div>
                         <button class="btn btn-primary" onclick="adminSendAnnouncement()" style="width:100%;padding:0.9rem;font-size:1rem;background:linear-gradient(135deg,#ff0080,#7c3aed);margin-bottom:1rem">📢 Send to All Players</button>
-                        
+
                         <div style="padding:1.25rem;background:var(--bg-panel);border-radius:10px;border:1px solid var(--border);margin-bottom:1rem">
                             <h4 style="margin-bottom:0.5rem;color:var(--brand)">🌍 Global Market Event</h4>
                             <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem">Trigger a random market event for ALL players globally.</p>
                             <button class="btn btn-success" onclick="triggerRandomEvent()" style="width:100%;font-size:0.9rem;padding:0.7rem;margin-bottom:1rem">⚡ Trigger Random Global Event</button>
-                            
+
                             <hr style="border:none;border-top:1px solid var(--border);margin:1rem 0">
-                            
+
                             <h4 style="margin-bottom:0.5rem;color:var(--brand)">✨ Custom Global Event</h4>
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.5rem">
                                 <input type="text" id="admin-custom-event-icon" placeholder="Icon (e.g. 🚀)" style="padding:0.5rem;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;color:var(--text-main);font-size:0.8rem">
@@ -1872,7 +1872,7 @@ What is your experience?"></textarea></div>
                                     <div>
                                         <div id="admin-pd-name" style="font-size:1.3rem;font-weight:700">Player Name</div>
                                         <div id="admin-pd-username" style="color:var(--text-muted);font-size:0.9rem">@username</div>
-                                        <div id="admin-pd-uid" style="color:var(--text-muted);font-size:0.75rem">UID: —</div>
+                                        <div id="admin-pd-uid" style="color:var(--text-muted);font-size:0.75rem">UID: -</div>
                                     </div>
                                     <div style="margin-left:auto; display:flex; gap:0.5rem; flex-wrap:wrap; justify-content: flex-end;">
                                         <button class="btn btn-warning" onclick="adminOpenWarnModal()" style="font-size:0.8rem">⚠️ Warn</button>
@@ -3511,7 +3511,7 @@ What is your experience?"></textarea></div>
         function getSaves() {
             const saves = localStorage.getItem('tradelife_saves');
             let parsed = saves ? JSON.parse(saves) : {};
-            
+
             // Cleanup logic: Ensure country ownership count is accurate and unique
             if (state && state.player && state.player.countriesOwned) {
                 // Remove duplicates and ensure only valid countries are counted
@@ -3521,7 +3521,7 @@ What is your experience?"></textarea></div>
                     console.log(`Cleaned up country ownership: ${uniqueOwned.length} valid unique countries found.`);
                 }
             }
-            
+
             return parsed;
         }
 
@@ -3530,7 +3530,7 @@ What is your experience?"></textarea></div>
             const title = document.getElementById('save-modal-title');
             const newSaveGroup = document.getElementById('new-save-group');
             const saveInfoBar = document.getElementById('save-info-bar');
-            
+
             title.textContent = isResume ? "Select Save to Resume" : "Save Game";
             newSaveGroup.style.display = isResume ? "none" : "flex";
             if (saveInfoBar) saveInfoBar.style.display = isResume ? 'none' : 'flex';
@@ -3544,7 +3544,7 @@ What is your experience?"></textarea></div>
                     try {
                         const d = JSON.parse(localData);
                         const t = d.updatedAt ? new Date(d.updatedAt).toLocaleTimeString() : 'Unknown';
-                        localSaveEl.textContent = 'Day ' + (d.player ? d.player.day : '?') + ' — ' + t + (d._localOnly ? ' (pending sync)' : ' (synced)');
+                        localSaveEl.textContent = 'Day ' + (d.player ? d.player.day : '?') + ' - ' + t + (d._localOnly ? ' (pending sync)' : ' (synced)');
                         localSaveEl.style.color = d._localOnly ? 'var(--warning)' : 'var(--success)';
                     } catch(e) { localSaveEl.textContent = 'Available'; }
                 } else {
@@ -3609,7 +3609,7 @@ What is your experience?"></textarea></div>
                     <div style="background:var(--bg-panel);padding:1rem;border-radius:8px;margin-bottom:0.75rem;border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
                         <div>
                             <div style="font-weight:700">${saveName} <span style="font-size:0.7rem;color:var(--success)">☁️</span></div>
-                            <div style="font-size:0.75rem;color:var(--text-muted)">Day ${data.player ? data.player.day : '?'} | $${data.player ? formatNum(data.player.cash) : '?'} — ${data.updatedAt ? new Date(data.updatedAt).toLocaleString() : ''}</div>
+                            <div style="font-size:0.75rem;color:var(--text-muted)">Day ${data.player ? data.player.day : '?'} | $${data.player ? formatNum(data.player.cash) : '?'} - ${data.updatedAt ? new Date(data.updatedAt).toLocaleString() : ''}</div>
                         </div>
                         <div style="display:flex;gap:0.5rem">
                             <button class="btn btn-primary" onclick="${isResume ? `loadGame('${saveName}')` : `updateSave('${saveName}')`}" style="font-size:0.75rem">${isResume ? 'Load' : 'Update ☁️'}</button>
@@ -3697,7 +3697,7 @@ What is your experience?"></textarea></div>
                 _pendingCloudSync = true;
                 return;
             }
-            
+
             const saveData = {
                 player: state.player,
                 stockPrices: state.stockPrices,
@@ -3707,18 +3707,18 @@ What is your experience?"></textarea></div>
                 bannedFromIPO: state.bannedFromIPO || [],
                 updatedAt: new Date().toISOString()
             };
-            
+
             // Save to Local Storage (Backup)
             const localSaves = getSaves();
             localSaves[name] = saveData;
             localStorage.setItem('tradelife_saves', JSON.stringify(localSaves));
-            
+
             // Save to Cloud (Firestore)
             try {
                 const userDoc = window.fbMethods.doc(window.fbDb, "users", user.uid);
                 const savesDoc = window.fbMethods.doc(window.fbDb, "users", user.uid, "saves", name);
                 await window.fbMethods.setDoc(savesDoc, saveData);
-                
+
                 // Update Leaderboard Data
                 const nw = calcNetWorth();
                 const displayName = user.displayName || user.email.replace('@tradelife.game','') || 'Player';
@@ -3732,7 +3732,7 @@ What is your experience?"></textarea></div>
                     avatar_img: state.player.avatar_img || null,
                     lastActive: new Date().toISOString()
                 };
-                
+
                 // 1. Update Firestore Profile
                 await window.fbMethods.setDoc(userDoc, profileData, { merge: true });
 
@@ -3745,7 +3745,7 @@ What is your experience?"></textarea></div>
                     try {
                         const rtdbUserRef = window.fbMethods.rtdbRef(window.fbRtdb, 'users/' + user.uid);
                         await window.fbMethods.rtdbSet(rtdbUserRef, profileData);
-                        
+
                         const rtdbSaveRef = window.fbMethods.rtdbRef(window.fbRtdb, 'saves/' + user.uid + '/' + name);
                         await window.fbMethods.rtdbSet(rtdbSaveRef, saveData);
                     } catch (e) {
@@ -3762,7 +3762,7 @@ What is your experience?"></textarea></div>
         async function syncSavesFromCloud() {
             const user = window.fbAuth.currentUser;
             if (!user) return;
-            
+
             // Clear local saves first to prevent data leaking between accounts
             localStorage.removeItem('tradelife_saves');
             checkSaveExists();
@@ -3792,10 +3792,10 @@ What is your experience?"></textarea></div>
             } catch (e) {
                 console.error("RTDB sync failed", e);
             }
-            
+
             // Save cloud data to local storage for this specific account
             localStorage.setItem('tradelife_saves', JSON.stringify(cloudSaves));
-            
+
             checkSaveExists();
             if (Object.keys(cloudSaves).length > 0) {
                 showToast('Cloud Sync', 'Saves restored from cloud ✓', 'success');
@@ -3808,7 +3808,7 @@ What is your experience?"></textarea></div>
             const saves = getSaves();
             const data = saves[name];
             if (!data) { showToast('Error', 'Save not found', 'danger'); return; }
-            
+
             try {
                 // Restore full state
                 state.player = data.player;
@@ -3817,13 +3817,13 @@ What is your experience?"></textarea></div>
                 state.stockHistory = data.stockHistory || {};
                 state.cryptoHistory = data.cryptoHistory || {};
                 state.bannedFromIPO = data.bannedFromIPO || [];
-                
+
                 // Fix rebirth stats
                 fixRebirthStats();
-                
+
                 // Reset ALL prices to original base prices (so they change from original)
                 initPrices();
-                
+
                 // Ensure all required fields exist (migration safety)
                 if (!state.player.portfolio) state.player.portfolio = {};
                 if (!state.player.cryptoPortfolio) state.player.cryptoPortfolio = {};
@@ -3841,10 +3841,10 @@ What is your experience?"></textarea></div>
                 if (!state.player.countriesOwned) state.player.countriesOwned = [];
                 if (state.player.planetOwned === undefined) state.player.planetOwned = false;
                 if (!state.player.planets) state.player.planets = [];
-                
+
                 // Sanitize portfolio holdings to fix any NaN/Infinity from old saves
                 sanitizePortfolio();
-                
+
                 // Fill any missing prices and history
                 STOCKS.forEach(s => {
                     if (!state.stockPrices[s.ticker]) state.stockPrices[s.ticker] = s.basePrice;
@@ -3878,7 +3878,7 @@ What is your experience?"></textarea></div>
                         state.cryptoHistory[c.ticker] = hist;
                     }
                 });
-                
+
                 document.getElementById('save-modal').classList.add('hidden');
                 launchApp();
                 showToast('Game Loaded', `Welcome back to "${name}"!`, 'success');
@@ -4124,10 +4124,10 @@ What is your experience?"></textarea></div>
             if (username.length < 3) { showToast('Error', 'Username must be at least 3 characters', 'danger'); return; }
             // Convert username to a fake email for Firebase Auth
             const fakeEmail = username.toLowerCase().replace(/[^a-z0-9]/g, '') + '@tradelife.game';
-            
+
             document.getElementById('auth-form').classList.add('hidden');
             document.getElementById('auth-loading').classList.remove('hidden');
-            
+
             try {
                 if (type === 'signup') {
                     // Check if username is taken by trying to look it up in Firestore
@@ -4225,7 +4225,7 @@ What is your experience?"></textarea></div>
             if (window.firestoreQuotaManager) {
                 window.firestoreQuotaManager.init();
             }
-            
+
             document.getElementById('setup-screen').classList.add('hidden');
             document.getElementById('app-layout').classList.remove('hidden');
             state.initialized = true;
@@ -4289,7 +4289,7 @@ What is your experience?"></textarea></div>
                         const uid = doc.id;
                         const username = (data.username || '').toLowerCase();
                         const displayName = (data.displayName || '').toLowerCase();
-                        
+
                         if ((username.includes(query) || displayName.includes(query)) && uid !== currentUid) {
                             matches.push({ uid, ...data });
                         }
@@ -4371,7 +4371,7 @@ What is your experience?"></textarea></div>
         async function visitPlayer(uid, username) {
             try {
                 showToast('Loading', 'Fetching player profile...', 'info');
-                
+
                 // 1. Fetch Profile Data
                 const userDoc = window.fbMethods.doc(window.fbDb, 'users', uid);
                 const userSnap = await window.fbMethods.getDoc(userDoc);
@@ -4408,11 +4408,11 @@ What is your experience?"></textarea></div>
 
                 document.getElementById('visit-display-name').textContent = profile.displayName || profile.username || username;
                 document.getElementById('visit-username').textContent = '@' + (profile.username || username);
-                
+
                 // Use profile stats as fallback if detailed player data is missing
                 const cashValue = player ? player.cash : (profile.netWorth || 0);
                 const dayValue = player ? player.day : (profile.day || 1);
-                
+
                 document.getElementById('visit-cash').textContent = '$' + formatNum(cashValue);
                 document.getElementById('visit-day').textContent = dayValue;
 
@@ -4475,7 +4475,7 @@ What is your experience?"></textarea></div>
 
             try {
                 showToast('Sending', 'Processing transaction...', 'info');
-                
+
                 // 1. Deduct from sender
                 state.player.cash -= amt;
                 updateUI();
@@ -4494,7 +4494,7 @@ What is your experience?"></textarea></div>
 
                 // 3. Also update their cash in their latest save if possible (optional, but better for real-time)
                 // For simplicity in this architecture, we'll rely on the notification to trigger the add when they are online.
-                
+
                 document.getElementById('amount-modal').classList.add('hidden');
                 document.getElementById('visit-modal').classList.add('hidden');
                 showToast('Success', `Sent $${formatNum(amt)} to ${username}!`, 'success');
@@ -4554,7 +4554,7 @@ What is your experience?"></textarea></div>
                 const user = window.fbAuth.currentUser;
                 const docRef = window.fbMethods.doc(window.fbDb, 'users', user.uid, 'notifications', notifId);
                 await window.fbMethods.updateDoc(docRef, { read: true });
-                
+
                 document.body.removeChild(popup);
                 saveGame();
             };
@@ -4581,12 +4581,12 @@ What is your experience?"></textarea></div>
                 // Deduct 10% fee BEFORE processing end of day
                 // Only based on current CASH, not net worth
                 const fee = Math.floor(state.player.cash * 0.10);
-                
+
                 if (fee > 0) {
                     state.player.cash -= fee;
                     addActivity(`Day ${state.player.day}`, `Skipped day fee (10%): -$${formatNum(fee)}`, 'danger');
                 }
-                
+
                 // Process full end-of-day (salary, property income, projects, etc.)
                 state._isSkipDay = true;
                 _processEndOfDay();
@@ -4706,7 +4706,7 @@ What is your experience?"></textarea></div>
                     if (s.status === 'seed' || s.status === 'private') {
                         // Valuation growth
                         s.valuation *= (0.9 + Math.random() * 0.4);
-                        
+
                         // Status changes
                         const roll = Math.random();
                         // Increased bankruptcy risk (0.10 base vs 0.05)
@@ -4792,12 +4792,12 @@ What is your experience?"></textarea></div>
                     co.cash += rev;
                     co.cash -= co.expenses;
                     addActivity(`Day ${state.player.day}`, `${co.name}: Revenue $${formatNum(rev)} | Expenses $${formatNum(co.expenses)}`, 'info');
-                    
+
                     // Bankruptcy check
                     if (co.cash < 0) {
                         addActivity(`Day ${state.player.day}`, `${co.name} is in DEBT! -$${formatNum(Math.abs(co.cash))}`, 'danger');
                     }
-                    
+
                     // Employee turnover: 3% chance per employee to leave each day
                     const leaving = [];
                     co.employees.forEach((emp, idx) => {
@@ -4805,7 +4805,7 @@ What is your experience?"></textarea></div>
                             leaving.push(idx);
                         }
                     });
-                    
+
                     // Remove leaving employees (reverse order to keep indices valid)
                     leaving.sort((a, b) => b - a).forEach(idx => {
                         const emp = co.employees[idx];
@@ -4845,7 +4845,7 @@ What is your experience?"></textarea></div>
                 // 30% chance of EXTREME volatility (10-50% swings)
                 const isExtreme = Math.random() < 0.30;
                 let volatility;
-                
+
                 if (isExtreme) {
                     // Extreme volatility: 10% to 50% change
                     volatility = 0.10 + Math.random() * 0.40;
@@ -4855,7 +4855,7 @@ What is your experience?"></textarea></div>
                     const baseVol = s.volatility ? s.volatility : (0.02 + Math.random() * 0.06);
                     volatility = baseVol * (0.5 + Math.random());
                 }
-                
+
                 const direction = Math.random() > 0.5 ? 1 : -1;
                 const change = state.stockPrices[s.ticker] * volatility * direction;
                 state.stockPrices[s.ticker] = Math.max(0.01, state.stockPrices[s.ticker] + change);
@@ -4867,7 +4867,7 @@ What is your experience?"></textarea></div>
                 // 30% chance of EXTREME volatility (10-50% swings)
                 const isExtreme = Math.random() < 0.30;
                 let vol;
-                
+
                 if (isExtreme) {
                     // Extreme volatility: 10% to 50% change
                     vol = 0.10 + Math.random() * 0.40;
@@ -4876,7 +4876,7 @@ What is your experience?"></textarea></div>
                     // Normal volatility
                     vol = c.volatility || 0.05;
                 }
-                
+
                 const direction = Math.random() > 0.5 ? 1 : -1;
                 const change = state.cryptoPrices[c.ticker] * vol * direction;
                 state.cryptoPrices[c.ticker] = Math.max(0.000000001, state.cryptoPrices[c.ticker] + change);
@@ -4895,7 +4895,7 @@ What is your experience?"></textarea></div>
                     };
                     STOCKS.forEach(s => { marketData.stocks[s.ticker] = { price: state.stockPrices[s.ticker] }; });
                     CRYPTO_COINS.forEach(c => { marketData.crypto[c.ticker] = { price: state.cryptoPrices[c.ticker] }; });
-                    
+
                     const marketRef = window.fbMethods.rtdbRef(window.fbRtdb, 'globalMarket');
                     await window.fbMethods.rtdbSet(marketRef, marketData);
                 } catch(e) { console.warn('Global market sync failed:', e); }
@@ -4910,8 +4910,8 @@ What is your experience?"></textarea></div>
                 if (true) {
                     // Update stock prices
                     STOCKS.forEach(s => {
-                        // 30% chance of EXTREME per-3-second swings (2-10% per tick)
-                        const isExtreme = Math.random() < 0.30;
+                        // 5% chance of EXTREME per-3-second swings (2-10% per tick), 95% NORMAL
+                        const isExtreme = Math.random() < 0.05;
                         let volatility;
                         
                         if (isExtreme) {
@@ -4923,7 +4923,8 @@ What is your experience?"></textarea></div>
                             volatility = baseVol * (0.5 + Math.random());
                         }
                         
-                        const direction = Math.random() > 0.5 ? 1 : -1;
+                        // 60% UP, 40% DOWN
+                        const direction = Math.random() < 0.60 ? 1 : -1;
                         const change = state.stockPrices[s.ticker] * volatility * direction;
                         state.stockPrices[s.ticker] = Math.max(0.01, state.stockPrices[s.ticker] + change);
                         
@@ -4934,10 +4935,10 @@ What is your experience?"></textarea></div>
                     });
                     // Update crypto prices
                     CRYPTO_COINS.forEach(c => {
-                        // 30% chance of EXTREME per-3-second swings (2-10% per tick)
-                        const isExtreme = Math.random() < 0.30;
+                        // 5% chance of EXTREME per-3-second swings (2-10% per tick), 95% NORMAL
+                        const isExtreme = Math.random() < 0.05;
                         let vol;
-                        
+
                         if (isExtreme) {
                             // Extreme per-tick volatility: 2-10% change
                             vol = 0.02 + Math.random() * 0.08;
@@ -4947,10 +4948,11 @@ What is your experience?"></textarea></div>
                             vol = (c.volatility || 0.05) * scaleFactor;
                         }
                         
-                        const direction = Math.random() > 0.5 ? 1 : -1;
+                        // 60% UP, 40% DOWN
+                        const direction = Math.random() < 0.60 ? 1 : -1;
                         const change = state.cryptoPrices[c.ticker] * vol * direction;
                         state.cryptoPrices[c.ticker] = Math.max(0.000000001, state.cryptoPrices[c.ticker] + change);
-                        
+
                         // Update history for charts
                         if (!state.cryptoHistory[c.ticker]) state.cryptoHistory[c.ticker] = [];
                         state.cryptoHistory[c.ticker].push(state.cryptoPrices[c.ticker]);
@@ -4967,7 +4969,7 @@ What is your experience?"></textarea></div>
                         // 30% chance of EXTREME per-second swings (2-10% per second)
                         const isExtreme = Math.random() < 0.30;
                         let volatility;
-                        
+
                         if (isExtreme) {
                             // Extreme per-second volatility: 2-10% change
                             volatility = 0.02 + Math.random() * 0.08;
@@ -4976,11 +4978,11 @@ What is your experience?"></textarea></div>
                             const baseVol = s.volatility ? s.volatility * 0.08 : (0.001 + Math.random() * 0.003);
                             volatility = baseVol * (0.5 + Math.random());
                         }
-                        
+
                         const direction = Math.random() > 0.5 ? 1 : -1;
                         const change = state.stockPrices[s.ticker] * volatility * direction;
                         state.stockPrices[s.ticker] = Math.max(0.01, state.stockPrices[s.ticker] + change);
-                        
+
                         // Update history for charts
                         if (!state.stockHistory[s.ticker]) state.stockHistory[s.ticker] = [];
                         state.stockHistory[s.ticker].push(state.stockPrices[s.ticker]);
@@ -4991,7 +4993,7 @@ What is your experience?"></textarea></div>
                         // 30% chance of EXTREME per-second swings (2-10% per second)
                         const isExtreme = Math.random() < 0.30;
                         let vol;
-                        
+
                         if (isExtreme) {
                             // Extreme per-second volatility: 2-10% change
                             vol = 0.02 + Math.random() * 0.08;
@@ -5000,17 +5002,17 @@ What is your experience?"></textarea></div>
                             const scaleFactor = (c.volatility || 0.05) >= 0.20 ? 0.05 : 0.02;
                             vol = (c.volatility || 0.05) * scaleFactor;
                         }
-                        
+
                         const direction = Math.random() > 0.5 ? 1 : -1;
                         const change = state.cryptoPrices[c.ticker] * vol * direction;
                         state.cryptoPrices[c.ticker] = Math.max(0.000000001, state.cryptoPrices[c.ticker] + change);
-                        
+
                         // Update history for charts
                         if (!state.cryptoHistory[c.ticker]) state.cryptoHistory[c.ticker] = [];
                         state.cryptoHistory[c.ticker].push(state.cryptoPrices[c.ticker]);
                         if (state.cryptoHistory[c.ticker].length > 30) state.cryptoHistory[c.ticker].shift();
                     });
-                    
+
                     // SYNC TO RTDB EVERY SECOND FOR REAL-TIME SYNC
                     const marketData = {
                         stocks: {},
@@ -5019,22 +5021,22 @@ What is your experience?"></textarea></div>
                     };
                     STOCKS.forEach(s => { marketData.stocks[s.ticker] = { price: state.stockPrices[s.ticker] }; });
                     CRYPTO_COINS.forEach(c => { marketData.crypto[c.ticker] = { price: state.cryptoPrices[c.ticker] }; });
-                    
+
                     const marketRef = window.fbMethods.rtdbRef(window.fbRtdb, 'globalMarket');
                     window.fbMethods.rtdbSet(marketRef, marketData);
                 }
-                
+
                 // Update UI based on active tab
                 const activeTab = state.currentTab;
-                
+
                 // ALWAYS update market prices in background (even when not on market/crypto tab)
                 // This ensures prices are ready when user switches tabs
-                
+
                 // Update stock prices display if on market tab
                 if (activeTab === 'market') {
                     // Update only the prices in the list to avoid scroll reset
                     const filtered = state.marketFilter === 'All' ? STOCKS : STOCKS.filter(s => s.sector === state.marketFilter);
-                    
+
                     // If market needs full re-render (e.g. new IPO stock added), do it once
                     const rows = document.querySelectorAll('#market-scroll .stock-row');
                     if (rows.length !== filtered.length) {
@@ -5046,10 +5048,10 @@ What is your experience?"></textarea></div>
                             const price = state.stockPrices[s.ticker] || s.basePrice;
                             const prev = (state.stockHistory[s.ticker] || [s.basePrice])[Math.max(0, (state.stockHistory[s.ticker]||[]).length - 2)] || s.basePrice;
                             const change = ((price - prev) / prev) * 100;
-                            
+
                             const priceEl = rows[i].querySelector('div:nth-child(2)');
                             const changeEl = rows[i].querySelector('div:nth-child(3)');
-                            
+
                             if (priceEl) priceEl.textContent = formatPrice(price);
                             if (changeEl) {
                                 changeEl.textContent = (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
@@ -5063,7 +5065,7 @@ What is your experience?"></textarea></div>
                         renderTradeChart();
                     }
                 }
-                
+
                 // Update crypto prices display if on crypto tab
                 if (activeTab === 'crypto') {
                     // Update only the prices in the list to avoid scroll reset
@@ -5073,10 +5075,10 @@ What is your experience?"></textarea></div>
                             const price = state.cryptoPrices[c.ticker] || c.basePrice;
                             const prev = (state.cryptoHistory[c.ticker] || [c.basePrice])[Math.max(0, (state.cryptoHistory[c.ticker]||[]).length - 2)] || c.basePrice;
                             const change = ((price - prev) / prev) * 100;
-                            
+
                             const priceEl = rows[i].querySelector('div:nth-child(2)');
                             const changeEl = rows[i].querySelector('div:nth-child(3)');
-                            
+
                             if (priceEl) priceEl.textContent = formatPrice(price);
                             if (changeEl) {
                                 changeEl.textContent = (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
@@ -5084,7 +5086,7 @@ What is your experience?"></textarea></div>
                             }
                         }
                     });
-                    
+
                     if (state.selectedCrypto) {
                         updateCryptoPanel();
                         renderCryptoChart();
@@ -5108,10 +5110,10 @@ What is your experience?"></textarea></div>
                                 const price = state.stockPrices[s.ticker] || s.basePrice;
                                 const prev = (state.stockHistory[s.ticker] || [s.basePrice])[Math.max(0, (state.stockHistory[s.ticker]||[]).length - 2)] || s.basePrice;
                                 const change = ((price - prev) / prev) * 100;
-                                
+
                                 const priceEl = marketRows[i].querySelector('div:nth-child(2)');
                                 const changeEl = marketRows[i].querySelector('div:nth-child(3)');
-                                
+
                                 if (priceEl) priceEl.textContent = formatPrice(price);
                                 if (changeEl) {
                                     changeEl.textContent = (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
@@ -5121,7 +5123,7 @@ What is your experience?"></textarea></div>
                         });
                     }
                 }
-                
+
                 const cryptoRows = document.querySelectorAll('#crypto-market-scroll .stock-row');
                 if (cryptoRows.length > 0) {
                     CRYPTO_COINS.forEach((c, i) => {
@@ -5129,10 +5131,10 @@ What is your experience?"></textarea></div>
                             const price = state.cryptoPrices[c.ticker] || c.basePrice;
                             const prev = (state.cryptoHistory[c.ticker] || [c.basePrice])[Math.max(0, (state.cryptoHistory[c.ticker]||[]).length - 2)] || c.basePrice;
                             const change = ((price - prev) / prev) * 100;
-                            
+
                             const priceEl = cryptoRows[i].querySelector('div:nth-child(2)');
                             const changeEl = cryptoRows[i].querySelector('div:nth-child(3)');
-                            
+
                             if (priceEl) priceEl.textContent = formatPrice(price);
                             if (changeEl) {
                                 changeEl.textContent = (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
@@ -5141,7 +5143,7 @@ What is your experience?"></textarea></div>
                         }
                     });
                 }
-                
+
                 // Always update BTC price in top bar info panel
                 const btcPriceEl = document.getElementById('info-btc-price');
                 if (btcPriceEl && state.cryptoPrices && state.cryptoPrices['BTC']) {
@@ -5166,7 +5168,7 @@ What is your experience?"></textarea></div>
 
             const eventIndex = Math.floor(Math.random() * RANDOM_EVENTS.length);
             const event = RANDOM_EVENTS[eventIndex];
-            
+
             try {
                 if (window.fbDb && window.fbMethods) {
                     const eventRef = window.fbMethods.collection(window.fbDb, 'global_events');
@@ -5192,7 +5194,7 @@ What is your experience?"></textarea></div>
             const ticker = document.getElementById('admin-custom-event-ticker').value.trim().toUpperCase();
 
             const customEvent = { type: 'admin', icon, title, desc, effect, magnitude: mag, ticker };
-            
+
             try {
                 if (window.fbDb && window.fbMethods) {
                     const eventRef = window.fbMethods.collection(window.fbDb, 'global_events');
@@ -5338,7 +5340,7 @@ What is your experience?"></textarea></div>
             document.getElementById('stat-cash').textContent = '$' + formatNum(cash);
             document.getElementById('stat-networth').textContent = '$' + formatNum(netWorth);
             document.getElementById('stat-day').textContent = state.player.day;
-            document.getElementById('info-role').textContent = state.player.career ? state.player.career.title : '—';
+            document.getElementById('info-role').textContent = state.player.career ? state.player.career.title : '-';
             document.getElementById('info-level').textContent = state.player.level;
             document.getElementById('info-clout').textContent = formatNum(state.player.clout);
             document.getElementById('info-reputation').textContent = Math.round(state.player.reputation || 0);
@@ -5556,7 +5558,7 @@ What is your experience?"></textarea></div>
                     </div>
                     <div style="text-align:right;font-weight:700;font-size:0.9rem">${formatPrice(price)}</div>
                     <div style="text-align:right;font-weight:700;font-size:0.85rem;color:${change >= 0 ? 'var(--success)' : 'var(--danger)'}">${change >= 0 ? '+' : ''}${change.toFixed(2)}%</div>
-                    <div style="text-align:right;color:var(--text-muted);font-size:0.85rem">${owned > 0 ? owned : '—'}</div>
+                    <div style="text-align:right;color:var(--text-muted);font-size:0.85rem">${owned > 0 ? owned : '-'}</div>
                 </div>`;
             }).join('');
         }
@@ -5800,10 +5802,10 @@ What is your experience?"></textarea></div>
                 const jobSnap = await window.fbMethods.getDoc(jobDoc);
                 if (!jobSnap.exists()) { showToast('Error', 'Job no longer exists', 'danger'); return; }
                 const job = jobSnap.data();
-                
+
                 document.getElementById('apply-job-title').textContent = `Apply for ${job.title} at ${job.companyName}`;
                 const questionsDiv = document.getElementById('apply-job-questions');
-                
+
                 if (!job.questions || job.questions.length === 0) {
                     questionsDiv.innerHTML = '<p style="color:var(--text-muted)">No specific questions for this role. Click submit to apply.</p>';
                 } else {
@@ -5814,7 +5816,7 @@ What is your experience?"></textarea></div>
                         </div>
                     `).join('');
                 }
-                
+
                 document.getElementById('submit-application-btn').onclick = () => submitPlayerJobApplication(jobId);
                 document.getElementById('apply-job-modal').classList.remove('hidden');
             } catch (e) {
@@ -5829,7 +5831,7 @@ What is your experience?"></textarea></div>
                     question: el.previousElementSibling.textContent,
                     answer: el.value
                 }));
-                
+
                 const application = {
                     uid: window.fbAuth.currentUser.uid,
                     name: state._currentUsername,
@@ -5838,12 +5840,12 @@ What is your experience?"></textarea></div>
                     answers: answers,
                     appliedAt: new Date().toISOString()
                 };
-                
+
                 const jobDoc = window.fbMethods.doc(window.fbDb, "global_jobs", jobId);
                 await window.fbMethods.updateDoc(jobDoc, {
                     applicants: window.fbMethods.arrayUnion(application)
                 });
-                
+
                 document.getElementById('apply-job-modal').classList.add('hidden');
                 showToast('Success', 'Application submitted!', 'success');
                 renderCareer();
@@ -5866,7 +5868,7 @@ What is your experience?"></textarea></div>
         }
 
         async function renderCareer() {
-            document.getElementById('career-job').textContent = state.player.career ? state.player.career.title : '—';
+            document.getElementById('career-job').textContent = state.player.career ? state.player.career.title : '-';
             document.getElementById('career-salary').textContent = '$' + (state.player.salary || 0).toLocaleString() + '/day';
             document.getElementById('career-exp').textContent = formatNum(state.player.exp) + ' XP';
             // Work tasks
@@ -5889,7 +5891,7 @@ What is your experience?"></textarea></div>
                         </div>`;
                     }).join('') + `</div>`;
             }
-            
+
             // Career list (NPC + Player Jobs)
             const tbody = document.getElementById('career-list');
             let html = '';
@@ -5915,7 +5917,7 @@ What is your experience?"></textarea></div>
                     const jobsCol = window.fbMethods.collection(window.fbDb, "global_jobs");
                     const q = window.fbMethods.query(jobsCol, window.fbMethods.orderBy("createdAt", "desc"), window.fbMethods.limit(20));
                     const snap = await window.fbMethods.getDocs(q);
-                    
+
                     if (snap.empty) {
                         html = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:2rem">No real player jobs posted yet</td></tr>';
                     } else {
@@ -5940,8 +5942,8 @@ What is your experience?"></textarea></div>
                     }
                     // Update tbody after async fetch completes
                     tbody.innerHTML = html;
-                } catch (e) { 
-                    console.error("Failed to fetch player jobs", e); 
+                } catch (e) {
+                    console.error("Failed to fetch player jobs", e);
                     tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--danger)">Failed to load jobs. Check connection.</td></tr>';
                 }
             }
@@ -5958,7 +5960,7 @@ What is your experience?"></textarea></div>
                 // Set as current career
                 state.player.career = { id: job.id, title: job.title, companyName: job.companyName, isPlayerJob: true, ownerUid: job.ownerUid };
                 state.player.salary = job.salary;
-                
+
                 addActivity(`Day ${state.player.day}`, `Started player job: ${job.title} at ${job.companyName}`, 'success');
                 saveGame();
                 renderCareer();
@@ -6245,7 +6247,7 @@ What is your experience?"></textarea></div>
             const questions = document.getElementById('job-post-questions').value.split('\n').filter(q => q.trim() !== '');
 
             if (!title || !salary || salary <= 0) { showToast('Error', 'Enter valid title and salary', 'danger'); return; }
-            
+
             try {
                 showToast('Posting', 'Uploading job opening...', 'info');
                 const jobId = 'job_' + Date.now();
@@ -6319,7 +6321,7 @@ What is your experience?"></textarea></div>
             document.getElementById('amount-modal-title').textContent = `Invest in ${co.name}`;
             document.getElementById('amount-modal-desc').textContent = `Your cash: $${formatNum(state.player.cash)}. Investment earns 1%/day revenue.`;
             document.getElementById('amount-modal-input').value = '';
-            
+
             const maxBtn = document.getElementById('amount-modal-max-btn');
             maxBtn.onclick = () => {
                 document.getElementById('amount-modal-input').value = state.player.cash.toString();
@@ -6345,7 +6347,7 @@ What is your experience?"></textarea></div>
             document.getElementById('amount-modal-title').textContent = `Withdraw from ${co.name}`;
             document.getElementById('amount-modal-desc').textContent = `Company cash available: $${formatNum(co.cash)}.`;
             document.getElementById('amount-modal-input').value = '';
-            
+
             const maxBtn = document.getElementById('amount-modal-max-btn');
             maxBtn.onclick = () => {
                 document.getElementById('amount-modal-input').value = co.cash.toString();
@@ -6362,7 +6364,7 @@ What is your experience?"></textarea></div>
                 document.getElementById('amount-modal').classList.add('hidden');
                 saveGame(); updateUI(); renderCompanies();
                 showToast('Withdrawn!', `$${formatNum(amt)} from ${co.name}`, 'success');
-                
+
                 // Bankruptcy check
                 if (co.cash < 0) {
                     if (!state.bannedFromIPO.includes(co.name)) {
@@ -6385,15 +6387,15 @@ What is your experience?"></textarea></div>
                 showToast('Not Enough Cash', 'Need $1B in company cash to go public.', 'danger');
                 return;
             }
-            
+
             const ticker = co.name.substring(0, 4).toUpperCase();
             const ipoPrice = 100 + Math.random() * 200;
             const shares = 1000000; // 1M shares for the founder
-            
-            const stockData = { 
-                name: co.name, 
-                ticker: ticker, 
-                sector: 'Global IPOs', 
+
+            const stockData = {
+                name: co.name,
+                ticker: ticker,
+                sector: 'Global IPOs',
                 basePrice: ipoPrice,
                 founder: window.fbAuth.currentUser.email,
                 createdAt: new Date().toISOString()
@@ -6403,13 +6405,13 @@ What is your experience?"></textarea></div>
             STOCKS.push(stockData);
             state.stockPrices[ticker] = ipoPrice;
             state.stockHistory[ticker] = [ipoPrice * 0.9, ipoPrice * 0.95, ipoPrice];
-            
+
             // Founder gets shares (totalCost=0 prevents NaN on sell; avgCost=0 is intentional for IPO founder)
             state.player.portfolio[ticker] = { shares: shares, avgCost: 0, totalCost: 0 };
-            
+
             co.isPublic = true;
             co.ticker = ticker;
-            
+
             // Upload to Global Market (Firestore)
             try {
                 const globalStockDoc = window.fbMethods.doc(window.fbDb, "global_market", ticker);
@@ -6421,14 +6423,14 @@ What is your experience?"></textarea></div>
 
             addActivity(`Day ${state.player.day}`, `${co.name} went public! Ticker: ${ticker}`, 'success');
             showToast('IPO Success!', `${co.name} is now trading on the stock market!`, 'success');
-            
+
             saveGame(); updateUI(); renderCompanies(); renderMarket();
         }
 
         async function renderLeaderboard() {
             const body = document.getElementById('leaderboard-body');
             if (!body) return;
-            
+
             // Use cache if it's less than 30 seconds old
             const now = Date.now();
             if (state.leaderboardCache && (now - state.leaderboardLastFetch < 30000)) {
@@ -6469,7 +6471,7 @@ What is your experience?"></textarea></div>
                         const name = data.username || (data.email || 'Player').replace('@tradelife.game','').split('@')[0];
                         html += `<tr><td>${rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank}</td><td>${name}</td><td style="color:var(--success);font-weight:700">$${formatNum(data.netWorth || 0)}</td><td>Day ${data.day || 1}</td></tr>`;
                     });
-                    
+
                     state.leaderboardCache = html || '<tr><td colspan="4" style="text-align:center">No players yet</td></tr>';
                     state.leaderboardLastFetch = now;
                     body.innerHTML = state.leaderboardCache;
@@ -6502,7 +6504,7 @@ What is your experience?"></textarea></div>
             } catch (e) {
                 console.error("RTDB leaderboard failed", e);
             }
-            
+
             // Both sources failed - show retry button
             if (!state.leaderboardCache) {
                 body.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Could not load leaderboard. <button class="btn btn-secondary" onclick="renderLeaderboard()" style="margin-left:0.5rem;font-size:0.8rem;padding:0.3rem 0.8rem">&#x21bb; Retry</button></td></tr>';
@@ -6534,7 +6536,7 @@ What is your experience?"></textarea></div>
                 const jobsCol = window.fbMethods.collection(window.fbDb, "global_jobs");
                 const q = window.fbMethods.query(jobsCol, window.fbMethods.where("companyId", "==", coId), window.fbMethods.where("ownerUid", "==", window.fbAuth.currentUser.uid));
                 const snap = await window.fbMethods.getDocs(q);
-                
+
                 if (snap.empty) {
                     // If no real jobs, show NPC applicants
                     showJobApplications(coId);
@@ -6564,7 +6566,7 @@ What is your experience?"></textarea></div>
         async function showJobApplications(coId, isRealJob = false, jobId = null) {
             const co = state.player.companies.find(c => c.id === coId);
             const content = document.getElementById('job-modal-content');
-            
+
             if (isRealJob && jobId) {
                 showToast('Loading', 'Fetching applicants...', 'info');
                 try {
@@ -6572,7 +6574,7 @@ What is your experience?"></textarea></div>
                     const jobSnap = await window.fbMethods.getDoc(jobDoc);
                     const job = jobSnap.data();
                     const applicants = job.applicants || [];
-                    
+
                     if (applicants.length === 0) {
                         content.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:2rem">No applicants yet</div>';
                     } else {
@@ -6608,7 +6610,7 @@ What is your experience?"></textarea></div>
             }
         }
 
-        
+
         async function hireRealPlayer(coId, jobId, playerUid, playerName, salary) {
             showToast('Hiring', 'Processing...', 'info');
             try {
@@ -6635,7 +6637,7 @@ What is your experience?"></textarea></div>
                 // 3. Update job vacancies or remove if full
                 const newApplicants = (job.applicants || []).filter(a => a.uid !== playerUid);
                 const newVacancies = (job.vacancies || 1) - 1;
-                
+
                 if (newVacancies <= 0) {
                     await window.fbMethods.deleteDoc(jobDoc);
                 } else {
@@ -6775,10 +6777,10 @@ What is your experience?"></textarea></div>
             if (!amt || amt < 1000) { showToast('Error', 'Minimum investment is $1,000', 'danger'); return; }
             if (co.cash < amt) { showToast('Insufficient', 'Company needs more cash', 'danger'); return; }
             co.cash -= amt;
-            co.projects.push({ 
-                name: name, 
-                progress: 0, 
-                completed: false, 
+            co.projects.push({
+                name: name,
+                progress: 0,
+                completed: false,
                 invested: amt,
                 customPotential: amt * (2 + Math.random() * 3)
             });
@@ -6911,7 +6913,7 @@ What is your experience?"></textarea></div>
                     const urgencyColor = daysLeft <= 0 ? 'var(--danger)' : daysLeft <= 3 ? 'var(--warning)' : 'var(--success)';
                     const statusLabel = daysLeft <= 0 ? '🔴 OVERDUE' : daysLeft <= 3 ? '🟡 DUE SOON' : '🟢 On Track';
                     rowsHtml += `<div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg-panel);padding:0.6rem 1rem;border-radius:8px;border:1px solid var(--border);font-size:0.85rem">
-                        <div><span style="font-weight:700">Loan #${i+1}</span> — $${formatNum(loan.remaining)} remaining</div>
+                        <div><span style="font-weight:700">Loan #${i+1}</span> - $${formatNum(loan.remaining)} remaining</div>
                         <div style="display:flex;gap:1rem;align-items:center">
                             <span style="color:var(--text-muted)">Due Day ${dueDay}</span>
                             <span style="font-weight:700;color:${urgencyColor}">${daysLeft <= 0 ? 'OVERDUE by ' + Math.abs(daysLeft) + ' days' : daysLeft + ' days left'}</span>
@@ -7114,7 +7116,7 @@ What is your experience?"></textarea></div>
                     </div>
                     <div style="text-align:right;font-weight:700;font-size:0.9rem">${formatPrice(price)}</div>
                     <div style="text-align:right;font-weight:700;font-size:0.85rem;color:${change >= 0 ? 'var(--success)' : 'var(--danger)'}">${change >= 0 ? '+' : ''}${change.toFixed(2)}%</div>
-                    <div style="text-align:right;color:var(--text-muted);font-size:0.85rem">${owned > 0 ? owned.toFixed(4) : '—'}</div>
+                    <div style="text-align:right;color:var(--text-muted);font-size:0.85rem">${owned > 0 ? owned.toFixed(4) : '-'}</div>
                 </div>`;
             }).join('');
         }
@@ -7146,10 +7148,10 @@ What is your experience?"></textarea></div>
             document.getElementById('crypto-trade-price').textContent = formatPrice(price);
             document.getElementById('crypto-trade-change').textContent = (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
             document.getElementById('crypto-trade-change').style.color = change >= 0 ? 'var(--success)' : 'var(--danger)';
-            document.getElementById('crypto-trade-marketcap').textContent = coin.marketCap || '—';
-            document.getElementById('crypto-trade-volume').textContent = coin.volume || '—';
-            document.getElementById('crypto-trade-supply').textContent = coin.supply || '—';
-            document.getElementById('crypto-trade-sector').textContent = coin.sector || '—';
+            document.getElementById('crypto-trade-marketcap').textContent = coin.marketCap || '-';
+            document.getElementById('crypto-trade-volume').textContent = coin.volume || '-';
+            document.getElementById('crypto-trade-supply').textContent = coin.supply || '-';
+            document.getElementById('crypto-trade-sector').textContent = coin.sector || '-';
             document.getElementById('crypto-trade-holdings').textContent = amount.toFixed(6) + ' ' + state.selectedCrypto;
             document.getElementById('crypto-trade-pl').textContent = (pl >= 0 ? '+' : '') + '$' + formatNum(pl);
             document.getElementById('crypto-trade-pl').style.color = pl >= 0 ? 'var(--success)' : 'var(--danger)';
@@ -7310,7 +7312,7 @@ What is your experience?"></textarea></div>
             const ownedCountries = planet.countries || [];
             const totalCountries = WORLD_COUNTRIES.length;
             const completion = Math.round((ownedCountries.length / totalCountries) * 100);
-            
+
             // Calculate Total Income
             let totalIncome = 0;
             ownedCountries.forEach(c => {
@@ -7326,7 +7328,7 @@ What is your experience?"></textarea></div>
             if (compEl) compEl.textContent = completion + '%';
             const barEl = document.getElementById('map-progress-bar');
             if (barEl) barEl.style.width = completion + '%';
-            
+
             // Search filter
             const searchInput = document.getElementById('map-search-input');
             const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
@@ -7335,7 +7337,7 @@ What is your experience?"></textarea></div>
             const ownedList = document.getElementById('map-owned-list');
             if (ownedList) {
                 const filteredOwned = ownedCountries.filter(c => c.toLowerCase().includes(searchTerm));
-                ownedList.innerHTML = filteredOwned.length === 0 ? 
+                ownedList.innerHTML = filteredOwned.length === 0 ?
                     '<div style="grid-column:1/-1;color:var(--text-muted);text-align:center;padding:2rem">No matching countries owned</div>' :
                     filteredOwned.map(c => {
                         const tier = getCountryTier(c);
@@ -7352,7 +7354,7 @@ What is your experience?"></textarea></div>
                         `;
                     }).join('');
             }
-            
+
             // Render available countries
             const countriesGrid = document.getElementById('map-countries-grid');
             if (countriesGrid) {
@@ -7382,17 +7384,17 @@ What is your experience?"></textarea></div>
 
         function nukeOwnCountry(country) {
             if (!confirm(`Are you sure you want to NUKE your own country (${country})? This will remove it from your possession and cause global economic damage!`)) return;
-            
+
             const planet = state.player.planets.find(p => p.id === selectedPlanetId);
             if (!planet) return;
-            
+
             planet.countries = planet.countries.filter(c => c !== country);
             addActivity(`Day ${state.player.day}`, `☢️ NUKED ${country} on planet ${planet.name}!`, 'danger');
             showToast('TACTICAL NUKE INBOUND', `${country} has been wiped from the map.`, 'danger');
-            
+
             // Economic impact
             state.stockPrices = Object.fromEntries(Object.entries(state.stockPrices).map(([k, v]) => [k, v * 0.9]));
-            
+
             saveGame();
             renderMap();
         }
@@ -7405,7 +7407,7 @@ What is your experience?"></textarea></div>
             const tierData = getCountryTier(country);
             const COUNTRY_PRICE = tierData.price;
             const priceDisplay = formatNum(COUNTRY_PRICE);
-            
+
             if (state.player.cash < COUNTRY_PRICE) {
                 showToast('Insufficient Funds', `You need ${priceDisplay} to buy ${country}`, 'danger');
                 return;
@@ -7426,7 +7428,7 @@ What is your experience?"></textarea></div>
 
         function buyPlanet() {
             const PLANET_PRICE = 100000000000000; // 100T
-            // Allow buying planet even if not all countries are owned, 
+            // Allow buying planet even if not all countries are owned,
             // but usually users own all first. Let's make it flexible as requested.
             if (state.player.cash < PLANET_PRICE) {
                 showToast('Insufficient Funds', 'You need 100T to buy the planet', 'danger');
@@ -7667,7 +7669,7 @@ What is your experience?"></textarea></div>
             const accountType = document.getElementById('profile-account-type');
             const user = window.fbAuth ? window.fbAuth.currentUser : null;
             if (user) {
-                const uname = user.displayName || user.email.replace('@tradelife.game','') || '—';
+                const uname = user.displayName || user.email.replace('@tradelife.game','') || '-';
                 userEmail.textContent = uname;
                 accountType.textContent = user.providerData && user.providerData.length > 0 ? (user.providerData[0].providerId === 'google.com' ? 'Google' : 'Username') : 'Username';
                 // Load saved display name
@@ -7675,7 +7677,7 @@ What is your experience?"></textarea></div>
                 const dnInput = document.getElementById('profile-display-name');
                 if (dnInput) dnInput.value = savedDisplayName || uname;
             } else {
-                userEmail.textContent = '—';
+                userEmail.textContent = '-';
                 accountType.textContent = 'Not Logged In';
             }
             // Load saved avatar (image or emoji)
@@ -7789,47 +7791,47 @@ What is your experience?"></textarea></div>
             const lockDurationSeconds = 60 + Math.floor(Math.random() * 120);
             debtLockSeconds = lockDurationSeconds;
             const lockDurationMinutes = Math.ceil(lockDurationSeconds / 60);
-            
+
             const screen = document.getElementById('debt-lock-screen');
             screen.style.display = 'flex';
-            
+
             // Show lock duration
             document.getElementById('debt-lock-duration').textContent = lockDurationMinutes;
-            
+
             // Show debt amounts
             document.getElementById('debt-lock-amount').textContent = '$' + formatNum(totalDebt);
             const doubleDebt = totalDebt * 2;
             document.getElementById('debt-lock-double-amount').textContent = '$' + formatNum(doubleDebt);
-            
+
             // Update buttons
             const payBtn = document.getElementById('debt-lock-pay-btn');
             const payDoubleBtn = document.getElementById('debt-lock-pay-double-btn');
-            
+
             payBtn.disabled = state.player.cash < totalDebt;
             payBtn.textContent = state.player.cash >= totalDebt ? '💰 Pay $' + formatNum(totalDebt) + ' & Wait' : '❌ Not enough ($' + formatNum(state.player.cash) + ')';
-            
+
             payDoubleBtn.disabled = state.player.cash < doubleDebt;
             payDoubleBtn.textContent = state.player.cash >= doubleDebt ? '⚡ Pay $' + formatNum(doubleDebt) + ' & Unlock Now' : '❌ Not enough ($' + formatNum(state.player.cash) + ')';
-            
+
             if (debtLockInterval) clearInterval(debtLockInterval);
             debtLockInterval = setInterval(() => {
                 debtLockSeconds--;
                 const m = Math.floor(debtLockSeconds / 60);
                 const s = debtLockSeconds % 60;
                 document.getElementById('debt-lock-timer').textContent = m + ':' + s.toString().padStart(2,'0');
-                
+
                 // Update buttons in real-time
                 const debt = state.player.loans.reduce((sum, l) => sum + l.remaining, 0);
                 const doubleDebt2 = debt * 2;
                 const pb = document.getElementById('debt-lock-pay-btn');
                 const pdb = document.getElementById('debt-lock-pay-double-btn');
-                
+
                 pb.disabled = state.player.cash < debt;
                 pb.textContent = state.player.cash >= debt ? '💰 Pay $' + formatNum(debt) + ' & Wait' : '❌ Not enough ($' + formatNum(state.player.cash) + ')';
-                
+
                 pdb.disabled = state.player.cash < doubleDebt2;
                 pdb.textContent = state.player.cash >= doubleDebt2 ? '⚡ Pay $' + formatNum(doubleDebt2) + ' & Unlock Now' : '❌ Not enough ($' + formatNum(state.player.cash) + ')';
-                
+
                 if (debtLockSeconds <= 0) {
                     clearInterval(debtLockInterval);
                     // After timer expires, auto-unlock
@@ -8069,7 +8071,7 @@ What is your experience?"></textarea></div>
             if (!state.player.aiBots) state.player.aiBots = [];
             const panel = document.getElementById('aibot-active-panel');
             const shop = document.getElementById('aibot-shop');
-            
+
             // Active bots
             if (state.player.aiBots.length === 0) {
                 panel.innerHTML = '';
@@ -8102,7 +8104,7 @@ What is your experience?"></textarea></div>
                     }).join('')
                 }</div>`;
             }
-            
+
             // Shop
             shop.innerHTML = AI_BOTS.map(bot => {
                 const owned = state.player.aiBots.find(ab => ab.botId === bot.id);
@@ -8113,7 +8115,7 @@ What is your experience?"></textarea></div>
                         <div style="font-size:2.5rem">${bot.icon}</div>
                         <div>
                             <div style="font-weight:700;font-size:1rem">${bot.name}</div>
-                            <div style="font-size:0.75rem;color:${bot.color};font-weight:700">Tier ${bot.tier} — $${formatNum(bot.price)}</div>
+                            <div style="font-size:0.75rem;color:${bot.color};font-weight:700">Tier ${bot.tier} - $${formatNum(bot.price)}</div>
                         </div>
                     </div>
                     <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;line-height:1.5">${bot.desc}</div>
@@ -8133,7 +8135,7 @@ What is your experience?"></textarea></div>
                         </div>
                     </div>
                     <button class="btn ${canAfford && !owned ? 'btn-primary' : 'btn-secondary'}" onclick="buyAIBot('${bot.id}')" style="width:100%;font-size:0.85rem" ${(!canAfford || owned) ? 'disabled' : ''}>
-                        ${owned ? 'Already Owned' : canAfford ? 'Buy Bot — $' + formatNum(bot.price) : 'Need $' + formatNum(bot.price)}
+                        ${owned ? 'Already Owned' : canAfford ? 'Buy Bot - $' + formatNum(bot.price) : 'Need $' + formatNum(bot.price)}
                     </button>
                 </div>`;
             }).join('');
@@ -8166,7 +8168,7 @@ What is your experience?"></textarea></div>
             const sellValue = ab.value;
             state.player.cash += sellValue;
             state.player.aiBots = state.player.aiBots.filter(a => a.id !== abId);
-            addActivity(`Day ${state.player.day}`, `Sold ${bot ? bot.name : 'AI Bot'} — Recovered $${formatNum(sellValue)}`, 'warning');
+            addActivity(`Day ${state.player.day}`, `Sold ${bot ? bot.name : 'AI Bot'} - Recovered $${formatNum(sellValue)}`, 'warning');
             showToast('Bot Sold', `Recovered $${formatNum(sellValue)} from bot portfolio`, 'warning');
             saveGame(); updateUI(); renderAIBot();
         }
@@ -8178,7 +8180,7 @@ What is your experience?"></textarea></div>
             document.getElementById('amount-modal-title').textContent = `Add Funds to ${bot ? bot.name : 'Bot'}`;
             document.getElementById('amount-modal-desc').textContent = `Your cash: $${formatNum(state.player.cash)}. Funds will be managed by the bot.`;
             document.getElementById('amount-modal-input').value = '';
-            
+
             const maxBtn = document.getElementById('amount-modal-max-btn');
             maxBtn.onclick = () => {
                 document.getElementById('amount-modal-input').value = state.player.cash;
@@ -8245,12 +8247,12 @@ What is your experience?"></textarea></div>
                 const usersCol = window.fbMethods.collection(window.fbDb, "users");
                 const snapshot = await window.fbMethods.getDocs(usersCol);
                 const publicCos = [];
-                
+
                 snapshot.forEach(doc => {
                     const data = doc.data();
                     const uid = doc.id;
                     if (uid === (window.fbAuth.currentUser ? window.fbAuth.currentUser.uid : '')) return;
-                    
+
                     // Look for public companies in their gameState
                     if (data.gameState && data.gameState.player && data.gameState.player.companies) {
                         data.gameState.player.companies.forEach(co => {
@@ -8319,12 +8321,12 @@ What is your experience?"></textarea></div>
 
         async function attemptTakeover(ownerUid, ticker, cost) {
             if (state.player.cash < cost) { showToast('Insufficient Funds', 'You need more cash', 'danger'); return; }
-            
+
             const confirm = window.confirm(`Are you sure you want to spend $${formatNum(cost)} to take over ${ticker}? This will ruin your reputation!`);
             if (!confirm) return;
 
             state.player.cash -= cost;
-            
+
             // Add to player's acquisitions
             const coData = {
                 ticker,
@@ -8332,13 +8334,13 @@ What is your experience?"></textarea></div>
                 dailyRev: cost * 0.01 // 1% daily return on investment
             };
             state.player.takeovers.push(coData);
-            
+
             // Huge reputation hit
             changeReputation(-80, `Executed hostile takeover of ${ticker}`);
-            
+
             showToast('Takeover Successful!', `You now own 100% of ${ticker}!`, 'success');
             addActivity(`Day ${state.player.day}`, `Hostile takeover of ${ticker} for $${formatNum(cost)}`, 'danger');
-            
+
             renderTakeover();
             updateUI();
             saveGame();
@@ -8348,7 +8350,7 @@ What is your experience?"></textarea></div>
             if (!state.player.aiBots) state.player.aiBots = [];
             const panel = document.getElementById('aibot-active-panel');
             const shop = document.getElementById('aibot-shop');
-            
+
             // Active bots
             if (state.player.aiBots.length === 0) {
                 panel.innerHTML = '';
@@ -8381,7 +8383,7 @@ What is your experience?"></textarea></div>
                     }).join('')
                 }</div>`;
             }
-            
+
             // Shop
             shop.innerHTML = AI_BOTS.map(bot => {
                 const owned = state.player.aiBots.find(ab => ab.botId === bot.id);
@@ -8392,7 +8394,7 @@ What is your experience?"></textarea></div>
                         <div style="font-size:2.5rem">${bot.icon}</div>
                         <div>
                             <div style="font-weight:700;font-size:1rem">${bot.name}</div>
-                            <div style="font-size:0.75rem;color:${bot.color};font-weight:700">Tier ${bot.tier} — $${formatNum(bot.price)}</div>
+                            <div style="font-size:0.75rem;color:${bot.color};font-weight:700">Tier ${bot.tier} - $${formatNum(bot.price)}</div>
                         </div>
                     </div>
                     <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;line-height:1.5">${bot.desc}</div>
@@ -8411,7 +8413,7 @@ What is your experience?"></textarea></div>
                         </div>
                     </div>
                     <button class="btn ${canAfford && !owned ? 'btn-primary' : 'btn-secondary'}" onclick="buyAIBot('${bot.id}')" style="width:100%;font-size:0.85rem" ${(!canAfford || owned) ? 'disabled' : ''}>
-                        ${owned ? 'Already Owned' : canAfford ? 'Buy Bot — $' + formatNum(bot.price) : 'Need $' + formatNum(bot.price)}
+                        ${owned ? 'Already Owned' : canAfford ? 'Buy Bot - $' + formatNum(bot.price) : 'Need $' + formatNum(bot.price)}
                     </button>
                 </div>`;
             }).join('');
@@ -8444,7 +8446,7 @@ What is your experience?"></textarea></div>
             const sellValue = ab.value;
             state.player.cash += sellValue;
             state.player.aiBots = state.player.aiBots.filter(a => a.id !== abId);
-            addActivity(`Day ${state.player.day}`, `Sold ${bot ? bot.name : 'AI Bot'} — Recovered $${formatNum(sellValue)}`, 'warning');
+            addActivity(`Day ${state.player.day}`, `Sold ${bot ? bot.name : 'AI Bot'} - Recovered $${formatNum(sellValue)}`, 'warning');
             showToast('Bot Sold', `Recovered $${formatNum(sellValue)} from bot portfolio`, 'warning');
             saveGame(); updateUI(); renderAIBot();
         }
@@ -8456,7 +8458,7 @@ What is your experience?"></textarea></div>
             document.getElementById('amount-modal-title').textContent = `Add Funds to ${bot ? bot.name : 'Bot'}`;
             document.getElementById('amount-modal-desc').textContent = `Your cash: $${formatNum(state.player.cash)}. Funds will be managed by the bot.`;
             document.getElementById('amount-modal-input').value = '';
-            
+
             const maxBtn = document.getElementById('amount-modal-max-btn');
             maxBtn.onclick = () => {
                 document.getElementById('amount-modal-input').value = state.player.cash;
@@ -8527,7 +8529,7 @@ What is your experience?"></textarea></div>
                 if (!clubState.game) clubState.game = 'blackjack';
                 switchClubGame(clubState.game);
             } else {
-                // Not paid yet — show pay button
+                // Not paid yet - show pay button
                 if (locked) locked.style.display = 'flex';
                 if (unlocked) unlocked.style.display = 'none';
                 if (navItem) navItem.textContent = 'The Club 💳';
@@ -8880,7 +8882,7 @@ What is your experience?"></textarea></div>
                     win = bet * mult;
                     state.player.clubBalance += win;
                     const net = win - bet;
-                    if(status) status.innerHTML = `<span style="color:${net>=0?'var(--success)':'var(--danger)'}">${net>=0?'🎉 Won':'😞 Lost'} $${formatNum(Math.abs(net))} — Ball landed on ${num}</span>`;
+                    if(status) status.innerHTML = `<span style="color:${net>=0?'var(--success)':'var(--danger)'}">${net>=0?'🎉 Won':'😞 Lost'} $${formatNum(Math.abs(net))} - Ball landed on ${num}</span>`;
                     addActivity(`Day ${state.player.day}`, `Club Roulette: ${net>=0?'+':''} $${formatNum(net)}`, net>=0?'success':'danger');
                     updateClubBalanceDisplay(); saveGame();
                 }
@@ -8934,7 +8936,7 @@ What is your experience?"></textarea></div>
                     else if (type==='exact1' && roll===1) win = bet*6;
                     state.player.clubBalance += win;
                     const net = win - bet;
-                    if(status) status.innerHTML = `<span style="color:${net>=0?'var(--success)':'var(--danger)'}">${net>=0?'🎉 Won':'😞 Lost'} $${formatNum(Math.abs(net))} — Rolled ${roll}</span>`;
+                    if(status) status.innerHTML = `<span style="color:${net>=0?'var(--success)':'var(--danger)'}">${net>=0?'🎉 Won':'😞 Lost'} $${formatNum(Math.abs(net))} - Rolled ${roll}</span>`;
                     addActivity(`Day ${state.player.day}`, `Club Dice: ${net>=0?'+':''} $${formatNum(net)}`, net>=0?'success':'danger');
                     updateClubBalanceDisplay(); saveGame();
                 }
@@ -9208,7 +9210,7 @@ What is your experience?"></textarea></div>
             const planetSection = document.getElementById('nuke-planet-section');
             const targetSection = document.getElementById('nuke-target-section');
             _nukeTargetSaveData = null;
-            
+
             modal.classList.remove('hidden');
             playerSelect.innerHTML = '<option value="">-- Choose a player --</option>';
             planetSelect.innerHTML = '<option value="">-- Choose a planet --</option>';
@@ -9217,7 +9219,7 @@ What is your experience?"></textarea></div>
             if (targetSection) targetSection.style.display = 'none';
             document.getElementById('nuke-strike-section').style.display = 'none';
             updateNukeCostDisplay();
-            
+
             // Fetch all players from Firestore
             try {
                 if (window.fbDb && window.fbMethods) {
@@ -9240,7 +9242,7 @@ What is your experience?"></textarea></div>
                 console.error('Error loading players for nuke:', e);
                 showToast('Error', 'Could not load player list', 'danger');
             }
-            
+
             // Step 1: Player selected -> load their planets
             playerSelect.onchange = async () => {
                 const targetUid = playerSelect.value;
@@ -9318,7 +9320,7 @@ What is your experience?"></textarea></div>
                 showToast('Processing', 'Nuke is already being launched. Please wait...', 'warning');
                 return;
             }
-            
+
             const playerSelect = document.getElementById('nuke-player-select');
             const citySelect = document.getElementById('nuke-city-select');
             const planetSelect = document.getElementById('nuke-planet-select');
@@ -9328,11 +9330,11 @@ What is your experience?"></textarea></div>
             const targetPlanetId = planetSelect ? planetSelect.value : '';
             const strikeType = strikeTypeEl ? strikeTypeEl.value : 'country';
             const targetCity = strikeType === 'entire_planet' ? '__entire_planet__' : citySelect.value;
-            
+
             // Dynamic nuke cost: target price × 2 (or sum of all planet countries × 2 for entire_planet)
             let nukeCost = computeNukeCost();
             if (nukeCost === null || nukeCost <= 0) nukeCost = NUKE_COST; // fallback
-            
+
             if (!targetUid || !targetPlanetId) {
                 showToast('Invalid', 'Please select a player and a planet', 'warning');
                 return;
@@ -9346,38 +9348,38 @@ What is your experience?"></textarea></div>
                 showToast('Insufficient Funds', `Launching a nuke costs $${formatNum(nukeCost)}`, 'danger');
                 return;
             }
-            
+
             try {
                 // Set executing state and disable button inside try to ensure finally always runs
                 nukeExecuting = true;
                 const activeNukeBtn = document.querySelector('#nuke-modal .btn-danger');
-                if (activeNukeBtn) { 
-                    activeNukeBtn.disabled = true; 
-                    activeNukeBtn.textContent = '⏳ Launching...'; 
+                if (activeNukeBtn) {
+                    activeNukeBtn.disabled = true;
+                    activeNukeBtn.textContent = '⏳ Launching...';
                 }
                 if (!window.fbDb || !window.fbMethods) {
                     showToast('Error', 'Database not ready', 'danger');
                     throw new Error('__handled__');
                 }
-                
+
                 const currentUser = window.fbAuth.currentUser;
                 if (!currentUser) {
                     showToast('Error', 'Not logged in', 'danger');
                     throw new Error('__handled__');
                 }
-                
+
                 // Get target player data
                 const targetDocRef = window.fbMethods.doc(window.fbDb, 'users', targetUid);
                 const targetDocSnap = await window.fbMethods.getDoc(targetDocRef);
-                
+
                 if (!targetDocSnap.exists()) {
                     showToast('Error', 'Target player not found', 'danger');
                     throw new Error('__handled__');
                 }
-                
+
                 const targetData = targetDocSnap.data();
                 const targetName = targetData.username || targetData.displayName || 'Unknown Player';
-                
+
                 // Get target's save data (Try RTDB first, fallback to Firestore)
                 let targetSaveData = null;
                 if (window.fbRtdb && window.fbMethods.rtdbRef) {
@@ -9397,12 +9399,12 @@ What is your experience?"></textarea></div>
                         }
                     });
                 }
-                
+
                 if (!targetSaveData) {
                     showToast('Error', 'Could not access target player data', 'danger');
                     throw new Error('__handled__');
                 }
-                
+
                 // Apply nuke effects
                 const nukeTime = Date.now();
                 const nukeEffects = {
@@ -9411,7 +9413,7 @@ What is your experience?"></textarea></div>
                     stockReduction: 0.5,
                     cryptoReduction: 0.5
                 };
-                
+
                 // Reduce company stock by 50%
                 if (targetSaveData.player && targetSaveData.player.companies) {
                     targetSaveData.player.companies.forEach(company => {
@@ -9420,14 +9422,14 @@ What is your experience?"></textarea></div>
                         }
                     });
                 }
-                
+
                 // Reduce all stocks by 50%
                 if (targetSaveData.stockPrices) {
                     Object.keys(targetSaveData.stockPrices).forEach(ticker => {
                         targetSaveData.stockPrices[ticker] *= 0.5;
                     });
                 }
-                
+
                 // Reduce all crypto by 50%
                 if (targetSaveData.cryptoPrices) {
                     Object.keys(targetSaveData.cryptoPrices).forEach(ticker => {
@@ -9466,10 +9468,10 @@ What is your experience?"></textarea></div>
                         }
                     }
                 }
-                
+
                 // Store nuke effects for 10 minute duration
                 targetSaveData.player.nukeEffects = nukeEffects;
-                
+
                 // Update target's save (Strictly following Firestore rules: cash and level must remain identical)
                 if (targetSaveData.player) {
                     targetSaveData.player.cash = targetData.gameState?.player?.cash || targetSaveData.player.cash;
@@ -9483,7 +9485,7 @@ What is your experience?"></textarea></div>
                     const targetSaveRef = window.fbMethods.doc(window.fbDb, 'users', targetUid, 'saves', 'QuickSave');
                     await window.fbMethods.setDoc(targetSaveRef, targetSaveData);
                 }
-                
+
                 // Send notification to target
                 const currentUserName = window.fbAuth.currentUser.displayName || window.fbAuth.currentUser.email || 'A Player';
                 const notificationRef = window.fbMethods.collection(window.fbDb, 'users', targetUid, 'notifications');
@@ -9497,22 +9499,22 @@ What is your experience?"></textarea></div>
                     timestamp: new Date().toISOString(),
                     read: false
                 });
-                
+
                 // Deduct cost
                 state.player.cash -= nukeCost;
-                
+
                 // Reputation penalty for nuking
                 changeReputation(-50, `Launched a nuclear strike on ${targetName}`);
 
                 // Add activity to current player
                 const strikeLabel = strikeType === 'entire_planet' ? 'entire planet' : `${strikeType} "${targetCity}"`;
                 addActivity(`Day ${state.player.day}`, `🎯 Launched nuclear strike on ${targetName}'s ${strikeLabel}! (-$${formatNum(nukeCost)})`, 'danger');
-                
+
                 // Show success message
                 showToast('Nuke Launched!', `💣 ${targetName}'s ${strikeLabel} has been hit! (-$${formatNum(nukeCost)})`, 'success');
                 closeNukeModal();
                 saveGame();
-                
+
             } catch (e) {
                 console.error('Nuke execution error:', e);
                 if (e.message !== '__handled__') {
@@ -9522,9 +9524,9 @@ What is your experience?"></textarea></div>
                 // Reset executing state and re-enable button
                 nukeExecuting = false;
                 const activeNukeBtn = document.querySelector('#nuke-modal .btn-danger');
-                if (activeNukeBtn) { 
-                    activeNukeBtn.disabled = false; 
-                    activeNukeBtn.textContent = '💣 Launch Nuke'; 
+                if (activeNukeBtn) {
+                    activeNukeBtn.disabled = false;
+                    activeNukeBtn.textContent = '💣 Launch Nuke';
                 }
             }
         }
@@ -9532,29 +9534,29 @@ What is your experience?"></textarea></div>
         // ===================== NOTIFICATION QUEUE SYSTEM =====================
         let notificationQueue = [];
         let isShowingNotification = false;
-        
+
         function enqueueNotification(type, data) {
             notificationQueue.push({ type, data });
             processNotificationQueue();
         }
-        
+
         async function processNotificationQueue() {
             if (isShowingNotification || notificationQueue.length === 0) return;
-            
+
             isShowingNotification = true;
             const notification = notificationQueue.shift();
-            
+
             if (notification.type === 'nuke_received') {
                 await showNukeReceivedPopupQueued(notification.data.from, notification.data.city, notification.data.notifId);
             } else if (notification.type === 'job_hired') {
                 await showJobHiredPopupQueued(notification.data.title, notification.data.company, notification.data.salary, notification.data.notifId);
             }
-            
+
             isShowingNotification = false;
             // Process next notification in queue
             processNotificationQueue();
         }
-        
+
         // Listen for nuke, job, and gift notifications
         function startGlobalNotificationListener() {
             const user = window.fbAuth ? window.fbAuth.currentUser : null;
@@ -9582,14 +9584,14 @@ What is your experience?"></textarea></div>
             window.fbMethods.onSnapshot(userDocRef, async (doc) => {
                 if (doc.exists()) {
                     const userData = doc.data();
-                    
+
                     // Handle Admin Gifts
                     if (userData.pendingGift) {
                         const gift = userData.pendingGift;
                         await window.fbMethods.updateDoc(userDocRef, { pendingGift: null });
                         showGiftPopup(gift);
                     }
-                    
+
                     // Handle Admin Punishments
                     if (userData.pendingPunishment) {
                         const punishment = userData.pendingPunishment;
@@ -9608,14 +9610,14 @@ What is your experience?"></textarea></div>
                     if (saveData.player && saveData.player.nukeEffects) {
                         const cloudNuke = saveData.player.nukeEffects;
                         const localNuke = state.player.nukeEffects;
-                        
+
                         if (!localNuke || cloudNuke.timestamp > localNuke.timestamp) {
                             // Apply the nuke effects immediately to the local state
                             state.player.nukeEffects = cloudNuke;
                             state.player.countriesOwned = saveData.player.countriesOwned || state.player.countriesOwned;
                             state.player.planets = saveData.player.planets || state.player.planets;
                             state.player.planetOwned = saveData.player.planetOwned !== undefined ? saveData.player.planetOwned : state.player.planetOwned;
-                            
+
                             updateUI();
                             console.log("Real-time nuke effects applied from cloud.");
                         }
@@ -9679,11 +9681,11 @@ What is your experience?"></textarea></div>
                 updateUI();
                 renderCareer();
                 addActivity(`Day ${state.player.day}`, `Started working as ${title} at ${company}`, 'success');
-                
+
                 const user = window.fbAuth.currentUser;
                 const docRef = window.fbMethods.doc(window.fbDb, 'users', user.uid, 'notifications', notifId);
                 await window.fbMethods.updateDoc(docRef, { read: true });
-                
+
                 document.body.removeChild(popup);
                 saveGame();
                 if (onClose) onClose();
@@ -9913,7 +9915,7 @@ What is your experience?"></textarea></div>
 
             const eventRef = window.fbMethods.collection(window.fbDb, 'global_events');
             const q = window.fbMethods.query(eventRef, window.fbMethods.orderBy('timestamp', 'desc'), window.fbMethods.limit(1));
-            
+
             let lastEventTime = Date.now();
             window.fbMethods.onSnapshot(q, (snapshot) => {
                 snapshot.docChanges().forEach((change) => {
@@ -10026,7 +10028,7 @@ What is your experience?"></textarea></div>
             const overlay = document.createElement('div');
             overlay.className = 'gift-popup-overlay';
             overlay.style.zIndex = '10000';
-            
+
             overlay.innerHTML = `
                 <div class="gift-popup" style="border:2px solid #ef4444;background:linear-gradient(135deg,rgba(239,68,68,0.1),rgba(220,38,38,0.1))">
                     <div style="font-size:4rem;margin-bottom:1rem">${punishment.icon || '⚠️'}</div>
@@ -10224,7 +10226,7 @@ What is your experience?"></textarea></div>
             const type = document.getElementById('admin-gift-type').value;
             const itemSelect = document.getElementById('admin-gift-item');
             const amountInput = document.getElementById('admin-gift-amount');
-            
+
             itemSelect.innerHTML = '';
             itemSelect.style.display = 'none';
             amountInput.style.display = 'block';
@@ -10268,7 +10270,7 @@ What is your experience?"></textarea></div>
             try {
                 const data = adminCurrentSaveData;
                 if (!data.player) data.player = {};
-                
+
                 let giftMsg = "";
                 let giftDisplayName = "";
                 let giftIcon = "🎁";
@@ -10342,7 +10344,7 @@ What is your experience?"></textarea></div>
                 // Save to cloud
                 const saveDoc = window.fbMethods.doc(window.fbDb, 'users', adminCurrentPlayerUid, 'saves', adminCurrentSaveData.id || 'AutoSave');
                 await window.fbMethods.setDoc(saveDoc, data);
-                
+
                 // Update profile net worth
                 const nw = calcNetWorthForPlayer(data.player);
 
@@ -10358,7 +10360,7 @@ What is your experience?"></textarea></div>
                     sentBy: ADMIN_USERNAME
                 };
 
-                await window.fbMethods.updateDoc(window.fbMethods.doc(window.fbDb, 'users', adminCurrentPlayerUid), { 
+                await window.fbMethods.updateDoc(window.fbMethods.doc(window.fbDb, 'users', adminCurrentPlayerUid), {
                     netWorth: nw,
                     pendingGift: pendingGift
                 });
@@ -10395,7 +10397,7 @@ What is your experience?"></textarea></div>
             const type = document.getElementById('admin-punish-type').value;
             const itemSelect = document.getElementById('admin-punish-item');
             const amountInput = document.getElementById('admin-punish-amount');
-            
+
             if (type === 'cash' || type === 'stock' || type === 'crypto') {
                 itemSelect.style.display = 'none';
                 amountInput.style.display = 'block';
@@ -10440,7 +10442,7 @@ What is your experience?"></textarea></div>
             try {
                 const data = adminCurrentSaveData;
                 if (!data.player) data.player = {};
-                
+
                 let punishMsg = "";
                 let punishDisplayName = "";
                 let punishIcon = "⚠️";
@@ -10664,16 +10666,16 @@ What is your experience?"></textarea></div>
             const reason = document.getElementById('admin-ban-reason').value.trim();
             const duration = parseInt(document.getElementById('admin-ban-duration').value);
             if (!reason) { showToast('Error', 'Enter a reason', 'danger'); return; }
-            
+
             const expiry = duration === 0 ? 0 : Date.now() + (duration * 1000);
-            
+
             try {
                 const userRef = window.fbMethods.doc(window.fbDb, 'users', adminCurrentPlayerUid);
                 const snap = await window.fbMethods.getDoc(userRef);
                 const currentBanCount = (snap.exists() ? (snap.data().banCount || 0) : 0);
-                await window.fbMethods.updateDoc(userRef, { 
-                    isBanned: true, 
-                    banReason: reason, 
+                await window.fbMethods.updateDoc(userRef, {
+                    isBanned: true,
+                    banReason: reason,
                     banExpiry: expiry,
                     banCount: currentBanCount + 1,
                     lastBanAt: new Date().toISOString(),
@@ -10690,10 +10692,10 @@ What is your experience?"></textarea></div>
             if (!confirm('Are you sure you want to unban this player?')) return;
             try {
                 const userRef = window.fbMethods.doc(window.fbDb, 'users', adminCurrentPlayerUid);
-                await window.fbMethods.updateDoc(userRef, { 
-                    isBanned: false, 
-                    banReason: null, 
-                    banExpiry: null 
+                await window.fbMethods.updateDoc(userRef, {
+                    isBanned: false,
+                    banReason: null,
+                    banExpiry: null
                 });
                 showToast('Success', 'Player has been unbanned', 'success');
                 adminLoadPlayer(adminCurrentPlayerUid);
@@ -10705,7 +10707,7 @@ What is your experience?"></textarea></div>
             if (!confirm('Are you sure you want to reset this player\'s warning count to 0?')) return;
             try {
                 const userRef = window.fbMethods.doc(window.fbDb, 'users', adminCurrentPlayerUid);
-                await window.fbMethods.updateDoc(userRef, { 
+                await window.fbMethods.updateDoc(userRef, {
                     warningCount: 0,
                     pendingWarning: null,
                     lastWarningAt: null,
@@ -10811,7 +10813,7 @@ What is your experience?"></textarea></div>
                 else newCash = amount; // set
                 data.player.cash = newCash;
                 await window.fbMethods.setDoc(saveRef, data);
-                
+
                 // Also update the player's netWorth in their profile document for the leaderboard
                 try {
                     const userRef = window.fbMethods.doc(window.fbDb, 'users', adminCurrentPlayerUid);
@@ -11284,7 +11286,7 @@ What is your experience?"></textarea></div>
                         if (data.stocks[ticker] && data.stocks[ticker].price) {
                             const newPrice = data.stocks[ticker].price;
                             state.stockPrices[ticker] = newPrice;
-                            
+
                             // Update history for charts
                             if (!state.stockHistory[ticker]) state.stockHistory[ticker] = [];
                             state.stockHistory[ticker].push(newPrice);
@@ -11298,7 +11300,7 @@ What is your experience?"></textarea></div>
                         if (data.crypto[ticker] && data.crypto[ticker].price) {
                             const newPrice = data.crypto[ticker].price;
                             state.cryptoPrices[ticker] = newPrice;
-                            
+
                             // Update history for charts
                             if (!state.cryptoHistory[ticker]) state.cryptoHistory[ticker] = [];
                             state.cryptoHistory[ticker].push(newPrice);
@@ -11306,7 +11308,7 @@ What is your experience?"></textarea></div>
                         }
                     });
                 }
-                
+
                 // Update UI based on active tab
                 const activeTab = state.currentTab;
                 if (activeTab === 'market') renderMarket();
@@ -11390,7 +11392,7 @@ What is your experience?"></textarea></div>
             const oldExp = state.player.exp || 0;
             const oldRebirthCoins = state.player.rebirthCoins || 0;
             const oldRebirthCount = state.player.rebirthCount || 0;
-            
+
             // Reset player
             state.player.cash = 5000;
             state.player.debt = 0;
@@ -11412,19 +11414,19 @@ What is your experience?"></textarea></div>
             state.player.reputation = 100;
             state.player.incubator = [];
             state.player.takeovers = [];
-            
+
             // Restore achievements and level
             state.player.achievements = oldAchievements;
             state.player.level = oldLevel;
             state.player.exp = oldExp;
-            
+
             // Add rebirth coin and increment count
             state.player.rebirthCoins = (oldRebirthCoins || 0) + 1;
             state.player.rebirthCount = (oldRebirthCount || 0) + 1;
-            
+
             // Ensure rebirth stats are numbers
             fixRebirthStats();
-            
+
             document.getElementById('rebirth-modal').classList.add('hidden');
             showToast('Rebirth Complete!', `🪙 You now have ${state.player.rebirthCoins} Rebirth Coin(s)!`, 'success');
             saveGame();
