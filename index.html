@@ -4910,7 +4910,7 @@ What is your experience?"></textarea></div>
                 if (true) {
                     // Update stock prices
                     STOCKS.forEach(s => {
-                        // 30% chance of EXTREME per-3-second swings (2-10% per tick)
+                        // 30% chance of EXTREME per-second swings (2-10% per tick)
                         const isExtreme = Math.random() < 0.30;
                         let volatility;
                         
@@ -5149,7 +5149,7 @@ What is your experience?"></textarea></div>
                 if (btcPriceEl && state.cryptoPrices && state.cryptoPrices['BTC']) {
                     btcPriceEl.textContent = formatPrice(state.cryptoPrices['BTC']);
                 }
-            }, 3000); // Update every 3 seconds
+            }, 1000); // Update every second
         }
 
         function stopPriceTicker() {
@@ -11435,6 +11435,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.0.3</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.0.4</div>
 </body>
 </html>
