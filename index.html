@@ -5390,14 +5390,24 @@ What is your experience?"></textarea></div>
         function renderMarket() {
             // Filters
             const filterDiv = document.getElementById('market-filters');
-            filterDiv.innerHTML = SECTORS.map(s => `
-                <button class="btn ${state.marketFilter === s ? 'btn-primary' : 'btn-secondary'}" onclick="setMarketFilter('${s}')" style="font-size:0.75rem;padding:0.4rem 0.8rem;white-space:nowrap">${s}</button>
-            `).join('') + `
-                <button class="btn ${state.marketFilter === 'Custom' ? 'btn-primary' : 'btn-secondary'}" onclick="setMarketFilter('Custom')" style="font-size:0.75rem;padding:0.4rem 0.8rem;white-space:nowrap;background:${state.marketFilter === 'Custom' ? 'linear-gradient(135deg,#f59e0b,#d97706)' : ''}">🏢 Custom</button>
-            `;
+            let filterHtml = '';
+            // Add All button
+            const isAll = state.marketFilter === 'All' || !state.marketFilter;
+            filterHtml += `<button class="btn ${isAll ? 'btn-primary' : 'btn-secondary'}" onclick="setMarketFilter('All')" style="font-size:0.75rem;padding:0.4rem 0.8rem;white-space:nowrap">All</button>`;
+            // Add sector buttons
+            SECTORS.forEach(s => {
+                const isActive = state.marketFilter === s;
+                const style = isActive ? 'background:linear-gradient(135deg,var(--brand),#7c3aed);' : '';
+                filterHtml += `<button class="btn ${isActive ? 'btn-primary' : 'btn-secondary'}" onclick="setMarketFilter('${s}')" style="font-size:0.75rem;padding:0.4rem 0.8rem;white-space:nowrap;${style}">${s}</button>`;
+            });
+            // Add Custom filter button
+            const isCustom = state.marketFilter === 'Custom';
+            filterHtml += `<button class="btn ${isCustom ? 'btn-primary' : 'btn-secondary'}" onclick="setMarketFilter('Custom')" style="font-size:0.75rem;padding:0.4rem 0.8rem;white-space:nowrap;background:${isCustom ? 'linear-gradient(135deg,#f59e0b,#d97706)' : ''}">🏢 Custom</button>`;
+            filterDiv.innerHTML = filterHtml;
+            
             // Rows
             const scroll = document.getElementById('market-scroll');
-            let filtered = state.marketFilter === 'All' ? STOCKS : STOCKS.filter(s => s.sector === state.marketFilter);
+            let filtered = state.marketFilter === 'All' || !state.marketFilter ? STOCKS : (state.marketFilter === 'Custom' ? [] : STOCKS.filter(s => s.sector === state.marketFilter));
             // If Custom filter, show player IPO'd companies
             if (state.marketFilter === 'Custom') {
                 renderCustomCompaniesInMarket(scroll);
@@ -11498,6 +11508,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.1.9</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.2.0</div>
 </body>
 </html>
