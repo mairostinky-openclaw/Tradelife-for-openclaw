@@ -11479,9 +11479,12 @@ What is your experience?"></textarea></div>
         }
 
         // ===================== REBIRTH SYSTEM =====================
+        // First rebirth requires 100T net worth
+        const FIRST_REBIRTH_REQUIREMENT = 100000000000000; // 100 Trillion
+        
         function getRebirthCost() {
-            // Base cost: 1M, doubles each rebirth
-            return 1000000 * Math.pow(2, state.player.rebirthCount || 0);
+            // Base cost: 100T for first rebirth, then doubles each subsequent rebirth
+            return FIRST_REBIRTH_REQUIREMENT * Math.pow(2, state.player.rebirthCount || 0);
         }
 
         function showRebirthModal() {
