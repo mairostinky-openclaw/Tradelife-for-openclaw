@@ -4987,6 +4987,10 @@ What is your experience?"></textarea></div>
                 const direction = Math.random() > 0.5 ? 1 : -1;
                 const change = state.stockPrices[s.ticker] * volatility * direction;
                 state.stockPrices[s.ticker] = Math.max(0.01, state.stockPrices[s.ticker] + change);
+                // Limit: 33% to 300% of base price
+                const minPrice = s.basePrice * 0.33;
+                const maxPrice = s.basePrice * 3;
+                state.stockPrices[s.ticker] = Math.max(minPrice, Math.min(maxPrice, state.stockPrices[s.ticker]));
                 if (!state.stockHistory[s.ticker]) state.stockHistory[s.ticker] = [];
                 state.stockHistory[s.ticker].push(state.stockPrices[s.ticker]);
                 if (state.stockHistory[s.ticker].length > 30) state.stockHistory[s.ticker].shift();
@@ -5008,6 +5012,10 @@ What is your experience?"></textarea></div>
                 const direction = Math.random() > 0.5 ? 1 : -1;
                 const change = state.cryptoPrices[c.ticker] * vol * direction;
                 state.cryptoPrices[c.ticker] = Math.max(0.000000001, state.cryptoPrices[c.ticker] + change);
+                // Limit: 33% to 300% of base price
+                const minPrice = c.basePrice * 0.33;
+                const maxPrice = c.basePrice * 3;
+                state.cryptoPrices[c.ticker] = Math.max(minPrice, Math.min(maxPrice, state.cryptoPrices[c.ticker]));
                 if (!state.cryptoHistory[c.ticker]) state.cryptoHistory[c.ticker] = [];
                 state.cryptoHistory[c.ticker].push(state.cryptoPrices[c.ticker]);
                 if (state.cryptoHistory[c.ticker].length > 30) state.cryptoHistory[c.ticker].shift();
@@ -5048,6 +5056,10 @@ What is your experience?"></textarea></div>
                     const direction = Math.random() < 0.55 ? 1 : -1; // 55% up, 45% down
                     const change = state.stockPrices[s.ticker] * volatility * direction;
                     state.stockPrices[s.ticker] = Math.max(0.01, state.stockPrices[s.ticker] + change);
+                    // Limit: 33% to 300% of base price
+                    const minPrice = s.basePrice * 0.33;
+                    const maxPrice = s.basePrice * 3;
+                    state.stockPrices[s.ticker] = Math.max(minPrice, Math.min(maxPrice, state.stockPrices[s.ticker]));
                     if (!state.stockHistory[s.ticker]) state.stockHistory[s.ticker] = [];
                     state.stockHistory[s.ticker].push(state.stockPrices[s.ticker]);
                     if (state.stockHistory[s.ticker].length > 30) state.stockHistory[s.ticker].shift();
@@ -5065,6 +5077,10 @@ What is your experience?"></textarea></div>
                     const direction = Math.random() < 0.55 ? 1 : -1; // 55% up, 45% down
                     const change = state.cryptoPrices[c.ticker] * vol * direction;
                     state.cryptoPrices[c.ticker] = Math.max(0.000000001, state.cryptoPrices[c.ticker] + change);
+                    // Limit: 33% to 300% of base price
+                    const minPrice = c.basePrice * 0.33;
+                    const maxPrice = c.basePrice * 3;
+                    state.cryptoPrices[c.ticker] = Math.max(minPrice, Math.min(maxPrice, state.cryptoPrices[c.ticker]));
                     if (!state.cryptoHistory[c.ticker]) state.cryptoHistory[c.ticker] = [];
                     state.cryptoHistory[c.ticker].push(state.cryptoPrices[c.ticker]);
                     if (state.cryptoHistory[c.ticker].length > 30) state.cryptoHistory[c.ticker].shift();
@@ -11598,6 +11614,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.7</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.8</div>
 </body>
 </html>
