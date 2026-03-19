@@ -8364,28 +8364,29 @@ What is your experience?"></textarea></div>
                 let changeRate;
                 const roll = Math.random();
                 if (bot.id === 'bot7') {
-                    // Quantum Oracle: always wins, but only invests 70% of FIXED amount
+                    // Quantum Oracle: always wins with fixed 6.7%
                     const effectiveValue70 = ab.invested * 0.70;
-                    changeRate = bot.dailyReturn * (0.8 + Math.random() * 0.5);
+                    changeRate = 0.067; // Fixed 6.7%
                     const change70 = effectiveValue70 * changeRate;
                     ab.value = Math.max(ab.invested * 0.1, ab.value + change70);
                     ab.totalPL = ab.value - ab.invested;
                     const changeStr70 = change70 >= 0 ? `+$${formatNum(change70)}` : `-$${formatNum(Math.abs(change70))}`;
-                    addActivity(`Day ${state.player.day}`, `${bot.name}: ${changeStr70} (${(changeRate*100).toFixed(1)}%) [70% invested]`, change70 >= 0 ? 'success' : 'danger');
-                    return; // Skip the rest of the loop for bot7
+                    addActivity(`Day ${state.player.day}`, `${bot.name}: ${changeStr70} (+6.7%) [70% invested]`, 'success');
+                    return;
                 } else if (roll < bot.winRate) {
-                    // Win day - use FIXED invested amount
-                    changeRate = bot.dailyReturn * (0.5 + Math.random() * 1.5);
+                    // Win day - fixed 6.7%
+                    changeRate = 0.067;
                 } else {
-                    // Loss day - use FIXED invested amount
-                    changeRate = -(bot.maxLoss * (0.3 + Math.random() * 0.7));
+                    // Loss day - fixed -10%
+                    changeRate = -0.10;
                 }
                 // Use FIXED invested amount instead of compounding
                 const change = ab.invested * changeRate;
                 ab.value = Math.max(ab.invested * 0.1, ab.value + change);
                 ab.totalPL = ab.value - ab.invested;
                 const changeStr = change >= 0 ? `+$${formatNum(change)}` : `-$${formatNum(Math.abs(change))}`;
-                addActivity(`Day ${state.player.day}`, `${bot.name}: ${changeStr} (${(changeRate*100).toFixed(1)}%)`, change >= 0 ? 'success' : 'danger');
+                const percentStr = changeRate >= 0 ? '+6.7%' : '-10%';
+                addActivity(`Day ${state.player.day}`, `${bot.name}: ${changeStr} (${percentStr})`, change >= 0 ? 'success' : 'danger');
             });
         }
 
@@ -11592,6 +11593,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.3</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.4</div>
 </body>
 </html>
