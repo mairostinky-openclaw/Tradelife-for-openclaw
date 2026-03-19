@@ -11613,7 +11613,23 @@ What is your experience?"></textarea></div>
             renderRebirthUI();
         }
 
+        // Check if current user is admin
+        function isAdmin() {
+            const user = window.fbAuth ? window.fbAuth.currentUser : null;
+            // Your user ID is 1074269194994061383 - always admin
+            if (user && user.uid === '1074269194994061383') return true;
+            // Original admin check
+            return user && user.email && user.email.startsWith('admin');
+        }
+        
+        function checkAdminAccess() {
+            const user = window.fbAuth ? window.fbAuth.currentUser : null;
+            if (isAdmin()) {
+                document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+            }
+        }
+
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.9</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.10</div>
 </body>
 </html>
