@@ -3893,7 +3893,22 @@ What is your experience?"></textarea></div>
                 });
 
                 document.getElementById('save-modal').classList.add('hidden');
+                // Restore prices AFTER launching app (to survive any overwrites)
+                const savedPrices = { 
+                    stockPrices: {...state.stockPrices}, 
+                    cryptoPrices: {...state.cryptoPrices},
+                    stockHistory: {...state.stockHistory},
+                    cryptoHistory: {...state.cryptoHistory}
+                };
                 launchApp(true);
+                // Restore prices one more time after launchApp sets everything up
+                setTimeout(() => {
+                    if (savedPrices.stockPrices) state.stockPrices = savedPrices.stockPrices;
+                    if (savedPrices.cryptoPrices) state.cryptoPrices = savedPrices.cryptoPrices;
+                    if (savedPrices.stockHistory) state.stockHistory = savedPrices.stockHistory;
+                    if (savedPrices.cryptoHistory) state.cryptoHistory = savedPrices.cryptoHistory;
+                    renderAll();
+                }, 100);
                 showToast('Game Loaded', `Welcome back to "${name}"!`, 'success');
             } catch(e) {
                 showToast('Error', 'Failed to load save', 'danger');
@@ -4004,7 +4019,22 @@ What is your experience?"></textarea></div>
                     }
                 });
                 document.getElementById('save-modal').classList.add('hidden');
+                // Restore prices AFTER launching app (to survive any overwrites)
+                const savedPrices = { 
+                    stockPrices: {...state.stockPrices}, 
+                    cryptoPrices: {...state.cryptoPrices},
+                    stockHistory: {...state.stockHistory},
+                    cryptoHistory: {...state.cryptoHistory}
+                };
                 launchApp(true);
+                // Restore prices one more time after launchApp sets everything up
+                setTimeout(() => {
+                    if (savedPrices.stockPrices) state.stockPrices = savedPrices.stockPrices;
+                    if (savedPrices.cryptoPrices) state.cryptoPrices = savedPrices.cryptoPrices;
+                    if (savedPrices.stockHistory) state.stockHistory = savedPrices.stockHistory;
+                    if (savedPrices.cryptoHistory) state.cryptoHistory = savedPrices.cryptoHistory;
+                    renderAll();
+                }, 100);
                 showToast('Game Loaded', 'Local auto-save restored! Remember to save to cloud.', 'success');
             } catch(e) {
                 showToast('Error', 'Failed to load local auto-save', 'danger');
@@ -11631,6 +11661,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.15</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.16</div>
 </body>
 </html>
