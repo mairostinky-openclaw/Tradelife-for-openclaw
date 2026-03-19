@@ -4512,8 +4512,18 @@ What is your experience?"></textarea></div>
 
         function openGiveMoneyModal(uid, username) {
             document.getElementById('amount-modal-title').textContent = `Give Money to ${username}`;
-            document.getElementById('amount-modal-desc').textContent = `Your cash: $${formatNum(state.player.cash)}. The recipient will be notified.`;
+            document.getElementById('amount-modal-desc').innerHTML = `Your cash: $${formatNum(state.player.cash)}.<br><span style="color:var(--danger)">Tax: 70%</span> (recipient gets 30%).`;
             document.getElementById('amount-modal-input').value = '';
+            
+            // Add max button if not exists
+            const maxBtn = document.getElementById('amount-modal-max-btn');
+            if (maxBtn) {
+                maxBtn.onclick = () => {
+                    document.getElementById('amount-modal-input').value = state.player.cash.toString();
+                };
+                maxBtn.style.display = 'inline-block';
+            }
+            
             const btn = document.getElementById('amount-modal-confirm');
             btn.onclick = () => confirmGiveMoney(uid, username);
             document.getElementById('amount-modal').classList.remove('hidden');
@@ -4524,29 +4534,33 @@ What is your experience?"></textarea></div>
             if (!amt || amt <= 0 || !Number.isFinite(amt)) { showToast('Error', 'Enter a valid amount', 'danger'); return; }
             if (state.player.cash < amt) { showToast('Insufficient Funds', '', 'danger'); return; }
 
+            // 70% tax, recipient gets 30%
+            const tax = Math.floor(amt * 0.70);
+            const received = amt - tax;
+
             try {
                 showToast('Sending', 'Processing transaction...', 'info');
 
-                // 1. Deduct from sender
+                // 1. Deduct from sender (full amount)
                 state.player.cash -= amt;
                 updateUI();
                 saveGame();
 
-                // 2. Add to recipient's notification queue in Firestore
-                // We use a "notifications" collection that the game listens to
+                // 2. Add to recipient's notification queue in Firestore (only 30% after tax)
                 const notifRef = window.fbMethods.collection(window.fbDb, 'users', uid, 'notifications');
                 await window.fbMethods.addDoc(notifRef, {
                     type: 'money_received',
                     from: state._currentUsername || 'Anonymous',
-                    amount: amt,
+                    amount: received, // After 70% tax
+                    tax: tax,
+                    originalAmount: amt,
                     timestamp: new Date().toISOString(),
                     read: false
                 });
 
-                // 3. Also update their cash in their latest save if possible (optional, but better for real-time)
-                // For simplicity in this architecture, we'll rely on the notification to trigger the add when they are online.
-
                 document.getElementById('amount-modal').classList.add('hidden');
+                showToast('Money Sent!', `$${formatNum(received)} sent to ${username} ($${formatNum(tax)} tax deducted)`, 'success');
+                addActivity(`Day ${state.player.day}`, `Gave $${formatNum(amt)} to ${username} - $${formatNum(tax)} tax, $${formatNum(received)} received`, 'success');
                 document.getElementById('visit-modal').classList.add('hidden');
                 showToast('Success', `Sent $${formatNum(amt)} to ${username}!`, 'success');
                 addActivity(`Day ${state.player.day}`, `Sent $${formatNum(amt)} to ${username}`, 'warning');
@@ -4581,18 +4595,22 @@ What is your experience?"></textarea></div>
             const popup = document.createElement('div');
             popup.className = 'modal-overlay';
             popup.style.zIndex = '10000';
+            const taxInfo = amount.tax ? `<p style="color:var(--danger);font-size:0.85rem">Tax paid: $${formatNum(amount.tax || 0)}</p>` : '';
+            const receivedAmount = amount.amount || amount;
             popup.innerHTML = `
                 <div class="modal-content" style="max-width:400px;text-align:center;border:2px solid var(--success)">
                     <div style="font-size:4rem;margin-bottom:1rem">💰</div>
                     <h2 style="color:var(--success);margin-bottom:0.5rem">Money Received!</h2>
-                    <p style="margin-bottom:1.5rem"><strong>${from}</strong> sent you <strong style="color:var(--success);font-size:1.2rem">$${formatNum(amount)}</strong>!</p>
+                    <p style="margin-bottom:0.5rem"><strong>${from}</strong> sent you</p>
+                    <p style="color:var(--success);font-size:1.4rem;font-weight:700">$${formatNum(receivedAmount)}</p>
+                    ${taxInfo}
                     <button class="btn btn-success" id="claim-money-btn" style="width:100%">Claim Cash</button>
                 </div>
             `;
             document.body.appendChild(popup);
 
             document.getElementById('claim-money-btn').onclick = async () => {
-                const safeAmount = (typeof amount === 'number' && Number.isFinite(amount) && amount > 0) ? amount : 0;
+                const safeAmount = (typeof receivedAmount === 'number' && Number.isFinite(receivedAmount) && receivedAmount > 0) ? receivedAmount : 0;
                 if (safeAmount > 0) {
                     state.player.cash += safeAmount;
                     updateUI();
@@ -11517,6 +11535,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.2.6</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.2.7</div>
 </body>
 </html>
