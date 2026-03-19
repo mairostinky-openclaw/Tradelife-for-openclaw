@@ -4538,6 +4538,52 @@ What is your experience?"></textarea></div>
             const tax = Math.floor(amt * 0.70);
             const received = amt - tax;
 
+            // Close amount modal and show confirmation popup
+            document.getElementById('amount-modal').classList.add('hidden');
+            
+            // Show confirmation popup
+            const popup = document.createElement('div');
+            popup.className = 'modal-overlay';
+            popup.style.zIndex = '10000';
+            popup.innerHTML = `
+                <div class="modal-content" style="max-width:400px;text-align:center">
+                    <div style="font-size:3rem;margin-bottom:1rem">💸</div>
+                    <h2 style="margin-bottom:1rem">Confirm Transfer</h2>
+                    <div style="background:var(--bg-panel);padding:1rem;border-radius:8px;margin-bottom:1rem">
+                        <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem">
+                            <span style="color:var(--text-muted)">You send:</span>
+                            <span style="font-weight:700">$${formatNum(amt)}</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;color:var(--danger)">
+                            <span>Tax (70%):</span>
+                            <span>-$${formatNum(tax)}</span>
+                        </div>
+                        <div style="border-top:1px solid var(--border);padding-top:0.5rem;margin-top:0.5rem;display:flex;justify-content:space-between">
+                            <span style="font-weight:700">Recipient gets:</span>
+                            <span style="font-weight:700;color:var(--success)">$${formatNum(received)}</span>
+                        </div>
+                    </div>
+                    <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1.5rem">Send to <strong>${username}</strong>?</p>
+                    <div style="display:flex;gap:1rem">
+                        <button class="btn btn-secondary" id="cancel-transfer-btn" style="flex:1">Cancel</button>
+                        <button class="btn btn-success" id="confirm-transfer-btn" style="flex:1">Confirm</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(popup);
+
+            document.getElementById('cancel-transfer-btn').onclick = () => {
+                document.body.removeChild(popup);
+                document.getElementById('amount-modal').classList.remove('hidden');
+            };
+
+            document.getElementById('confirm-transfer-btn').onclick = async () => {
+                document.body.removeChild(popup);
+                await processGiveMoney(uid, username, amt, tax, received);
+            };
+        }
+
+        async function processGiveMoney(uid, username, amt, tax, received) {
             try {
                 showToast('Sending', 'Processing transaction...', 'info');
 
@@ -4551,19 +4597,16 @@ What is your experience?"></textarea></div>
                 await window.fbMethods.addDoc(notifRef, {
                     type: 'money_received',
                     from: state._currentUsername || 'Anonymous',
-                    amount: received, // After 70% tax
+                    amount: received,
                     tax: tax,
                     originalAmount: amt,
                     timestamp: new Date().toISOString(),
                     read: false
                 });
 
-                document.getElementById('amount-modal').classList.add('hidden');
                 showToast('Money Sent!', `$${formatNum(received)} sent to ${username} ($${formatNum(tax)} tax deducted)`, 'success');
                 addActivity(`Day ${state.player.day}`, `Gave $${formatNum(amt)} to ${username} - $${formatNum(tax)} tax, $${formatNum(received)} received`, 'success');
                 document.getElementById('visit-modal').classList.add('hidden');
-                showToast('Success', `Sent $${formatNum(amt)} to ${username}!`, 'success');
-                addActivity(`Day ${state.player.day}`, `Sent $${formatNum(amt)} to ${username}`, 'warning');
             } catch (e) {
                 console.error(e);
                 showToast('Error', 'Transaction failed', 'danger');
@@ -11535,6 +11578,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.2.7</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.2.8</div>
 </body>
 </html>
