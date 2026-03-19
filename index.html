@@ -3893,7 +3893,7 @@ What is your experience?"></textarea></div>
                 });
 
                 document.getElementById('save-modal').classList.add('hidden');
-                launchApp();
+                launchApp(true);
                 showToast('Game Loaded', `Welcome back to "${name}"!`, 'success');
             } catch(e) {
                 showToast('Error', 'Failed to load save', 'danger');
@@ -4004,7 +4004,7 @@ What is your experience?"></textarea></div>
                     }
                 });
                 document.getElementById('save-modal').classList.add('hidden');
-                launchApp();
+                launchApp(true);
                 showToast('Game Loaded', 'Local auto-save restored! Remember to save to cloud.', 'success');
             } catch(e) {
                 showToast('Error', 'Failed to load local auto-save', 'danger');
@@ -4283,7 +4283,7 @@ What is your experience?"></textarea></div>
             } catch(e) { console.warn('Failed to load global prices:', e); }
         }
 
-        function launchApp() {
+        function launchApp(isLoadingSave = false) {
             // Initialize Firestore Quota Manager
             if (window.firestoreQuotaManager) {
                 window.firestoreQuotaManager.init();
@@ -4294,8 +4294,10 @@ What is your experience?"></textarea></div>
             state.initialized = true;
             // Don't reset prices - keep saved prices or load from RTDB
             // initPrices();
-            // Load global prices from RTDB (or keep saved prices if not available)
-            loadGlobalPrices();
+            // Only load from RTDB for new games, not for loaded saves
+            if (!isLoadingSave) {
+                loadGlobalPrices();
+            }
             // Clear any existing timers before starting new ones
             if (state.dayTimerInterval) { clearInterval(state.dayTimerInterval); state.dayTimerInterval = null; }
             if (state.eventInterval) { clearInterval(state.eventInterval); state.eventInterval = null; }
@@ -11632,6 +11634,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.12</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.13</div>
 </body>
 </html>
