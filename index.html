@@ -4307,8 +4307,8 @@ What is your experience?"></textarea></div>
             startPriceTicker();
             updateNewsTicker();
             syncGlobalMarket();
-            // Load global prices from RTDB (or set to base if not available)
-            loadGlobalPrices();
+            // Don't load from RTDB - keep saved prices
+            // loadGlobalPrices();
             // Sync any pending local saves to cloud
             setTimeout(syncLocalToCloud, 3000);
             // Start listening for money transfers
@@ -11634,6 +11634,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.13</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.14</div>
 </body>
 </html>
