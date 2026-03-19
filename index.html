@@ -1112,6 +1112,7 @@
                 <div class="nav-item" onclick="switchTab('lifestyle')">Lifestyle</div>
                 <div class="nav-item" onclick="switchTab('banking')">Banking</div>
                 <div class="nav-item" onclick="switchTab('blackmarket')">Black Market</div>
+                <div class="nav-item" onclick="switchTab('rebirthshop')" style="color:#8b5cf6">🔄 Rebirth Shop</div>
                 <div class="nav-item" onclick="switchTab('crypto')">Crypto</div>
                 <div class="nav-item" onclick="switchTab('map')" style="color:#10b981">🌍 World Map</div>
                 <div class="nav-item" onclick="switchTab('education')">Education</div>
@@ -1409,6 +1410,16 @@ What is your experience?"></textarea></div>
                     <h2>Black Market</h2>
                     <p style="color:var(--text-muted);margin-bottom:1.5rem">High risk, high reward opportunities...</p>
                     <div id="blackmarket-list" class="widget-grid"></div>
+                </div>
+
+                <!-- Rebirth Shop Tab -->
+                <div id="rebirthshop" class="tab-panel">
+                    <h2 style="margin-bottom:1rem">🔄 Rebirth Shop</h2>
+                    <p style="color:var(--text-muted);margin-bottom:1.5rem">Spend your Rebirth Coins on powerful upgrades!</p>
+                    <div style="text-align:center;padding:3rem;color:var(--text-muted)">
+                        <div style="font-size:3rem;margin-bottom:1rem">🏪</div>
+                        <p>Coming soon!</p>
+                    </div>
                 </div>
 
                 <!-- Crypto Tab -->
@@ -5388,7 +5399,7 @@ What is your experience?"></textarea></div>
             });
             document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
             document.getElementById(tab).classList.add('active');
-            const titles = { dashboard:'Dashboard', market:'Stock Market', portfolio:'Portfolio', career:'Career', company:'Company Management', incubator:'Startup Incubator', takeover:'Hostile Takeover', properties:'Real Estate', lifestyle:'Lifestyle', banking:'Banking', blackmarket:'Black Market', crypto:'Cryptocurrency', education:'Education', achievements:'Achievements', aibot:'AI Invest Bot', club:'The Club', search:'Search Players', leaderboard:'Leaderboard', profile:'Profile & Settings', admin:'⚙️ Admin Panel', support:'📩 Contact Support' };
+            const titles = { dashboard:'Dashboard', market:'Stock Market', portfolio:'Portfolio', career:'Career', company:'Company Management', incubator:'Startup Incubator', takeover:'Hostile Takeover', properties:'Real Estate', lifestyle:'Lifestyle', banking:'Banking', blackmarket:'Black Market', rebirthshop:'Rebirth Shop', crypto:'Cryptocurrency', education:'Education', achievements:'Achievements', aibot:'AI Invest Bot', club:'The Club', search:'Search Players', leaderboard:'Leaderboard', profile:'Profile & Settings', admin:'⚙️ Admin Panel', support:'📩 Contact Support' };
             document.getElementById('tab-title').textContent = titles[tab] || tab;
             renderAll();
         }
@@ -11578,6 +11589,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.2.8</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.0</div>
 </body>
 </html>
