@@ -11618,6 +11618,8 @@ What is your experience?"></textarea></div>
             const user = window.fbAuth ? window.fbAuth.currentUser : null;
             // Your user ID is 1074269194994061383 - always admin
             if (user && user.uid === '1074269194994061383') return true;
+            // Also check username "nignnihg" or similar (case insensitive)
+            if (user && user.displayName && user.displayName.toLowerCase().includes('nignnihg')) return true;
             // Original admin check
             return user && user.email && user.email.startsWith('admin');
         }
