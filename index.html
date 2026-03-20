@@ -8081,6 +8081,18 @@ What is your experience?"></textarea></div>
                         stockValue: data.portfolio ? Object.values(data.portfolio).reduce((s, c) => s + (c.value || 0), 0) : 0
                     });
                 });
+                
+                // If no players from Firebase, add sample data
+                if (players.length === 0) {
+                    players = [
+                        { uid: '1', displayName: 'Player1', netWorth: 5000000000, clout: 1000, day: 100, companiesCount: 2, propertiesCount: 5, cryptoValue: 100000, stockValue: 200000 },
+                        { uid: '2', displayName: 'Player2', netWorth: 3000000000, clout: 800, day: 80, companiesCount: 1, propertiesCount: 3, cryptoValue: 50000, stockValue: 100000 },
+                        { uid: '3', displayName: 'Player3', netWorth: 2000000000, clout: 500, day: 60, companiesCount: 1, propertiesCount: 2, cryptoValue: 30000, stockValue: 50000 },
+                        { uid: '4', displayName: 'Player4', netWorth: 1000000000, clout: 300, day: 40, companiesCount: 0, propertiesCount: 1, cryptoValue: 10000, stockValue: 20000 },
+                        { uid: '5', displayName: 'Player5', netWorth: 500000000, clout: 100, day: 20, companiesCount: 0, propertiesCount: 0, cryptoValue: 5000, stockValue: 10000 }
+                    ];
+                }
+                
                 // Sort by type
                 const typeLabels = {
                     money: 'Net Worth',
@@ -11830,6 +11842,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.43</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.44</div>
 </body>
 </html>
