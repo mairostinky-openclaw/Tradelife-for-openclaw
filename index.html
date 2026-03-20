@@ -5190,6 +5190,11 @@ What is your experience?"></textarea></div>
                     renderCryptoChart();
                 }
                 
+                // Also sync to RTDB (Admin) or listen for changes (Everyone)
+                syncGlobalMarket();
+            }, 2000);
+        }
+
         function stopPriceTicker() {
             if (state.priceTickerInterval) clearInterval(state.priceTickerInterval);
         }
@@ -8027,6 +8032,11 @@ What is your experience?"></textarea></div>
             showToast('Saved', 'Display name updated!', 'success');
         }
 
+        // Placeholder for live prices
+        function updateLivePrices() {
+            // Function removed
+        }
+        
         // ===================== DEBT LOCK SYSTEM =====================
         let debtLockInterval = null;
         let debtLockSeconds = 60;
