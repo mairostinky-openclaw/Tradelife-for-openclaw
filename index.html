@@ -1641,18 +1641,17 @@ What is your experience?"></textarea></div>
 
             <!-- Leaderboard Tab -->
             <div id="leaderboard" class="tab-panel">
-                <h2 style="margin-bottom:1.5rem">🏆 Global Leaderboard 
-                    <button onclick="document.getElementById('leaderboard-type-select').focus()" style="padding:0.5rem 1rem;background:#ffffff;border:2px solid #000;border-radius:8px;color:#000;font-size:0.9rem;font-weight:bold;margin-left:1rem;cursor:pointer">▼ Change Type ▼</button>
-                </h2>
-                <select id="leaderboard-type-select" onchange="switchLeaderboard(this.value)" style="padding:0.5rem 1rem;background:#ffffff;border:2px solid #000;border-radius:8px;color:#000;font-size:0.9rem;font-weight:600;margin-bottom:1rem;width:100%;max-width:400px;cursor:pointer">
-                    <option value="money">💰 Money (Net Worth)</option>
-                    <option value="clout">⭐ Clout</option>
-                    <option value="day">📅 Day (Play Time)</option>
-                    <option value="companies">🏢 Companies Owned</option>
-                    <option value="properties">🏠 Properties</option>
-                    <option value="crypto">🪙 Crypto Portfolio</option>
-                    <option value="stocks">📈 Stock Portfolio</option>
-                </select>
+                <h2 style="margin-bottom:1rem">🏆 Global Leaderboard</h2>
+                <p style="color:var(--text-muted);margin-bottom:1rem">Click a button below to change leaderboard type:</p>
+                <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.5rem">
+                    <button onclick="switchLeaderboard('money')" style="padding:0.75rem 1.5rem;background:#fff;border:2px solid #000;border-radius:8px;color:#000;font-weight:bold;cursor:pointer">💰 Money</button>
+                    <button onclick="switchLeaderboard('clout')" style="padding:0.75rem 1.5rem;background:#fff;border:2px solid #000;border-radius:8px;color:#000;font-weight:bold;cursor:pointer">⭐ Clout</button>
+                    <button onclick="switchLeaderboard('day')" style="padding:0.75rem 1.5rem;background:#fff;border:2px solid #000;border-radius:8px;color:#000;font-weight:bold;cursor:pointer">📅 Day</button>
+                    <button onclick="switchLeaderboard('companies')" style="padding:0.75rem 1.5rem;background:#fff;border:2px solid #000;border-radius:8px;color:#000;font-weight:bold;cursor:pointer">🏢 Companies</button>
+                    <button onclick="switchLeaderboard('properties')" style="padding:0.75rem 1.5rem;background:#fff;border:2px solid #000;border-radius:8px;color:#000;font-weight:bold;cursor:pointer">🏠 Properties</button>
+                    <button onclick="switchLeaderboard('crypto')" style="padding:0.75rem 1.5rem;background:#fff;border:2px solid #000;border-radius:8px;color:#000;font-weight:bold;cursor:pointer">🪙 Crypto</button>
+                    <button onclick="switchLeaderboard('stocks')" style="padding:0.75rem 1.5rem;background:#fff;border:2px solid #000;border-radius:8px;color:#000;font-weight:bold;cursor:pointer">📈 Stocks</button>
+                </div>
                 
                 <!-- Leaderboard List -->
                 <div id="leaderboard-list" style="max-width:800px">
@@ -8039,9 +8038,20 @@ What is your experience?"></textarea></div>
 
         function switchLeaderboard(type) {
             currentLeaderboardType = type;
-            // Update select dropdown
+            // Update select dropdown if exists
             const select = document.getElementById('leaderboard-type-select');
             if (select) select.value = type;
+            // Highlight active button
+            const buttons = document.querySelectorAll('#leaderboard button[onclick^="switchLeaderboard"]');
+            buttons.forEach(btn => {
+                if (btn.getAttribute('onclick').includes("'" + type + "'")) {
+                    btn.style.background = '#4CAF50';
+                    btn.style.color = '#fff';
+                } else {
+                    btn.style.background = '#fff';
+                    btn.style.color = '#000';
+                }
+            });
             loadLeaderboard();
         }
 
@@ -11818,6 +11828,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.26</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.27</div>
 </body>
 </html>
