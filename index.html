@@ -1638,6 +1638,22 @@ What is your experience?"></textarea></div>
                 </div>
             </div>
 
+            <!-- Leaderboard Tab -->
+            <div id="leaderboard" class="tab-panel">
+                <h2 style="margin-bottom:1.5rem">🏆 Leaderboard</h2>
+                
+                <!-- Toggle Buttons -->
+                <div style="display:flex;gap:0.75rem;margin-bottom:1.5rem">
+                    <button class="btn btn-primary" id="lb-btn-money" onclick="switchLeaderboard('money')" style="flex:1;padding:1rem;font-size:1rem">💰 Money (Net Worth)</button>
+                    <button class="btn btn-secondary" id="lb-btn-clout" onclick="switchLeaderboard('clout')" style="flex:1;padding:1rem;font-size:1rem">⭐ Clout</button>
+                </div>
+                
+                <!-- Leaderboard List -->
+                <div id="leaderboard-list" style="max-width:800px">
+                    <div style="text-align:center;padding:2rem;color:var(--text-muted)">Loading leaderboard...</div>
+                </div>
+            </div>
+
             <!-- Visit Profile Modal -->
             <div id="visit-modal" class="modal-overlay hidden">
                 <div class="modal-content" style="max-width:450px;padding:0;overflow:hidden">
@@ -8003,6 +8019,73 @@ What is your experience?"></textarea></div>
         // ===================== DEBT LOCK SYSTEM =====================
         let debtLockInterval = null;
         let debtLockSeconds = 60;
+        let currentLeaderboardType = 'money';
+
+        function switchLeaderboard(type) {
+            currentLeaderboardType = type;
+            const moneyBtn = document.getElementById('lb-btn-money');
+            const cloutBtn = document.getElementById('lb-btn-clout');
+            if (type === 'money') {
+                moneyBtn.className = 'btn btn-primary';
+                cloutBtn.className = 'btn btn-secondary';
+            } else {
+                moneyBtn.className = 'btn btn-secondary';
+                cloutBtn.className = 'btn btn-primary';
+            }
+            loadLeaderboard();
+        }
+
+        async function loadLeaderboard() {
+            const container = document.getElementById('leaderboard-list');
+            if (!container) return;
+            container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted)">Loading leaderboard...</div>';
+            try {
+                const usersRef = window.fbMethods.collection(window.fbDb, 'users');
+                const q = window.fbMethods.query(usersRef, window.fbMethods.limit(50));
+                const snapshot = await window.fbMethods.getDocs(q);
+                let players = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (data.netWorth || data.clout) {
+                        players.push({
+                            uid: doc.id,
+                            displayName: data.displayName || data.username || 'Unknown',
+                            netWorth: data.netWorth || 0,
+                            clout: data.clout || 0,
+                            day: data.day || 1
+                        });
+                    }
+                });
+                // Sort by type
+                if (currentLeaderboardType === 'money') {
+                    players.sort((a, b) => b.netWorth - a.netWorth);
+                } else {
+                    players.sort((a, b) => b.clout - a.clout);
+                }
+                const user = window.fbAuth ? window.fbAuth.currentUser : null;
+                const currentUid = user ? user.uid : null;
+                let html = '<div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:12px;overflow:hidden">';
+                html += '<div style="display:grid;grid-template-columns:50px 1fr 1fr 80px;padding:1rem;background:var(--bg-panel);font-weight:700;font-size:0.8rem;color:var(--text-muted);text-transform:uppercase"><div>#</div><div>Player</div><div>' + (currentLeaderboardType === 'money' ? 'Net Worth' : 'Clout') + '</div><div>Day</div></div>';
+                players.slice(0, 25).forEach((p, i) => {
+                    const isCurrentUser = p.uid === currentUid;
+                    const rankColor = i < 3 ? ['#ffd700', '#c0c0c0', '#cd7f32'][i] : 'var(--text-main)';
+                    const rankEmoji = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
+                    html += '<div style="display:grid;grid-template-columns:50px 1fr 1fr 80px;padding:1rem;border-bottom:1px solid var(--border);' + (isCurrentUser ? 'background:rgba(59,130,246,0.1)' : '') + '">';
+                    html += '<div style="font-weight:700;color:' + rankColor + '">' + rankEmoji + '</div>';
+                    html += '<div style="font-weight:600' + (isCurrentUser ? ';color:var(--brand)' : '') + '">' + p.displayName + (isCurrentUser ? ' (You)' : '') + '</div>';
+                    html += '<div style="font-weight:700;color:var(--success)">' + (currentLeaderboardType === 'money' ? '$' + formatNum(p.netWorth) : formatNum(p.clout)) + '</div>';
+                    html += '<div style="color:var(--text-muted)">Day ' + p.day + '</div>';
+                    html += '</div>';
+                });
+                html += '</div>';
+                if (players.length === 0) {
+                    html = '<div style="text-align:center;padding:2rem;color:var(--text-muted)">No players found yet!</div>';
+                }
+                container.innerHTML = html;
+            } catch(e) {
+                container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--danger)">Error loading leaderboard: ' + e.message + '</div>';
+            }
+        }
 
         function checkDebtLock() {
             // Trigger lock if player has overdue debt (debt > 0 and day > loan.dueDay)
@@ -11690,6 +11773,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.18</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.19</div>
 </body>
 </html>
