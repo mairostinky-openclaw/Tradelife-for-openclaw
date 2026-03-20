@@ -8063,9 +8063,16 @@ What is your experience?"></textarea></div>
 
         async function loadLeaderboard() {
             const container = document.getElementById('leaderboard-list');
-            if (!container) return;
+            if (!container) {
+                alert('Leaderboard container not found!');
+                return;
+            }
             container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted)">Loading leaderboard...</div>';
             try {
+                if (!window.fbMethods || !window.fbDb) {
+                    alert('Firebase not loaded yet! Try clicking the button again in a few seconds.');
+                    return;
+                }
                 const usersRef = window.fbMethods.collection(window.fbDb, 'users');
                 const q = window.fbMethods.query(usersRef, window.fbMethods.limit(50));
                 const snapshot = await window.fbMethods.getDocs(q);
@@ -8144,7 +8151,9 @@ What is your experience?"></textarea></div>
                 }
                 container.innerHTML = html;
             } catch(e) {
-                container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--danger)">Error loading leaderboard: ' + e.message + '</div>';
+                const errorMsg = 'Error loading leaderboard: ' + e.message;
+                container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--danger)">' + errorMsg + '</div>';
+                alert(errorMsg);
             }
         }
 
@@ -11834,6 +11843,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.33</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.34</div>
 </body>
 </html>
