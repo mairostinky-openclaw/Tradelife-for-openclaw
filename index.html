@@ -8130,7 +8130,7 @@ What is your experience?"></textarea></div>
                 const user = window.fbAuth ? window.fbAuth.currentUser : null;
                 const currentUid = user ? user.uid : null;
                 let html = '<div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:12px;overflow:hidden">';
-                html += '<div style="display:grid;grid-template-columns:50px 1fr 1fr 80px;padding:1rem;background:var(--bg-panel);font-weight:700;font-size:0.8rem;color:var(--text-muted);text-transform:uppercase"><div>#</div><div>Player</div><div>' + (typeLabels[currentLeaderboardType] || 'Value') + '</div><div>Day</div></div>';
+                html += '<div style="display:grid;grid-template-columns:50px 1fr 1fr;padding:1rem;background:var(--bg-panel);font-weight:700;font-size:0.8rem;color:var(--text-muted);text-transform:uppercase"><div>#</div><div>Player</div><div>' + (typeLabels[currentLeaderboardType] || 'Value') + '</div></div>';
                 players.slice(0, 25).forEach((p, i) => {
                     const isCurrentUser = p.uid === currentUid;
                     const rankColor = i < 3 ? ['#ffd700', '#c0c0c0', '#cd7f32'][i] : 'var(--text-main)';
@@ -8144,11 +8144,10 @@ What is your experience?"></textarea></div>
                     else if (currentLeaderboardType === 'crypto') valueStr = '$' + formatNum(p.cryptoValue);
                     else if (currentLeaderboardType === 'stocks') valueStr = '$' + formatNum(p.stockValue);
                     else valueStr = '-';
-                    html += '<div style="display:grid;grid-template-columns:50px 1fr 1fr 80px;padding:1rem;border-bottom:1px solid var(--border);' + (isCurrentUser ? 'background:rgba(59,130,246,0.1)' : '') + '">';
+                    html += '<div style="display:grid;grid-template-columns:50px 1fr 1fr;padding:1rem;border-bottom:1px solid var(--border);' + (isCurrentUser ? 'background:rgba(59,130,246,0.1)' : '') + '">';
                     html += '<div style="font-weight:700;color:' + rankColor + '">' + rankEmoji + '</div>';
                     html += '<div style="font-weight:600' + (isCurrentUser ? ';color:var(--brand)' : '') + '">' + p.displayName + (isCurrentUser ? ' (You)' : '') + '</div>';
                     html += '<div style="font-weight:700;color:' + (typeColors[currentLeaderboardType] || 'var(--success)') + '">' + valueStr + '</div>';
-                    html += '<div style="color:var(--text-muted)">Day ' + p.day + '</div>';
                     html += '</div>';
                 });
                 html += '</div>';
@@ -11847,6 +11846,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.59</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.60</div>
 </body>
 </html>
