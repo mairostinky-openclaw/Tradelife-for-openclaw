@@ -1126,13 +1126,13 @@
                 <div style="padding:0.5rem;background:var(--bg-panel);margin:0.25rem 0.5rem;border-radius:8px">
                     <div style="font-size:0.65rem;color:var(--text-muted);margin-bottom:0.25rem">CHANGE TYPE:</div>
                     <div style="display:flex;flex-wrap:wrap;gap:0.25rem">
-                        <button onclick="alert('Clicked Money!');currentLeaderboardType='money';loadLeaderboard()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">💰</button>
-                        <button onclick="alert('Clicked Clout!');currentLeaderboardType='clout';loadLeaderboard()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">⭐</button>
-                        <button onclick="alert('Clicked Day!');currentLeaderboardType='day';loadLeaderboard()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">📅</button>
-                        <button onclick="alert('Clicked Companies!');currentLeaderboardType='companies';loadLeaderboard()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">🏢</button>
-                        <button onclick="alert('Clicked Properties!');currentLeaderboardType='properties';loadLeaderboard()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">🏠</button>
-                        <button onclick="alert('Clicked Crypto!');currentLeaderboardType='crypto';loadLeaderboard()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">🪙</button>
-                        <button onclick="alert('Clicked Stocks!');currentLeaderboardType='stocks';loadLeaderboard()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">📈</button>
+                        <button onclick="currentLeaderboardType='money';alert('Now showing MONEY leaderboard!');loadLeaderboard()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">💰</button>
+                        <button onclick="currentLeaderboardType='clout';alert('Now showing CLOUT leaderboard!');loadLeaderboard()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">⭐</button>
+                        <button onclick="currentLeaderboardType='day';alert('Now showing DAY leaderboard!');loadLeaderboard()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">📅</button>
+                        <button onclick="currentLeaderboardType='companies';alert('Now showing COMPANIES leaderboard!');loadLeaderboard()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">🏢</button>
+                        <button onclick="currentLeaderboardType='properties';alert('Now showing PROPERTIES leaderboard!');loadLeaderboard()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">🏠</button>
+                        <button onclick="currentLeaderboardType='crypto';alert('Now showing CRYPTO leaderboard!');loadLeaderboard()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">🪙</button>
+                        <button onclick="currentLeaderboardType='stocks';alert('Now showing STOCKS leaderboard!');loadLeaderboard()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">📈</button>
                     </div>
                 </div>
                 <div class="nav-item" onclick="switchTab('search')" style="color:#38bdf8">Search Players</div>
@@ -8056,17 +8056,8 @@ What is your experience?"></textarea></div>
             // Update select dropdown if exists
             const select = document.getElementById('leaderboard-type-select');
             if (select) select.value = type;
-            // Highlight active button
-            const buttons = document.querySelectorAll('#leaderboard button[onclick^="switchLeaderboard"]');
-            buttons.forEach(btn => {
-                if (btn.getAttribute('onclick').includes("'" + type + "'")) {
-                    btn.style.background = '#4CAF50';
-                    btn.style.color = '#fff';
-                } else {
-                    btn.style.background = '#fff';
-                    btn.style.color = '#000';
-                }
-            });
+            // Show which type is active
+            alert('Switched to: ' + type.toUpperCase() + ' leaderboard!');
             loadLeaderboard();
         }
 
@@ -11843,6 +11834,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.32</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.33</div>
 </body>
 </html>
