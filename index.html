@@ -8057,8 +8057,9 @@ What is your experience?"></textarea></div>
         }
 
         async function loadLeaderboard() {
+            alert('LB START - type: ' + currentLeaderboardType);
             const container = document.getElementById('leaderboard-list');
-            if (!container) return;
+            if (!container) { alert('no container!'); return; }
             
             // Show current type immediately - DEBUG
             container.innerHTML = '<div style="background:#ff00ff;color:white;padding:1rem;text-align:center;font-weight:bold;margin-bottom:1rem">DEBUG: type=' + currentLeaderboardType + '</div><div style="text-align:center;padding:1rem;background:#ffff00;color:black;border-radius:8px;margin-bottom:1rem;font-weight:bold;font-size:1.2rem;border:2px solid black">★ CURRENT: ' + currentLeaderboardType.toUpperCase() + ' LEADERBOARD ★</div><div style="text-align:center;padding:2rem;color:var(--text-muted)">Loading...</div>';
@@ -11853,6 +11854,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.64</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.65</div>
 </body>
 </html>
