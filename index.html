@@ -1645,12 +1645,13 @@ What is your experience?"></textarea></div>
 
             <!-- Leaderboard Tab -->
             <div id="leaderboard" class="tab-panel">
-                <h2 style="margin-bottom:1rem">🏆 GLOBAL LEADERBOARD</h2>
-                <div style="background:#ffff00;border:3px solid red;padding:1rem;margin-bottom:1rem;border-radius:8px">
-                    <p style="font-weight:bold;font-size:1.2rem;color:red;margin-bottom:0.5rem">CLICK BUTTON TO CHANGE LEADERBOARD:</p>
-                    <button onclick="currentLeaderboardType='money';loadLeaderboard()" style="padding:1rem 2rem;background:white;border:3px solid black;border-radius:8px;margin:0.25rem;font-weight:bold;font-size:1.1rem">💰 MONEY</button>
-                    <button onclick="currentLeaderboardType='clout';loadLeaderboard()" style="padding:1rem 2rem;background:white;border:3px solid black;border-radius:8px;margin:0.25rem;font-weight:bold;font-size:1.1rem">⭐ CLOUT</button>
-                    <button onclick="currentLeaderboardType='day';loadLeaderboard()" style="padding:1rem 2rem;background:white;border:3px solid black;border-radius:8px;margin:0.25rem;font-weight:bold;font-size:1.1rem">📅 DAY</button>
+                <h2 style="margin-bottom:0.5rem">🏆 GLOBAL LEADERBOARD</h2>
+                <div id="lb-type-display" style="background:#ffff00;color:black;font-weight:bold;padding:1rem;border-radius:8px;margin-bottom:1rem;font-size:1.5rem;border:3px solid red">CURRENT: MONEY LEADERBOARD</div>
+                
+                <div style="margin-bottom:1rem">
+                    <button onclick="currentLeaderboardType='money';document.getElementById('lb-type-display').innerText='CURRENT: MONEY LEADERBOARD';loadLeaderboard()" style="padding:0.75rem;background:white;border:2px solid black;border-radius:8px;margin:0.25rem;font-weight:bold">💰 MONEY</button>
+                    <button onclick="currentLeaderboardType='clout';document.getElementById('lb-type-display').innerText='CURRENT: CLOUT LEADERBOARD';loadLeaderboard()" style="padding:0.75rem;background:white;border:2px solid black;border-radius:8px;margin:0.25rem;font-weight:bold">⭐ CLOUT</button>
+                    <button onclick="currentLeaderboardType='day';document.getElementById('lb-type-display').innerText='CURRENT: DAY LEADERBOARD';loadLeaderboard()" style="padding:0.75rem;background:white;border:2px solid black;border-radius:8px;margin:0.25rem;font-weight:bold">📅 DAY</button>
                 </div>
                 
                 <!-- Leaderboard List -->
