@@ -8052,11 +8052,7 @@ What is your experience?"></textarea></div>
 
         async function loadLeaderboard() {
             const container = document.getElementById('leaderboard-list');
-            if (!container) {
-                alert('Container not found!');
-                return;
-            }
-            alert('Loading ' + currentLeaderboardType + ' leaderboard...');
+            if (!container) return;
             container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted)">Loading...</div>';
             try {
                 if (!window.fbMethods || !window.fbDb) {
@@ -11843,6 +11839,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.45</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.47</div>
 </body>
 </html>
