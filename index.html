@@ -1122,19 +1122,6 @@
                 <div class="nav-item" id="club-nav-item" onclick="switchTab('club')" style="color:#f59e0b">The Club 🔒</div>
                 <div class="nav-item" onclick="switchTab('epstein')" style="color:#ffffff">☦️ Epstein Island</div>
                 <div class="nav-item" onclick="if(document.getElementById('leaderboard-list')){loadLeaderboard();}switchTab('leaderboard')" style="color:var(--warning)">🏆 Leaderboard</div>
-                <!-- Quick Leaderboard Buttons -->
-                <div style="padding:0.5rem;background:var(--bg-panel);margin:0.25rem 0.5rem;border-radius:8px">
-                    <div style="font-size:0.65rem;color:var(--text-muted);margin-bottom:0.25rem">CHANGE TYPE:</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:0.25rem">
-                        <button onclick="currentLeaderboardType='money';alert('Now showing MONEY leaderboard!');loadLeaderboard()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">💰</button>
-                        <button onclick="currentLeaderboardType='clout';alert('Now showing CLOUT leaderboard!');loadLeaderboard()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">⭐</button>
-                        <button onclick="currentLeaderboardType='day';alert('Now showing DAY leaderboard!');loadLeaderboard()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">📅</button>
-                        <button onclick="currentLeaderboardType='companies';alert('Now showing COMPANIES leaderboard!');loadLeaderboard()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">🏢</button>
-                        <button onclick="currentLeaderboardType='properties';alert('Now showing PROPERTIES leaderboard!');loadLeaderboard()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">🏠</button>
-                        <button onclick="currentLeaderboardType='crypto';alert('Now showing CRYPTO leaderboard!');loadLeaderboard()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">🪙</button>
-                        <button onclick="currentLeaderboardType='stocks';alert('Now showing STOCKS leaderboard!');loadLeaderboard()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">📈</button>
-                    </div>
-                </div>
                 <div class="nav-item" onclick="switchTab('search')" style="color:#38bdf8">Search Players</div>
                 <div class="nav-item" onclick="switchTab('profile')" style="color:var(--brand);border-top:1px solid var(--border);margin-top:auto;padding-top:1rem">Profile</div>
                 <div class="nav-item" onclick="switchTab('support')" style="color:#06b6d4;margin-top:0.25rem">📩 Contact Us</div>
@@ -1654,23 +1641,21 @@ What is your experience?"></textarea></div>
 
             <!-- Leaderboard Tab -->
             <div id="leaderboard" class="tab-panel">
-                <h2 style="margin-bottom:1rem;color:#ff0000;font-size:2rem">🏆 GLOBAL LEADERBOARD</h2>
-                <div style="background:#ffff00;border:3px solid #ff0000;padding:1rem;margin-bottom:1rem;border-radius:8px">
-                    <p style="font-weight:bold;font-size:1.2rem;margin-bottom:0.5rem">🎯 CLICK HERE TO CHANGE LEADERBOARD TYPE:</p>
-                    <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-                        <button onclick="switchLeaderboard('money')" style="padding:1rem 2rem;background:#ffffff;border:3px solid #000;border-radius:10px;color:#000;font-weight:900;font-size:1.1rem;cursor:pointer;min-width:150px">💰 MONEY</button>
-                        <button onclick="switchLeaderboard('clout')" style="padding:1rem 2rem;background:#ffffff;border:3px solid #000;border-radius:10px;color:#000;font-weight:900;font-size:1.1rem;cursor:pointer;min-width:150px">⭐ CLOUT</button>
-                        <button onclick="switchLeaderboard('day')" style="padding:1rem 2rem;background:#ffffff;border:3px solid #000;border-radius:10px;color:#000;font-weight:900;font-size:1.1rem;cursor:pointer;min-width:150px">📅 DAY</button>
-                        <button onclick="switchLeaderboard('companies')" style="padding:1rem 2rem;background:#ffffff;border:3px solid #000;border-radius:10px;color:#000;font-weight:900;font-size:1.1rem;cursor:pointer;min-width:150px">🏢 COMPANIES</button>
-                        <button onclick="switchLeaderboard('properties')" style="padding:1rem 2rem;background:#ffffff;border:3px solid #000;border-radius:10px;color:#000;font-weight:900;font-size:1.1rem;cursor:pointer;min-width:150px">🏠 PROPERTIES</button>
-                        <button onclick="switchLeaderboard('crypto')" style="padding:1rem 2rem;background:#ffffff;border:3px solid #000;border-radius:10px;color:#000;font-weight:900;font-size:1.1rem;cursor:pointer;min-width:150px">🪙 CRYPTO</button>
-                        <button onclick="switchLeaderboard('stocks')" style="padding:1rem 2rem;background:#ffffff;border:3px solid #000;border-radius:10px;color:#000;font-weight:900;font-size:1.1rem;cursor:pointer;min-width:150px">📈 STOCKS</button>
-                    </div>
+                <h2 style="margin-bottom:1rem">🏆 GLOBAL LEADERBOARD</h2>
+                <p style="font-weight:bold;margin-bottom:0.5rem">Click below to change type:</p>
+                <div style="margin-bottom:1.5rem">
+                    <button onclick="currentLeaderboardType='money';loadLeaderboard()" style="padding:1rem;background:#fff;border:2px solid #000;border-radius:8px;margin:0.25rem;font-weight:bold">💰 MONEY</button>
+                    <button onclick="currentLeaderboardType='clout';loadLeaderboard()" style="padding:1rem;background:#fff;border:2px solid #000;border-radius:8px;margin:0.25rem;font-weight:bold">⭐ CLOUT</button>
+                    <button onclick="currentLeaderboardType='day';loadLeaderboard()" style="padding:1rem;background:#fff;border:2px solid #000;border-radius:8px;margin:0.25rem;font-weight:bold">📅 DAY</button>
+                    <button onclick="currentLeaderboardType='companies';loadLeaderboard()" style="padding:1rem;background:#fff;border:2px solid #000;border-radius:8px;margin:0.25rem;font-weight:bold">🏢 COMPANIES</button>
+                    <button onclick="currentLeaderboardType='properties';loadLeaderboard()" style="padding:1rem;background:#fff;border:2px solid #000;border-radius:8px;margin:0.25rem;font-weight:bold">🏠 PROPERTIES</button>
+                    <button onclick="currentLeaderboardType='crypto';loadLeaderboard()" style="padding:1rem;background:#fff;border:2px solid #000;border-radius:8px;margin:0.25rem;font-weight:bold">🪙 CRYPTO</button>
+                    <button onclick="currentLeaderboardType='stocks';loadLeaderboard()" style="padding:1rem;background:#fff;border:2px solid #000;border-radius:8px;margin:0.25rem;font-weight:bold">📈 STOCKS</button>
                 </div>
                 
                 <!-- Leaderboard List -->
                 <div id="leaderboard-list" style="max-width:800px">
-                    <div style="text-align:center;padding:2rem;color:var(--text-muted)">Loading leaderboard...</div>
+                    <div style="text-align:center;padding:2rem;color:var(--text-muted)">Click a button above to load!</div>
                 </div>
             </div>
 
@@ -8064,13 +8049,13 @@ What is your experience?"></textarea></div>
         async function loadLeaderboard() {
             const container = document.getElementById('leaderboard-list');
             if (!container) {
-                alert('Leaderboard container not found!');
+                console.log('Leaderboard container not found');
                 return;
             }
-            container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted)">Loading leaderboard...</div>';
+            container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted)">Loading...</div>';
             try {
                 if (!window.fbMethods || !window.fbDb) {
-                    alert('Firebase not loaded yet! Try clicking the button again in a few seconds.');
+                    container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--warning)">Please wait for game to fully load, then try again.</div>';
                     return;
                 }
                 const usersRef = window.fbMethods.collection(window.fbDb, 'users');
@@ -8151,9 +8136,7 @@ What is your experience?"></textarea></div>
                 }
                 container.innerHTML = html;
             } catch(e) {
-                const errorMsg = 'Error loading leaderboard: ' + e.message;
-                container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--danger)">' + errorMsg + '</div>';
-                alert(errorMsg);
+                container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--danger)">Error: ' + e.message + '</div>';
             }
         }
 
@@ -11843,6 +11826,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.34</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.35</div>
 </body>
 </html>
