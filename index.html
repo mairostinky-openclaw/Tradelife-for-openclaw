@@ -8053,7 +8053,9 @@ What is your experience?"></textarea></div>
         async function loadLeaderboard() {
             const container = document.getElementById('leaderboard-list');
             if (!container) return;
-            container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted)">Loading...</div>';
+            
+            // Show current type
+            container.innerHTML = '<div style="text-align:center;padding:1rem;background:var(--brand);color:white;border-radius:8px;margin-bottom:1rem;font-weight:bold">Current: ' + currentLeaderboardType.toUpperCase() + ' LEADERBOARD</div><div style="text-align:center;padding:2rem;color:var(--text-muted)">Loading...</div>';
             try {
                 if (!window.fbMethods || !window.fbDb) {
                     container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--warning)">Please wait for game to fully load, then try again.</div>';
