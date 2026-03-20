@@ -1121,10 +1121,13 @@
                 <div class="nav-item" onclick="showRebirthModal()" style="color:#8b5cf6">🔄 Rebirth</div>
                 <div class="nav-item" id="club-nav-item" onclick="switchTab('club')" style="color:#f59e0b">The Club 🔒</div>
                 <div class="nav-item" onclick="switchTab('epstein')" style="color:#ffffff">☦️ Epstein Island</div>
-                <div class="nav-item" onclick="currentLeaderboardType='money';switchTab('leaderboard')" style="color:var(--warning)">💰 Money LB</div>
-                <div class="nav-item" onclick="currentLeaderboardType='clout';switchTab('leaderboard')" style="color:var(--warning)">⭐ Clout LB</div>
-                <div class="nav-item" onclick="currentLeaderboardType='day';switchTab('leaderboard')" style="color:var(--warning)">📅 Day LB</div>
-                <div class="nav-item" onclick="switchTab('leaderboard')" style="color:var(--warning)">🏆 Leaderboard</div>
+                <div class="nav-item" onclick="currentLeaderboardType='money';switchTab('leaderboard')" style="color:var(--warning)">💰 Money</div>
+                <div class="nav-item" onclick="currentLeaderboardType='clout';switchTab('leaderboard')" style="color:var(--warning)">⭐ Clout</div>
+                <div class="nav-item" onclick="currentLeaderboardType='day';switchTab('leaderboard')" style="color:var(--warning)">📅 Day</div>
+                <div class="nav-item" onclick="currentLeaderboardType='companies';switchTab('leaderboard')" style="color:var(--warning)">🏢 Companies</div>
+                <div class="nav-item" onclick="currentLeaderboardType='properties';switchTab('leaderboard')" style="color:var(--warning)">🏠 Properties</div>
+                <div class="nav-item" onclick="currentLeaderboardType='crypto';switchTab('leaderboard')" style="color:var(--warning)">🪙 Crypto</div>
+                <div class="nav-item" onclick="currentLeaderboardType='stocks';switchTab('leaderboard')" style="color:var(--warning)">📈 Stocks</div>
                 <div class="nav-item" onclick="switchTab('search')" style="color:#38bdf8">Search Players</div>
                 <div class="nav-item" onclick="switchTab('search')" style="color:#38bdf8">Search Players</div>
                 <div class="nav-item" onclick="switchTab('profile')" style="color:var(--brand);border-top:1px solid var(--border);margin-top:auto;padding-top:1rem">Profile</div>
@@ -8050,8 +8053,11 @@ What is your experience?"></textarea></div>
             const container = document.getElementById('leaderboard-list');
             if (!container) return;
             
-            // Show current type
-            container.innerHTML = '<div style="text-align:center;padding:1rem;background:var(--brand);color:white;border-radius:8px;margin-bottom:1rem;font-weight:bold">Current: ' + currentLeaderboardType.toUpperCase() + ' LEADERBOARD</div><div style="text-align:center;padding:2rem;color:var(--text-muted)">Loading...</div>';
+            // Show current type immediately
+            container.innerHTML = '<div style="text-align:center;padding:1rem;background:#ffff00;color:black;border-radius:8px;margin-bottom:1rem;font-weight:bold;font-size:1.2rem;border:2px solid black">★ CURRENT: ' + currentLeaderboardType.toUpperCase() + ' LEADERBOARD ★</div><div style="text-align:center;padding:2rem;color:var(--text-muted)">Loading...</div>';
+            
+            // Force update display
+            await new Promise(r => setTimeout(r, 50));
             try {
                 if (!window.fbMethods || !window.fbDb) {
                     container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--warning)">Please wait for game to fully load, then try again.</div>';
@@ -11837,6 +11843,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.50</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.52</div>
 </body>
 </html>
