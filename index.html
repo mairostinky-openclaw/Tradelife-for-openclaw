@@ -1126,13 +1126,13 @@
                 <div style="padding:0.5rem;background:var(--bg-panel);margin:0.25rem 0.5rem;border-radius:8px">
                     <div style="font-size:0.65rem;color:var(--text-muted);margin-bottom:0.25rem">CHANGE TYPE:</div>
                     <div style="display:flex;flex-wrap:wrap;gap:0.25rem">
-                        <button onclick="switchTab('leaderboard');switchLeaderboard('money');event.stopPropagation()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">💰</button>
-                        <button onclick="switchTab('leaderboard');switchLeaderboard('clout');event.stopPropagation()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">⭐</button>
-                        <button onclick="switchTab('leaderboard');switchLeaderboard('day');event.stopPropagation()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">📅</button>
-                        <button onclick="switchTab('leaderboard');switchLeaderboard('companies');event.stopPropagation()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">🏢</button>
-                        <button onclick="switchTab('leaderboard');switchLeaderboard('properties');event.stopPropagation()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">🏠</button>
-                        <button onclick="switchTab('leaderboard');switchLeaderboard('crypto');event.stopPropagation()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">🪙</button>
-                        <button onclick="switchTab('leaderboard');switchLeaderboard('stocks');event.stopPropagation()" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">📈</button>
+                        <button onclick="currentLeaderboardType='money';loadLeaderboard();switchTab('leaderboard')" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">💰</button>
+                        <button onclick="currentLeaderboardType='clout';loadLeaderboard();switchTab('leaderboard')" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">⭐</button>
+                        <button onclick="currentLeaderboardType='day';loadLeaderboard();switchTab('leaderboard')" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">📅</button>
+                        <button onclick="currentLeaderboardType='companies';loadLeaderboard();switchTab('leaderboard')" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">🏢</button>
+                        <button onclick="currentLeaderboardType='properties';loadLeaderboard();switchTab('leaderboard')" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">🏠</button>
+                        <button onclick="currentLeaderboardType='crypto';loadLeaderboard();switchTab('leaderboard')" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">🪙</button>
+                        <button onclick="currentLeaderboardType='stocks';loadLeaderboard();switchTab('leaderboard')" style="padding:0.3rem 0.5rem;background:#fff;border:1px solid #000;border-radius:4px;color:#000;font-size:0.65rem;font-weight:bold;cursor:pointer">📈</button>
                     </div>
                 </div>
                 <div class="nav-item" onclick="switchTab('search')" style="color:#38bdf8">Search Players</div>
@@ -11843,6 +11843,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.29</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.30</div>
 </body>
 </html>
