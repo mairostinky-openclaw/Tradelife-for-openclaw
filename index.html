@@ -6009,7 +6009,9 @@ What is your experience?"></textarea></div>
             const tbody = document.getElementById('career-list');
             let html = '';
             if (state.careerCategory === 'npc') {
-                html = CAREERS.map(c => {
+                // Sort careers by salary (lowest to highest)
+                const sortedCareers = [...CAREERS].sort((a, b) => a.salary - b.salary);
+                html = sortedCareers.map(c => {
                     const canApply = state.player.exp >= c.reqExp && state.player.clout >= c.reqClout;
                     const isCurrent = state.player.career && state.player.career.id === c.id;
                     return `<tr>
@@ -11688,6 +11690,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.17</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.18</div>
 </body>
 </html>
