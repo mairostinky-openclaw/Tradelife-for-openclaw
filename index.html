@@ -8144,7 +8144,11 @@ What is your experience?"></textarea></div>
                     const rankColor = i < 3 ? ['#ffd700', '#c0c0c0', '#cd7f32'][i] : 'var(--text-main)';
                     const rankEmoji = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
                     let valueStr = '';
-                    if (currentLeaderboardType === 'money') valueStr = '$' + formatNum(p.netWorth);
+                    if (currentLeaderboardType === 'money') {
+                        valueStr = '$' + formatNum(p.netWorth);
+                        // DEBUG: Show netWorth in name too
+                        p.displayName = p.displayName + ' [$' + formatNum(p.netWorth) + ']';
+                    }
                     else if (currentLeaderboardType === 'clout') valueStr = formatNum(p.clout);
                     else if (currentLeaderboardType === 'day') valueStr = 'Day ' + p.day;
                     else if (currentLeaderboardType === 'companies') valueStr = p.companiesCount;
@@ -11854,6 +11858,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.65</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.66</div>
 </body>
 </html>
