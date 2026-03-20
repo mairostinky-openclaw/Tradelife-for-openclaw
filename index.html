@@ -8057,12 +8057,10 @@ What is your experience?"></textarea></div>
         }
 
         async function loadLeaderboard() {
-            alert('LB START - type: ' + currentLeaderboardType);
             const container = document.getElementById('leaderboard-list');
-            if (!container) { alert('no container!'); return; }
             
-            // Show current type immediately - DEBUG
-            container.innerHTML = '<div style="background:#ff00ff;color:white;padding:1rem;text-align:center;font-weight:bold;margin-bottom:1rem">DEBUG: type=' + currentLeaderboardType + '</div><div style="text-align:center;padding:1rem;background:#ffff00;color:black;border-radius:8px;margin-bottom:1rem;font-weight:bold;font-size:1.2rem;border:2px solid black">★ CURRENT: ' + currentLeaderboardType.toUpperCase() + ' LEADERBOARD ★</div><div style="text-align:center;padding:2rem;color:var(--text-muted)">Loading...</div>';
+            // Show current type immediately
+            container.innerHTML = '<div style="text-align:center;padding:1rem;background:#ffff00;color:black;border-radius:8px;margin-bottom:1rem;font-weight:bold;font-size:1.2rem;border:2px solid black">★ CURRENT: ' + currentLeaderboardType.toUpperCase() + ' LEADERBOARD ★</div><div style="text-align:center;padding:2rem;color:var(--text-muted)">Loading...</div>';
             if (!container) return;
             
             // Show current type immediately
@@ -8144,11 +8142,7 @@ What is your experience?"></textarea></div>
                     const rankColor = i < 3 ? ['#ffd700', '#c0c0c0', '#cd7f32'][i] : 'var(--text-main)';
                     const rankEmoji = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
                     let valueStr = '';
-                    if (currentLeaderboardType === 'money') {
-                        valueStr = '$' + formatNum(p.netWorth);
-                        // DEBUG: Show netWorth in name too
-                        p.displayName = p.displayName + ' [$' + formatNum(p.netWorth) + ']';
-                    }
+                    if (currentLeaderboardType === 'money') valueStr = '$' + formatNum(p.netWorth);
                     else if (currentLeaderboardType === 'clout') valueStr = formatNum(p.clout);
                     else if (currentLeaderboardType === 'day') valueStr = 'Day ' + p.day;
                     else if (currentLeaderboardType === 'companies') valueStr = p.companiesCount;
@@ -11858,6 +11852,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.66</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.67</div>
 </body>
 </html>
