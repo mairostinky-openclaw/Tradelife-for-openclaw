@@ -1121,13 +1121,13 @@
                 <div class="nav-item" onclick="showRebirthModal()" style="color:#8b5cf6">🔄 Rebirth</div>
                 <div class="nav-item" id="club-nav-item" onclick="switchTab('club')" style="color:#f59e0b">The Club 🔒</div>
                 <div class="nav-item" onclick="switchTab('epstein')" style="color:#ffffff">☦️ Epstein Island</div>
-                <div class="nav-item" onclick="currentLeaderboardType='money';switchTab('leaderboard')" style="color:var(--warning)">💰 Money LB</div>
-                <div class="nav-item" onclick="currentLeaderboardType='clout';switchTab('leaderboard')" style="color:var(--warning)">⭐ Clout LB</div>
-                <div class="nav-item" onclick="currentLeaderboardType='day';switchTab('leaderboard')" style="color:var(--warning)">📅 Day LB</div>
-                <div class="nav-item" onclick="currentLeaderboardType='companies';switchTab('leaderboard')" style="color:var(--warning)">🏢 Companies LB</div>
-                <div class="nav-item" onclick="currentLeaderboardType='properties';switchTab('leaderboard')" style="color:var(--warning)">🏠 Properties LB</div>
-                <div class="nav-item" onclick="currentLeaderboardType='crypto';switchTab('leaderboard')" style="color:var(--warning)">🪙 Crypto LB</div>
-                <div class="nav-item" onclick="currentLeaderboardType='stocks';switchTab('leaderboard')" style="color:var(--warning)">📈 Stocks LB</div>
+                <div class="nav-item" onclick="currentLeaderboardType='money';switchTab('leaderboard');setTimeout(loadLeaderboard,100)" style="color:var(--warning)">💰 Money LB</div>
+                <div class="nav-item" onclick="currentLeaderboardType='clout';switchTab('leaderboard');setTimeout(loadLeaderboard,100)" style="color:var(--warning)">⭐ Clout LB</div>
+                <div class="nav-item" onclick="currentLeaderboardType='day';switchTab('leaderboard');setTimeout(loadLeaderboard,100)" style="color:var(--warning)">📅 Day LB</div>
+                <div class="nav-item" onclick="currentLeaderboardType='companies';switchTab('leaderboard');setTimeout(loadLeaderboard,100)" style="color:var(--warning)">🏢 Companies LB</div>
+                <div class="nav-item" onclick="currentLeaderboardType='properties';switchTab('leaderboard');setTimeout(loadLeaderboard,100)" style="color:var(--warning)">🏠 Properties LB</div>
+                <div class="nav-item" onclick="currentLeaderboardType='crypto';switchTab('leaderboard');setTimeout(loadLeaderboard,100)" style="color:var(--warning)">🪙 Crypto LB</div>
+                <div class="nav-item" onclick="currentLeaderboardType='stocks';switchTab('leaderboard');setTimeout(loadLeaderboard,100)" style="color:var(--warning)">📈 Stocks LB</div>
                 <div class="nav-item" onclick="switchTab('search')" style="color:#38bdf8">Search Players</div>
                 <div class="nav-item" onclick="switchTab('profile')" style="color:var(--brand);border-top:1px solid var(--border);margin-top:auto;padding-top:1rem">Profile</div>
                 <div class="nav-item" onclick="switchTab('support')" style="color:#06b6d4;margin-top:0.25rem">📩 Contact Us</div>
@@ -11832,6 +11832,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.36</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.37</div>
 </body>
 </html>
