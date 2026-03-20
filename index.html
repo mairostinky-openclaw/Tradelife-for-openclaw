@@ -1122,9 +1122,7 @@
                 <div class="nav-item" id="club-nav-item" onclick="switchTab('club')" style="color:#f59e0b">The Club 🔒</div>
                 <div class="nav-item" onclick="switchTab('epstein')" style="color:#ffffff">☦️ Epstein Island</div>
                 <div class="nav-item" onclick="switchTab('leaderboard')" style="color:var(--warning)">🏆 Leaderboard</div>
-                <div class="nav-item" onclick="currentLeaderboardType='money';switchTab('leaderboard');loadLeaderboard()" style="color:var(--warning)">💰 Money</div>
-                <div class="nav-item" onclick="currentLeaderboardType='clout';switchTab('leaderboard');loadLeaderboard()" style="color:var(--warning)">⭐ Clout</div>
-                <div class="nav-item" onclick="currentLeaderboardType='day';switchTab('leaderboard');loadLeaderboard()" style="color:var(--warning)">📅 Day</div>
+                <div class="nav-item" onclick="switchTab('search')" style="color:#38bdf8">Search Players</div>
                 <div class="nav-item" onclick="switchTab('search')" style="color:#38bdf8">Search Players</div>
                 <div class="nav-item" onclick="switchTab('profile')" style="color:var(--brand);border-top:1px solid var(--border);margin-top:auto;padding-top:1rem">Profile</div>
                 <div class="nav-item" onclick="switchTab('support')" style="color:#06b6d4;margin-top:0.25rem">📩 Contact Us</div>
@@ -1645,21 +1643,15 @@ What is your experience?"></textarea></div>
             <!-- Leaderboard Tab -->
             <div id="leaderboard" class="tab-panel">
                 <h2 style="margin-bottom:1rem">🏆 GLOBAL LEADERBOARD</h2>
-                <p style="font-weight:bold;margin-bottom:0.5rem">Click below to change type:</p>
-                <div style="margin-bottom:1.5rem">
-                    <button onclick="currentLeaderboardType='money';loadLeaderboard()" style="padding:1rem;background:#fff;border:2px solid #000;border-radius:8px;margin:0.25rem;font-weight:bold">💰 MONEY</button>
-                    <button onclick="currentLeaderboardType='clout';loadLeaderboard()" style="padding:1rem;background:#fff;border:2px solid #000;border-radius:8px;margin:0.25rem;font-weight:bold">⭐ CLOUT</button>
-                    <button onclick="currentLeaderboardType='day';loadLeaderboard()" style="padding:1rem;background:#fff;border:2px solid #000;border-radius:8px;margin:0.25rem;font-weight:bold">📅 DAY</button>
-                    <button onclick="currentLeaderboardType='companies';loadLeaderboard()" style="padding:1rem;background:#fff;border:2px solid #000;border-radius:8px;margin:0.25rem;font-weight:bold">🏢 COMPANIES</button>
-                    <button onclick="currentLeaderboardType='properties';loadLeaderboard()" style="padding:1rem;background:#fff;border:2px solid #000;border-radius:8px;margin:0.25rem;font-weight:bold">🏠 PROPERTIES</button>
-                    <button onclick="currentLeaderboardType='crypto';loadLeaderboard()" style="padding:1rem;background:#fff;border:2px solid #000;border-radius:8px;margin:0.25rem;font-weight:bold">🪙 CRYPTO</button>
-                    <button onclick="currentLeaderboardType='stocks';loadLeaderboard()" style="padding:1rem;background:#fff;border:2px solid #000;border-radius:8px;margin:0.25rem;font-weight:bold">📈 STOCKS</button>
+                <div style="background:#ffff00;border:3px solid red;padding:1rem;margin-bottom:1rem;border-radius:8px">
+                    <p style="font-weight:bold;font-size:1.2rem;color:red;margin-bottom:0.5rem">CLICK BUTTON TO CHANGE LEADERBOARD:</p>
+                    <button onclick="currentLeaderboardType='money';loadLeaderboard()" style="padding:1rem 2rem;background:white;border:3px solid black;border-radius:8px;margin:0.25rem;font-weight:bold;font-size:1.1rem">💰 MONEY</button>
+                    <button onclick="currentLeaderboardType='clout';loadLeaderboard()" style="padding:1rem 2rem;background:white;border:3px solid black;border-radius:8px;margin:0.25rem;font-weight:bold;font-size:1.1rem">⭐ CLOUT</button>
+                    <button onclick="currentLeaderboardType='day';loadLeaderboard()" style="padding:1rem 2rem;background:white;border:3px solid black;border-radius:8px;margin:0.25rem;font-weight:bold;font-size:1.1rem">📅 DAY</button>
                 </div>
                 
                 <!-- Leaderboard List -->
-                <div id="leaderboard-list" style="max-width:800px">
-                    <div style="text-align:center;padding:2rem;color:var(--text-muted)">Click a button above to load!</div>
-                </div>
+                <div id="leaderboard-list" style="max-width:800px"></div>
             </div>
 
             <!-- Epstein Island Tab -->
@@ -11841,6 +11833,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.48</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.49</div>
 </body>
 </html>
