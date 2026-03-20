@@ -1641,21 +1641,17 @@ What is your experience?"></textarea></div>
 
             <!-- Leaderboard Tab -->
             <div id="leaderboard" class="tab-panel">
-                <h2 style="margin-bottom:1.5rem">🏆 Leaderboard</h2>
-                
-                <!-- Leaderboard Selector -->
-                <div style="display:flex;gap:0.75rem;margin-bottom:1.5rem;align-items:center;flex-wrap:wrap;background:var(--bg-surface);padding:1rem;border-radius:8px;border:1px solid var(--border)">
-                    <label style="font-weight:600;color:var(--text-muted);min-width:150px">Change Type:</label>
-                    <select id="leaderboard-type-select" onchange="switchLeaderboard(this.value)" style="padding:0.75rem;background:var(--bg-panel);border:1px solid var(--border);border-radius:8px;color:var(--text-main);font-size:1rem;font-weight:600;flex:1;max-width:300px">
-                        <option value="money">💰 Money (Net Worth)</option>
+                <h2 style="margin-bottom:1.5rem">🏆 Global Leaderboard 
+                    <select id="leaderboard-type-select" onchange="switchLeaderboard(this.value)" style="padding:0.5rem 1rem;background:#ffffff;border:1px solid #ccc;border-radius:8px;color:#000;font-size:0.9rem;font-weight:600;margin-left:1rem;cursor:pointer">
+                        <option value="money">💰 Money</option>
                         <option value="clout">⭐ Clout</option>
-                        <option value="day">📅 Day (Play Time)</option>
-                        <option value="companies">🏢 Companies Owned</option>
+                        <option value="day">📅 Day</option>
+                        <option value="companies">🏢 Companies</option>
                         <option value="properties">🏠 Properties</option>
-                        <option value="crypto">🪙 Crypto Portfolio</option>
-                        <option value="stocks">📈 Stock Portfolio</option>
+                        <option value="crypto">🪙 Crypto</option>
+                        <option value="stocks">📈 Stocks</option>
                     </select>
-                </div>
+                </h2>
                 
                 <!-- Leaderboard List -->
                 <div id="leaderboard-list" style="max-width:800px">
@@ -11821,6 +11817,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.24</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.25</div>
 </body>
 </html>
