@@ -8050,6 +8050,7 @@ What is your experience?"></textarea></div>
         }
 
         async function loadLeaderboard() {
+            alert('loadLeaderboard called! Type: ' + currentLeaderboardType);
             const container = document.getElementById('leaderboard-list');
             if (!container) return;
             
