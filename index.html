@@ -3503,14 +3503,41 @@ What is your experience?"></textarea></div>
         function startGame() {
             const char = CHARACTERS.find(c => c.id === state.selectedCharacter);
             if (!char) return;
-            state.player.character = char.id;
-            state.player.cash = char.cash;
-            state.player.debt = char.debt || 0;
-            state.player.credit = char.credit || 650;
-            state.player.clout = char.clout || 0;
-            state.player.exp = char.exp || 0;
-            state.player.career = CAREERS[0];
-            state.player.salary = CAREERS[0].salary;
+            // FULL RESET - clear everything from previous game
+            state.player = {
+                name: 'Player',
+                character: char.id,
+                cash: char.cash,
+                debt: char.debt || 0,
+                credit: char.credit || 650,
+                clout: char.clout || 0,
+                exp: char.exp || 0,
+                day: 1,
+                level: 1,
+                career: CAREERS[0],
+                salary: CAREERS[0].salary,
+                portfolio: {},
+                cryptoPortfolio: {},
+                properties: [],
+                lifestyle: [],
+                loans: [],
+                activityLog: [],
+                achievements: [],
+                completedTasks: [],
+                certifications: [],
+                companies: [],
+                aiBots: [],
+                clubBalance: 0,
+                clubPaid: false,
+                countriesOwned: [],
+                planetOwned: false,
+                planets: [],
+                reputation: 100,
+                incubator: [],
+                takeovers: [],
+                rebirthCoins: 0,
+                hasRebirth1: false
+            };
             if (state.player.debt > 0) {
                 const monthly = Math.round(state.player.debt * 0.085 / 12 + state.player.debt / 60);
                 const dueIn = Math.max(10, Math.floor(state.player.debt / monthly));
@@ -11661,6 +11688,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.16</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.17</div>
 </body>
 </html>
