@@ -5190,12 +5190,6 @@ What is your experience?"></textarea></div>
                     renderCryptoChart();
                 }
                 
-                // Also sync to RTDB (Admin) or listen for changes (Everyone)
-                syncGlobalMarket();
-                updateLivePrices();
-            }, 2000);
-        }
-
         function stopPriceTicker() {
             if (state.priceTickerInterval) clearInterval(state.priceTickerInterval);
         }
@@ -11844,6 +11838,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.53</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.54</div>
 </body>
 </html>
