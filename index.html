@@ -6362,7 +6362,7 @@ What is your experience?"></textarea></div>
                                     <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:0.25rem">
                                         <span>${proj.name}</span><span style="color:var(--brand)">${proj.progress.toFixed(1)}%</span>
                                     </div>
-                                    <div style="font-size:0.75rem;color:var(--text-muted)">${(proj.invested || 0) > 1e15 ? (proj.invested || 0).toExponential(4) : '$' + formatNum(proj.invested || 0)}</div>
+                                    <div style="font-size:0.75rem;color:var(--success);font-weight:bold">💰 ${(proj.invested || 0) > 1e15 ? (proj.invested || 0).toExponential(4) : '$' + formatNum(proj.invested || 0)}</div>
                                     <div style="height:6px;background:var(--bg-base);border-radius:3px;overflow:hidden">
                                         <div style="height:100%;background:var(--brand);width:${proj.progress}%;transition:width 0.3s"></div>
                                     </div>
@@ -7014,7 +7014,7 @@ What is your experience?"></textarea></div>
                                     <strong>${proj.name}</strong>
                                     <span style="color:${proj.completed ? 'var(--success)' : 'var(--text-muted)'};font-size:0.85rem">${proj.completed ? '✓ Complete' : proj.progress.toFixed(1) + '%'}</span>
                                 </div>
-                                <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.5rem">Invested: ${(proj.invested || 0) > 1e15 ? (proj.invested || 0).toExponential(4) : '$' + formatNum(proj.invested || 0)}</div>
+                                <div style="font-size:0.8rem;color:var(--success);font-weight:bold;margin-bottom:0.5rem">💰 Invested: ${(proj.invested || 0) > 1e15 ? (proj.invested || 0).toExponential(4) : '$' + formatNum(proj.invested || 0)}</div>
                                 <div style="height:8px;background:var(--bg-base);border-radius:4px;overflow:hidden">
                                     <div style="height:100%;background:${proj.completed ? 'var(--success)' : 'var(--brand)'};width:${proj.progress}%;transition:width 0.3s"></div>
                                 </div>
@@ -11873,6 +11873,6 @@ What is your experience?"></textarea></div>
         }
 
     </script>
-    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.75</div>
+    <div style="position: fixed; bottom: 10px; right: 10px; color: #666; font-size: 12px; z-index: 1000;">v1.3.76</div>
 </body>
 </html>
